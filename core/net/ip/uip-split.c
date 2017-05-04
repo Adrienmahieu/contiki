@@ -33,7 +33,7 @@
  */
 
 #include <string.h>
-
+#include "ets_sys.h"
 #include "net/ip/uip-split.h"
 #include "net/ip/uip.h"
 #include "net/ipv4/uip-fw.h"
@@ -50,7 +50,7 @@
 #endif /* UIP_SPLIT_CONF_SIZE */
 
 /*-----------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 uip_split_output(void)
 {
 #if UIP_TCP

@@ -29,7 +29,7 @@
  *
  * Authors: Simon Duquennoy <simonduq@sics.se>
  */
-
+#include "ets_sys.h"
 #include "contiki.h"
 #include "sys/clock.h"
 #include "net/packetbuf.h"
@@ -83,14 +83,14 @@ struct ctimer periodic_timer;
 
 /*---------------------------------------------------------------------------*/
 /* Returns the neighbor's link stats */
-const struct link_stats *
+const struct link_stats * ICACHE_FLASH_ATTR
 link_stats_from_lladdr(const linkaddr_t *lladdr)
 {
   return nbr_table_get_from_lladdr(link_stats, lladdr);
 }
 /*---------------------------------------------------------------------------*/
 /* Are the statistics fresh? */
-int
+int ICACHE_FLASH_ATTR
 link_stats_is_fresh(const struct link_stats *stats)
 {
   return (stats != NULL)
@@ -98,7 +98,7 @@ link_stats_is_fresh(const struct link_stats *stats)
       && stats->freshness >= FRESHNESS_TARGET;
 }
 /*---------------------------------------------------------------------------*/
-uint16_t
+uint16_t ICACHE_FLASH_ATTR
 guess_etx_from_rssi(const struct link_stats *stats)
 {
   if(stats != NULL) {
@@ -128,7 +128,7 @@ guess_etx_from_rssi(const struct link_stats *stats)
 }
 /*---------------------------------------------------------------------------*/
 /* Packet sent callback. Updates stats for transmissions to lladdr */
-void
+void ICACHE_FLASH_ATTR
 link_stats_packet_sent(const linkaddr_t *lladdr, int status, int numtx)
 {
   struct link_stats *stats;
@@ -166,7 +166,7 @@ link_stats_packet_sent(const linkaddr_t *lladdr, int status, int numtx)
 }
 /*---------------------------------------------------------------------------*/
 /* Packet input callback. Updates statistics for receptions on a given link */
-void
+void ICACHE_FLASH_ATTR
 link_stats_input_callback(const linkaddr_t *lladdr)
 {
   struct link_stats *stats;
@@ -190,7 +190,7 @@ link_stats_input_callback(const linkaddr_t *lladdr)
 }
 /*---------------------------------------------------------------------------*/
 /* Periodic timer called every FRESHNESS_HALF_LIFE minutes */
-static void
+static void ICACHE_FLASH_ATTR
 periodic(void *ptr)
 {
   /* Age (by halving) freshness counter of all neighbors */
@@ -202,7 +202,7 @@ periodic(void *ptr)
 }
 /*---------------------------------------------------------------------------*/
 /* Initializes link-stats module */
-void
+void ICACHE_FLASH_ATTR
 link_stats_init(void)
 {
   nbr_table_register(link_stats, NULL);

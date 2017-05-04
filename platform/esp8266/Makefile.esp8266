@@ -1,0 +1,36 @@
+ifndef CONTIKI
+  $(error CONTIKI not defined! You must specify where CONTIKI resides!)
+endif
+
+ifeq ($(HOST_OS),Darwin)
+  AROPTS = rc
+endif
+
+CONTIKI_TARGET_DIRS = . dev
+CONTIKI_TARGET_MAIN = ${addprefix $(OBJECTDIR)/,contiki-main.o}
+
+CONTIKI_TARGET_SOURCEFILES = contiki-main.c clock.c leds.c leds-arch.c \
+                button-sensor.c pir-sensor.c vib-sensor.c \
+                sensors.c
+
+CONTIKI_SOURCEFILES += $(CONTIKI_TARGET_SOURCEFILES)
+
+CONTIKI_WITH_IPV6 = 1
+
+.SUFFIXES:
+
+### Define the CPU directory
+CONTIKI_CPU=$(CONTIKI)/cpu/esp8266
+include $(CONTIKI)/cpu/esp8266/Makefile.esp8266
+
+ifeq ($(HOST_OS),Windows)
+CFLAGS += -I/usr/include/ncurses
+endif
+
+#CURSES_LIBS ?= -lncurses
+
+TARGET_LIBFILES += $(CURSES_LIBS)
+
+#MODULES+=core/net core/net/mac core/ctk core/net/llsec core/net/ip64-addr/
+#MODULES+= core/net core/net/mac core/net/llsec
+MODULES+= core/net core/net/mac core/net/llsec

@@ -1,5 +1,5 @@
 #include <stdio.h>
-
+#include "ets_sys.h"
 #include "net/ip/uip.h"
 
 #include "lib/memb.h"
@@ -18,7 +18,7 @@ MEMB(packets_memb, struct uip_packetqueue_packet, MAX_NUM_QUEUED_PACKETS);
 #endif
 
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 packet_timedout(void *ptr)
 {
   struct uip_packetqueue_handle *h = ptr;
@@ -28,14 +28,14 @@ packet_timedout(void *ptr)
   h->packet = NULL;
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 uip_packetqueue_new(struct uip_packetqueue_handle *handle)
 {
   PRINTF("uip_packetqueue_new %p\n", handle);
   handle->packet = NULL;
 }
 /*---------------------------------------------------------------------------*/
-struct uip_packetqueue_packet *
+struct uip_packetqueue_packet * ICACHE_FLASH_ATTR
 uip_packetqueue_alloc(struct uip_packetqueue_handle *handle, clock_time_t lifetime)
 {
   PRINTF("uip_packetqueue_alloc %p\n", handle);
@@ -53,7 +53,7 @@ uip_packetqueue_alloc(struct uip_packetqueue_handle *handle, clock_time_t lifeti
   return handle->packet;
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 uip_packetqueue_free(struct uip_packetqueue_handle *handle)
 {
   PRINTF("uip_packetqueue_free %p\n", handle);
@@ -64,19 +64,19 @@ uip_packetqueue_free(struct uip_packetqueue_handle *handle)
   }
 }
 /*---------------------------------------------------------------------------*/
-uint8_t *
+uint8_t * ICACHE_FLASH_ATTR
 uip_packetqueue_buf(struct uip_packetqueue_handle *h)
 {
   return h->packet != NULL? h->packet->queue_buf: NULL;
 }
 /*---------------------------------------------------------------------------*/
-uint16_t
+uint16_t ICACHE_FLASH_ATTR
 uip_packetqueue_buflen(struct uip_packetqueue_handle *h)
 {
   return h->packet != NULL? h->packet->queue_buf_len: 0;
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 uip_packetqueue_set_buflen(struct uip_packetqueue_handle *h, uint16_t len)
 {
   if(h->packet != NULL) {

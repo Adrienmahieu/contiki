@@ -36,10 +36,10 @@
  * \author
  *         Adam Dunkels <adam@sics.se>
  */
-
+#include "ets_sys.h"
 #include "net/netstack.h"
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 netstack_init(void)
 {
   NETSTACK_RADIO.init();

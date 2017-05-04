@@ -33,7 +33,7 @@
 
 
 #include <string.h>
-
+#include "ets_sys.h"
 #include "contiki.h"
 
 #include "lib/sensors.h"
@@ -50,7 +50,7 @@ static unsigned char num_sensors;
 PROCESS(sensors_process, "Sensors");
 
 /*---------------------------------------------------------------------------*/
-static int
+static int ICACHE_FLASH_ATTR
 get_sensor_index(const struct sensors_sensor *s)
 {
   int i;
@@ -62,26 +62,26 @@ get_sensor_index(const struct sensors_sensor *s)
   return i;
 }
 /*---------------------------------------------------------------------------*/
-const struct sensors_sensor *
+const struct sensors_sensor * ICACHE_FLASH_ATTR
 sensors_first(void)
 {
   return sensors[0];
 }
 /*---------------------------------------------------------------------------*/
-const struct sensors_sensor *
+const struct sensors_sensor * ICACHE_FLASH_ATTR
 sensors_next(const struct sensors_sensor *s)
 {
   return sensors[get_sensor_index(s) + 1];
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 sensors_changed(const struct sensors_sensor *s)
 {
   sensors_flags[get_sensor_index(s)] |= FLAG_CHANGED;
   process_poll(&sensors_process);
 }
 /*---------------------------------------------------------------------------*/
-const struct sensors_sensor *
+const struct sensors_sensor * ICACHE_FLASH_ATTR
 sensors_find(const char *prefix)
 {
   int i;

@@ -44,9 +44,9 @@
 
 #include <string.h>
 #include "lib/ringbufindex.h"
-
+#include "ets_sys.h"
 /* Initialize a ring buffer. The size must be a power of two */
-void
+void ICACHE_FLASH_ATTR
 ringbufindex_init(struct ringbufindex *r, uint8_t size)
 {
   r->mask = size - 1;
@@ -54,7 +54,7 @@ ringbufindex_init(struct ringbufindex *r, uint8_t size)
   r->get_ptr = 0;
 }
 /* Put one element to the ring buffer */
-int
+int ICACHE_FLASH_ATTR
 ringbufindex_put(struct ringbufindex *r)
 {
   /* Check if buffer is full. If it is full, return 0 to indicate that
@@ -74,7 +74,7 @@ ringbufindex_put(struct ringbufindex *r)
 }
 /* Check if there is space to put an element.
  * Return the index where the next element is to be added */
-int
+int ICACHE_FLASH_ATTR
 ringbufindex_peek_put(const struct ringbufindex *r)
 {
   /* Check if there are bytes in the buffer. If so, we return the
@@ -86,7 +86,7 @@ ringbufindex_peek_put(const struct ringbufindex *r)
   return r->put_ptr;
 }
 /* Remove the first element and return its index */
-int
+int ICACHE_FLASH_ATTR
 ringbufindex_get(struct ringbufindex *r)
 {
   int get_ptr;
@@ -111,7 +111,7 @@ ringbufindex_get(struct ringbufindex *r)
 }
 /* Return the index of the first element
  * (which will be removed if calling ringbufindex_peek) */
-int
+int ICACHE_FLASH_ATTR
 ringbufindex_peek_get(const struct ringbufindex *r)
 {
   /* Check if there are bytes in the buffer. If so, we return the
@@ -124,25 +124,25 @@ ringbufindex_peek_get(const struct ringbufindex *r)
   }
 }
 /* Return the ring buffer size */
-int
+int ICACHE_FLASH_ATTR
 ringbufindex_size(const struct ringbufindex *r)
 {
   return r->mask + 1;
 }
 /* Return the number of elements currently in the ring buffer */
-int
+int ICACHE_FLASH_ATTR
 ringbufindex_elements(const struct ringbufindex *r)
 {
   return (r->put_ptr - r->get_ptr) & r->mask;
 }
 /* Is the ring buffer full? */
-int
+int ICACHE_FLASH_ATTR
 ringbufindex_full(const struct ringbufindex *r)
 {
   return ((r->put_ptr - r->get_ptr) & r->mask) == r->mask;
 }
 /* Is the ring buffer empty? */
-int
+int ICACHE_FLASH_ATTR
 ringbufindex_empty(const struct ringbufindex *r)
 {
   return ringbufindex_elements(r) == 0;

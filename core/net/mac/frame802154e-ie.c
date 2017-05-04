@@ -36,7 +36,7 @@
  * \author
  *         Simon Duquennoy <simonduq@sics.se>
  */
-
+#include "ets_sys.h"
 #include <string.h>
 #include "net/mac/frame802154e-ie.h"
 
@@ -87,7 +87,7 @@ enum ieee802154e_mlme_long_subie_id {
   (var) = ((uint8_t *)(buf))[0] | ((uint8_t *)(buf))[1] << 8
 
 /* Create a header IE 2-byte descriptor */
-static void
+static void ICACHE_FLASH_ATTR
 create_header_ie_descriptor(uint8_t *buf, uint8_t element_id, int ie_len)
 {
   uint16_t ie_desc;
@@ -97,7 +97,7 @@ create_header_ie_descriptor(uint8_t *buf, uint8_t element_id, int ie_len)
 }
 
 /* Create a payload IE 2-byte descriptor */
-static void
+static void ICACHE_FLASH_ATTR
 create_payload_ie_descriptor(uint8_t *buf, uint8_t group_id, int ie_len)
 {
   uint16_t ie_desc;
@@ -107,7 +107,7 @@ create_payload_ie_descriptor(uint8_t *buf, uint8_t group_id, int ie_len)
 }
 
 /* Create a MLME short IE 2-byte descriptor */
-static void
+static void ICACHE_FLASH_ATTR
 create_mlme_short_ie_descriptor(uint8_t *buf, uint8_t sub_id, int ie_len)
 {
   uint16_t ie_desc;
@@ -117,7 +117,7 @@ create_mlme_short_ie_descriptor(uint8_t *buf, uint8_t sub_id, int ie_len)
 }
 
 /* Create a MLME long IE 2-byte descriptor */
-static void
+static void ICACHE_FLASH_ATTR
 create_mlme_long_ie_descriptor(uint8_t *buf, uint8_t sub_id, int ie_len)
 {
   uint16_t ie_desc;
@@ -127,7 +127,7 @@ create_mlme_long_ie_descriptor(uint8_t *buf, uint8_t sub_id, int ie_len)
 }
 
 /* Header IE. ACK/NACK time correction. Used in enhanced ACKs */
-int
+int ICACHE_FLASH_ATTR
 frame80215e_create_ie_header_ack_nack_time_correction(uint8_t *buf, int len,
     struct ieee802154_ies *ies)
 {
@@ -150,7 +150,7 @@ frame80215e_create_ie_header_ack_nack_time_correction(uint8_t *buf, int len,
 
 /* Header IE. List termination 1 (Signals the end of the Header IEs when
  * followed by payload IEs) */
-int
+int ICACHE_FLASH_ATTR
 frame80215e_create_ie_header_list_termination_1(uint8_t *buf, int len,
     struct ieee802154_ies *ies)
 {
@@ -165,7 +165,7 @@ frame80215e_create_ie_header_list_termination_1(uint8_t *buf, int len,
 
 /* Header IE. List termination 2 (Signals the end of the Header IEs when
  * followed by an unformatted payload) */
-int
+int ICACHE_FLASH_ATTR
 frame80215e_create_ie_header_list_termination_2(uint8_t *buf, int len,
     struct ieee802154_ies *ies)
 {
@@ -179,7 +179,7 @@ frame80215e_create_ie_header_list_termination_2(uint8_t *buf, int len,
 }
 
 /* Payload IE. List termination */
-int
+int ICACHE_FLASH_ATTR
 frame80215e_create_ie_payload_list_termination(uint8_t *buf, int len,
     struct ieee802154_ies *ies)
 {
@@ -193,7 +193,7 @@ frame80215e_create_ie_payload_list_termination(uint8_t *buf, int len,
 }
 
 /* Payload IE. MLME. Used to nest sub-IEs */
-int
+int ICACHE_FLASH_ATTR
 frame80215e_create_ie_mlme(uint8_t *buf, int len,
     struct ieee802154_ies *ies)
 {
@@ -208,7 +208,7 @@ frame80215e_create_ie_mlme(uint8_t *buf, int len,
 }
 
 /* MLME sub-IE. TSCH synchronization. Used in EBs: ASN and join priority */
-int
+int ICACHE_FLASH_ATTR
 frame80215e_create_ie_tsch_synchronization(uint8_t *buf, int len,
     struct ieee802154_ies *ies)
 {
@@ -228,7 +228,7 @@ frame80215e_create_ie_tsch_synchronization(uint8_t *buf, int len,
 }
 
 /* MLME sub-IE. TSCH slotframe and link. Used in EBs: initial schedule */
-int
+int ICACHE_FLASH_ATTR
 frame80215e_create_ie_tsch_slotframe_and_link(uint8_t *buf, int len,
     struct ieee802154_ies *ies)
 {
@@ -265,7 +265,7 @@ frame80215e_create_ie_tsch_slotframe_and_link(uint8_t *buf, int len,
 }
 
 /* MLME sub-IE. TSCH timeslot. Used in EBs: timeslot template (timing) */
-int
+int ICACHE_FLASH_ATTR
 frame80215e_create_ie_tsch_timeslot(uint8_t *buf, int len,
     struct ieee802154_ies *ies)
 {
@@ -291,7 +291,7 @@ frame80215e_create_ie_tsch_timeslot(uint8_t *buf, int len,
 }
 
 /* MLME sub-IE. TSCH channel hopping sequence. Used in EBs: hopping sequence */
-int
+int ICACHE_FLASH_ATTR
 frame80215e_create_ie_tsch_channel_hopping_sequence(uint8_t *buf, int len,
     struct ieee802154_ies *ies)
 {
@@ -318,7 +318,7 @@ frame80215e_create_ie_tsch_channel_hopping_sequence(uint8_t *buf, int len,
 }
 
 /* Parse a header IE */
-static int
+static int ICACHE_FLASH_ATTR
 frame802154e_parse_header_ie(const uint8_t *buf, int len,
     uint8_t element_id, struct ieee802154_ies *ies)
 {
@@ -353,7 +353,7 @@ frame802154e_parse_header_ie(const uint8_t *buf, int len,
 }
 
 /* Parse a MLME short IE */
-static int
+static int ICACHE_FLASH_ATTR
 frame802154e_parse_mlme_short_ie(const uint8_t *buf, int len,
     uint8_t sub_id, struct ieee802154_ies *ies)
 {
@@ -416,7 +416,7 @@ frame802154e_parse_mlme_short_ie(const uint8_t *buf, int len,
 }
 
 /* Parse a MLME long IE */
-static int
+static int ICACHE_FLASH_ATTR
 frame802154e_parse_mlme_long_ie(const uint8_t *buf, int len,
     uint8_t sub_id, struct ieee802154_ies *ies)
 {
@@ -441,7 +441,7 @@ frame802154e_parse_mlme_long_ie(const uint8_t *buf, int len,
 }
 
 /* Parse all IEEE 802.15.4e Information Elements (IE) from a frame */
-int
+int ICACHE_FLASH_ATTR
 frame802154e_parse_information_elements(const uint8_t *buf, uint8_t buf_size,
     struct ieee802154_ies *ies)
 {

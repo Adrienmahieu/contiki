@@ -43,7 +43,7 @@
  * 
  */
 
-
+#include "ets_sys.h"
 #include "mmem.h"
 #include "list.h"
 #include "contiki-conf.h"
@@ -79,7 +79,7 @@ static char memory[MMEM_SIZE];
  *             allocated memory.
  *
  */
-int
+int ICACHE_FLASH_ATTR
 mmem_alloc(struct mmem *m, unsigned int size)
 {
   /* Check if we have enough memory left for this allocation. */
@@ -115,7 +115,7 @@ mmem_alloc(struct mmem *m, unsigned int size)
  *             previously has been allocated with mmem_alloc().
  *
  */
-void
+void ICACHE_FLASH_ATTR
 mmem_free(struct mmem *m)
 {
   struct mmem *n;
@@ -148,7 +148,7 @@ mmem_free(struct mmem *m)
  *             module.
  *
  */
-void
+void ICACHE_FLASH_ATTR
 mmem_init(void)
 {
   static int inited = 0;

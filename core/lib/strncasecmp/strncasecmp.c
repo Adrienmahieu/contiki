@@ -49,7 +49,7 @@ int strncmp(const char *s1, const char *s2, int len);
 /*static char buf1[MAX_STRLEN],
   buf2[MAX_STRLEN];*/
 /*-----------------------------------------------------------------------------------*/
-unsigned char
+unsigned char ICACHE_FLASH_ATTR
 strncasecmp(const char *s1, const char *s2, unsigned char n)
 {
   unsigned char len;

@@ -29,14 +29,14 @@
  * This file is part of the Contiki operating system.
  *
  */
-
+#include "ets_sys.h"
 #include "contiki.h"
 #include "sys/procinit.h"
 
 extern const struct process *procinit[];
 
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 procinit_init(void)
 {
   int i;

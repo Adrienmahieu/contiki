@@ -42,7 +42,7 @@
  * \addtogroup uip6
  * @{
  */
-
+#include "ets_sys.h"
 #include "contiki.h"
 #include "net/link-stats.h"
 #include "net/rpl/rpl-private.h"
@@ -88,7 +88,7 @@ rpl_instance_t instance_table[RPL_MAX_INSTANCES];
 rpl_instance_t *default_instance;
 
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 rpl_print_neighbor_list(void)
 {
   if(default_instance != NULL && default_instance->current_dag != NULL &&
@@ -118,7 +118,7 @@ rpl_print_neighbor_list(void)
   }
 }
 /*---------------------------------------------------------------------------*/
-uip_ds6_nbr_t *
+uip_ds6_nbr_t * ICACHE_FLASH_ATTR
 rpl_get_nbr(rpl_parent_t *parent)
 {
   const linkaddr_t *lladdr = rpl_get_parent_lladdr(parent);
@@ -129,26 +129,26 @@ rpl_get_nbr(rpl_parent_t *parent)
   }
 }
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 nbr_callback(void *ptr)
 {
   rpl_remove_parent(ptr);
 }
 
-void
+void ICACHE_FLASH_ATTR
 rpl_dag_init(void)
 {
   nbr_table_register(rpl_parents, (nbr_table_callback *)nbr_callback);
 }
 /*---------------------------------------------------------------------------*/
-rpl_parent_t *
+rpl_parent_t * ICACHE_FLASH_ATTR
 rpl_get_parent(uip_lladdr_t *addr)
 {
   rpl_parent_t *p = nbr_table_get_from_lladdr(rpl_parents, (linkaddr_t *)addr);
   return p;
 }
 /*---------------------------------------------------------------------------*/
-rpl_rank_t
+rpl_rank_t ICACHE_FLASH_ATTR
 rpl_get_parent_rank(uip_lladdr_t *addr)
 {
   rpl_parent_t *p = nbr_table_get_from_lladdr(rpl_parents, (linkaddr_t *)addr);
@@ -159,7 +159,7 @@ rpl_get_parent_rank(uip_lladdr_t *addr)
   }
 }
 /*---------------------------------------------------------------------------*/
-uint16_t
+uint16_t ICACHE_FLASH_ATTR
 rpl_get_parent_link_metric(rpl_parent_t *p)
 {
   if(p != NULL && p->dag != NULL) {
@@ -171,7 +171,7 @@ rpl_get_parent_link_metric(rpl_parent_t *p)
   return 0xffff;
 }
 /*---------------------------------------------------------------------------*/
-rpl_rank_t
+rpl_rank_t ICACHE_FLASH_ATTR
 rpl_rank_via_parent(rpl_parent_t *p)
 {
   if(p != NULL && p->dag != NULL) {
@@ -183,34 +183,34 @@ rpl_rank_via_parent(rpl_parent_t *p)
   return INFINITE_RANK;
 }
 /*---------------------------------------------------------------------------*/
-const linkaddr_t *
+const linkaddr_t * ICACHE_FLASH_ATTR
 rpl_get_parent_lladdr(rpl_parent_t *p)
 {
   return nbr_table_get_lladdr(rpl_parents, p);
 }
 /*---------------------------------------------------------------------------*/
-uip_ipaddr_t *
+uip_ipaddr_t * ICACHE_FLASH_ATTR
 rpl_get_parent_ipaddr(rpl_parent_t *p)
 {
   const linkaddr_t *lladdr = rpl_get_parent_lladdr(p);
   return uip_ds6_nbr_ipaddr_from_lladdr((uip_lladdr_t *)lladdr);
 }
 /*---------------------------------------------------------------------------*/
-const struct link_stats *
+const struct link_stats * ICACHE_FLASH_ATTR
 rpl_get_parent_link_stats(rpl_parent_t *p)
 {
   const linkaddr_t *lladdr = rpl_get_parent_lladdr(p);
   return link_stats_from_lladdr(lladdr);
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 rpl_parent_is_fresh(rpl_parent_t *p)
 {
   const struct link_stats *stats = rpl_get_parent_link_stats(p);
   return link_stats_is_fresh(stats);
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 rpl_parent_is_reachable(rpl_parent_t *p) {
   if(p == NULL || p->dag == NULL || p->dag->instance == NULL || p->dag->instance->of == NULL) {
     return 0;
@@ -227,7 +227,7 @@ rpl_parent_is_reachable(rpl_parent_t *p) {
   }
 }
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 rpl_set_preferred_parent(rpl_dag_t *dag, rpl_parent_t *p)
 {
   if(dag != NULL && dag->preferred_parent != p) {
@@ -259,7 +259,7 @@ rpl_set_preferred_parent(rpl_dag_t *dag, rpl_parent_t *p)
 /*---------------------------------------------------------------------------*/
 /* Greater-than function for the lollipop counter.                      */
 /*---------------------------------------------------------------------------*/
-static int
+static int ICACHE_FLASH_ATTR
 lollipop_greater_than(int a, int b)
 {
   /* Check if we are comparing an initial value with an old value */
@@ -274,7 +274,7 @@ lollipop_greater_than(int a, int b)
 }
 /*---------------------------------------------------------------------------*/
 /* Remove DAG parents with a rank that is at least the same as minimum_rank. */
-static void
+static void ICACHE_FLASH_ATTR
 remove_parents(rpl_dag_t *dag, rpl_rank_t minimum_rank)
 {
   rpl_parent_t *p;
@@ -291,7 +291,7 @@ remove_parents(rpl_dag_t *dag, rpl_rank_t minimum_rank)
   }
 }
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 nullify_parents(rpl_dag_t *dag, rpl_rank_t minimum_rank)
 {
   rpl_parent_t *p;
@@ -308,7 +308,7 @@ nullify_parents(rpl_dag_t *dag, rpl_rank_t minimum_rank)
   }
 }
 /*---------------------------------------------------------------------------*/
-static int
+static int ICACHE_FLASH_ATTR
 should_refresh_routes(rpl_instance_t *instance, rpl_dio_t *dio, rpl_parent_t *p)
 {
   /* if MOP is set to no downward routes no DAO should be sent */
@@ -320,7 +320,7 @@ should_refresh_routes(rpl_instance_t *instance, rpl_dio_t *dio, rpl_parent_t *p)
     (lollipop_greater_than(dio->dtsn, p->dtsn));
 }
 /*---------------------------------------------------------------------------*/
-static int
+static int ICACHE_FLASH_ATTR
 acceptable_rank(rpl_dag_t *dag, rpl_rank_t rank)
 {
   return rank != INFINITE_RANK &&
@@ -328,7 +328,7 @@ acceptable_rank(rpl_dag_t *dag, rpl_rank_t rank)
      DAG_RANK(rank, dag->instance) <= DAG_RANK(dag->min_rank + dag->instance->max_rankinc, dag->instance));
 }
 /*---------------------------------------------------------------------------*/
-static rpl_dag_t *
+static rpl_dag_t * ICACHE_FLASH_ATTR
 get_dag(uint8_t instance_id, uip_ipaddr_t *dag_id)
 {
   rpl_instance_t *instance;
@@ -350,7 +350,7 @@ get_dag(uint8_t instance_id, uip_ipaddr_t *dag_id)
   return NULL;
 }
 /*---------------------------------------------------------------------------*/
-rpl_dag_t *
+rpl_dag_t * ICACHE_FLASH_ATTR
 rpl_set_root(uint8_t instance_id, uip_ipaddr_t *dag_id)
 {
   rpl_dag_t *dag;
@@ -441,7 +441,7 @@ rpl_set_root(uint8_t instance_id, uip_ipaddr_t *dag_id)
   return dag;
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 rpl_repair_root(uint8_t instance_id)
 {
   rpl_instance_t *instance;
@@ -461,7 +461,7 @@ rpl_repair_root(uint8_t instance_id)
   return 1;
 }
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 set_ip_from_prefix(uip_ipaddr_t *ipaddr, rpl_prefix_t *prefix)
 {
   memset(ipaddr, 0, sizeof(uip_ipaddr_t));
@@ -469,7 +469,7 @@ set_ip_from_prefix(uip_ipaddr_t *ipaddr, rpl_prefix_t *prefix)
   uip_ds6_set_addr_iid(ipaddr, &uip_lladdr);
 }
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 check_prefix(rpl_prefix_t *last_prefix, rpl_prefix_t *new_prefix)
 {
   uip_ipaddr_t ipaddr;
@@ -505,7 +505,7 @@ check_prefix(rpl_prefix_t *last_prefix, rpl_prefix_t *new_prefix)
   }
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 rpl_set_prefix(rpl_dag_t *dag, uip_ipaddr_t *prefix, unsigned len)
 {
   rpl_prefix_t last_prefix;
@@ -534,7 +534,7 @@ rpl_set_prefix(rpl_dag_t *dag, uip_ipaddr_t *prefix, unsigned len)
   return 1;
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 rpl_set_default_route(rpl_instance_t *instance, uip_ipaddr_t *from)
 {
   if(instance->def_route != NULL) {
@@ -558,7 +558,7 @@ rpl_set_default_route(rpl_instance_t *instance, uip_ipaddr_t *from)
   return 1;
 }
 /*---------------------------------------------------------------------------*/
-rpl_instance_t *
+rpl_instance_t * ICACHE_FLASH_ATTR
 rpl_alloc_instance(uint8_t instance_id)
 {
   rpl_instance_t *instance, *end;
@@ -579,7 +579,7 @@ rpl_alloc_instance(uint8_t instance_id)
   return NULL;
 }
 /*---------------------------------------------------------------------------*/
-rpl_dag_t *
+rpl_dag_t * ICACHE_FLASH_ATTR
 rpl_alloc_dag(uint8_t instance_id, uip_ipaddr_t *dag_id)
 {
   rpl_dag_t *dag, *end;
@@ -609,19 +609,19 @@ rpl_alloc_dag(uint8_t instance_id, uip_ipaddr_t *dag_id)
   return NULL;
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 rpl_set_default_instance(rpl_instance_t *instance)
 {
   default_instance = instance;
 }
 /*---------------------------------------------------------------------------*/
-rpl_instance_t *
+rpl_instance_t * ICACHE_FLASH_ATTR
 rpl_get_default_instance(void)
 {
   return default_instance;
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 rpl_free_instance(rpl_instance_t *instance)
 {
   rpl_dag_t *dag;
@@ -652,7 +652,7 @@ rpl_free_instance(rpl_instance_t *instance)
   instance->used = 0;
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 rpl_free_dag(rpl_dag_t *dag)
 {
   if(dag->joined) {
@@ -676,7 +676,7 @@ rpl_free_dag(rpl_dag_t *dag)
   dag->used = 0;
 }
 /*---------------------------------------------------------------------------*/
-rpl_parent_t *
+rpl_parent_t * ICACHE_FLASH_ATTR
 rpl_add_parent(rpl_dag_t *dag, rpl_dio_t *dio, uip_ipaddr_t *addr)
 {
   rpl_parent_t *p = NULL;
@@ -706,7 +706,7 @@ rpl_add_parent(rpl_dag_t *dag, rpl_dio_t *dio, uip_ipaddr_t *addr)
   return p;
 }
 /*---------------------------------------------------------------------------*/
-static rpl_parent_t *
+static rpl_parent_t * ICACHE_FLASH_ATTR
 find_parent_any_dag_any_instance(uip_ipaddr_t *addr)
 {
   uip_ds6_nbr_t *ds6_nbr = uip_ds6_nbr_lookup(addr);
@@ -714,7 +714,7 @@ find_parent_any_dag_any_instance(uip_ipaddr_t *addr)
   return nbr_table_get_from_lladdr(rpl_parents, (linkaddr_t *)lladdr);
 }
 /*---------------------------------------------------------------------------*/
-rpl_parent_t *
+rpl_parent_t * ICACHE_FLASH_ATTR
 rpl_find_parent(rpl_dag_t *dag, uip_ipaddr_t *addr)
 {
   rpl_parent_t *p = find_parent_any_dag_any_instance(addr);
@@ -725,7 +725,7 @@ rpl_find_parent(rpl_dag_t *dag, uip_ipaddr_t *addr)
   }
 }
 /*---------------------------------------------------------------------------*/
-static rpl_dag_t *
+static rpl_dag_t * ICACHE_FLASH_ATTR
 find_parent_dag(rpl_instance_t *instance, uip_ipaddr_t *addr)
 {
   rpl_parent_t *p = find_parent_any_dag_any_instance(addr);
@@ -736,7 +736,7 @@ find_parent_dag(rpl_instance_t *instance, uip_ipaddr_t *addr)
   }
 }
 /*---------------------------------------------------------------------------*/
-rpl_parent_t *
+rpl_parent_t * ICACHE_FLASH_ATTR
 rpl_find_parent_any_dag(rpl_instance_t *instance, uip_ipaddr_t *addr)
 {
   rpl_parent_t *p = find_parent_any_dag_any_instance(addr);
@@ -747,7 +747,7 @@ rpl_find_parent_any_dag(rpl_instance_t *instance, uip_ipaddr_t *addr)
   }
 }
 /*---------------------------------------------------------------------------*/
-rpl_dag_t *
+rpl_dag_t * ICACHE_FLASH_ATTR
 rpl_select_dag(rpl_instance_t *instance, rpl_parent_t *p)
 {
   rpl_parent_t *last_parent;
@@ -849,7 +849,7 @@ rpl_select_dag(rpl_instance_t *instance, rpl_parent_t *p)
   return best_dag;
 }
 /*---------------------------------------------------------------------------*/
-static rpl_parent_t *
+static rpl_parent_t * ICACHE_FLASH_ATTR
 best_parent(rpl_dag_t *dag, int fresh_only)
 {
   rpl_parent_t *p;
@@ -894,7 +894,7 @@ best_parent(rpl_dag_t *dag, int fresh_only)
   return best;
 }
 /*---------------------------------------------------------------------------*/
-rpl_parent_t *
+rpl_parent_t * ICACHE_FLASH_ATTR
 rpl_select_parent(rpl_dag_t *dag)
 {
   /* Look for best parent (regardless of freshness) */
@@ -930,7 +930,7 @@ rpl_select_parent(rpl_dag_t *dag)
   return dag->preferred_parent;
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 rpl_remove_parent(rpl_parent_t *parent)
 {
   PRINTF("RPL: Removing parent ");
@@ -942,7 +942,7 @@ rpl_remove_parent(rpl_parent_t *parent)
   nbr_table_remove(rpl_parents, parent);
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 rpl_nullify_parent(rpl_parent_t *parent)
 {
   rpl_dag_t *dag = parent->dag;
@@ -973,7 +973,7 @@ rpl_nullify_parent(rpl_parent_t *parent)
   PRINTF("\n");
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 rpl_move_parent(rpl_dag_t *dag_src, rpl_dag_t *dag_dst, rpl_parent_t *parent)
 {
   if(parent == dag_src->preferred_parent) {
@@ -1001,7 +1001,7 @@ rpl_move_parent(rpl_dag_t *dag_src, rpl_dag_t *dag_dst, rpl_parent_t *parent)
   parent->dag = dag_dst;
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 rpl_has_downward_route(void)
 {
   int i;
@@ -1013,7 +1013,7 @@ rpl_has_downward_route(void)
   return 0;
 }
 /*---------------------------------------------------------------------------*/
-rpl_dag_t *
+rpl_dag_t * ICACHE_FLASH_ATTR
 rpl_get_dag(const uip_ipaddr_t *addr)
 {
   int i, j;
@@ -1032,7 +1032,7 @@ rpl_get_dag(const uip_ipaddr_t *addr)
   return NULL;
 }
 /*---------------------------------------------------------------------------*/
-rpl_dag_t *
+rpl_dag_t * ICACHE_FLASH_ATTR
 rpl_get_any_dag(void)
 {
   int i;
@@ -1045,7 +1045,7 @@ rpl_get_any_dag(void)
   return NULL;
 }
 /*---------------------------------------------------------------------------*/
-rpl_instance_t *
+rpl_instance_t * ICACHE_FLASH_ATTR
 rpl_get_instance(uint8_t instance_id)
 {
   int i;
@@ -1058,7 +1058,7 @@ rpl_get_instance(uint8_t instance_id)
   return NULL;
 }
 /*---------------------------------------------------------------------------*/
-rpl_of_t *
+rpl_of_t * ICACHE_FLASH_ATTR
 rpl_find_of(rpl_ocp_t ocp)
 {
   unsigned int i;
@@ -1074,7 +1074,7 @@ rpl_find_of(rpl_ocp_t ocp)
   return NULL;
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 rpl_join_instance(uip_ipaddr_t *from, rpl_dio_t *dio)
 {
   rpl_instance_t *instance;
@@ -1183,7 +1183,7 @@ rpl_join_instance(uip_ipaddr_t *from, rpl_dio_t *dio)
 
 #if RPL_MAX_DAG_PER_INSTANCE > 1
 /*---------------------------------------------------------------------------*/
-rpl_dag_t *
+rpl_dag_t * ICACHE_FLASH_ATTR
 rpl_add_dag(uip_ipaddr_t *from, rpl_dio_t *dio)
 {
   rpl_instance_t *instance;
@@ -1267,7 +1267,7 @@ rpl_add_dag(uip_ipaddr_t *from, rpl_dio_t *dio)
 #endif /* RPL_MAX_DAG_PER_INSTANCE > 1 */
 
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 global_repair(uip_ipaddr_t *from, rpl_dag_t *dag, rpl_dio_t *dio)
 {
   rpl_parent_t *p;
@@ -1304,7 +1304,7 @@ global_repair(uip_ipaddr_t *from, rpl_dag_t *dag, rpl_dio_t *dio)
 }
 
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 rpl_local_repair(rpl_instance_t *instance)
 {
   int i;
@@ -1335,7 +1335,7 @@ rpl_local_repair(rpl_instance_t *instance)
   RPL_STAT(rpl_stats.local_repairs++);
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 rpl_recalculate_ranks(void)
 {
   rpl_parent_t *p;
@@ -1358,7 +1358,7 @@ rpl_recalculate_ranks(void)
   }
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 rpl_process_parent_event(rpl_instance_t *instance, rpl_parent_t *p)
 {
   int return_value;
@@ -1420,7 +1420,7 @@ rpl_process_parent_event(rpl_instance_t *instance, rpl_parent_t *p)
   return return_value;
 }
 /*---------------------------------------------------------------------------*/
-static int
+static int ICACHE_FLASH_ATTR
 add_nbr_from_dio(uip_ipaddr_t *from, rpl_dio_t *dio)
 {
   /* add this to the neighbor cache if not already there */
@@ -1433,7 +1433,7 @@ add_nbr_from_dio(uip_ipaddr_t *from, rpl_dio_t *dio)
   return 1;
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 rpl_process_dio(uip_ipaddr_t *from, rpl_dio_t *dio)
 {
   rpl_instance_t *instance;

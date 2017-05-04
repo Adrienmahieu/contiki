@@ -45,7 +45,7 @@
  * \addtogroup uip6
  * @{
  */
-
+#include "ets_sys.h"
 #include "net/rpl/rpl.h"
 #include "net/rpl/rpl-private.h"
 #include "net/nbr-table.h"
@@ -89,14 +89,14 @@ to the threshold of 96 in the non-squared case) */
 #define MAX_PATH_COST      32768   /* Eq path ETX of 256 */
 
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 reset(rpl_dag_t *dag)
 {
   PRINTF("RPL: Reset MRHOF\n");
 }
 /*---------------------------------------------------------------------------*/
 #if RPL_WITH_DAO_ACK
-static void
+static void ICACHE_FLASH_ATTR
 dao_ack_callback(rpl_parent_t *p, int status)
 {
   if(status == RPL_DAO_ACK_UNABLE_TO_ADD_ROUTE_AT_ROOT) {
@@ -114,7 +114,7 @@ dao_ack_callback(rpl_parent_t *p, int status)
 }
 #endif /* RPL_WITH_DAO_ACK */
 /*---------------------------------------------------------------------------*/
-static uint16_t
+static uint16_t ICACHE_FLASH_ATTR
 parent_link_metric(rpl_parent_t *p)
 {
   const struct link_stats *stats = rpl_get_parent_link_stats(p);
@@ -129,7 +129,7 @@ parent_link_metric(rpl_parent_t *p)
   return 0xffff;
 }
 /*---------------------------------------------------------------------------*/
-static uint16_t
+static uint16_t ICACHE_FLASH_ATTR
 parent_path_cost(rpl_parent_t *p)
 {
   uint16_t base;
@@ -159,7 +159,7 @@ parent_path_cost(rpl_parent_t *p)
   return MIN((uint32_t)base + parent_link_metric(p), 0xffff);
 }
 /*---------------------------------------------------------------------------*/
-static rpl_rank_t
+static rpl_rank_t ICACHE_FLASH_ATTR
 rank_via_parent(rpl_parent_t *p)
 {
   uint16_t min_hoprankinc;
@@ -176,7 +176,7 @@ rank_via_parent(rpl_parent_t *p)
   return MAX(MIN((uint32_t)p->rank + min_hoprankinc, 0xffff), path_cost);
 }
 /*---------------------------------------------------------------------------*/
-static int
+static int ICACHE_FLASH_ATTR
 parent_is_acceptable(rpl_parent_t *p)
 {
   uint16_t link_metric = parent_link_metric(p);
@@ -185,7 +185,7 @@ parent_is_acceptable(rpl_parent_t *p)
   return link_metric <= MAX_LINK_METRIC && path_cost <= MAX_PATH_COST;
 }
 /*---------------------------------------------------------------------------*/
-static int
+static int ICACHE_FLASH_ATTR
 parent_has_usable_link(rpl_parent_t *p)
 {
   uint16_t link_metric = parent_link_metric(p);
@@ -193,7 +193,7 @@ parent_has_usable_link(rpl_parent_t *p)
   return link_metric <= MAX_LINK_METRIC;
 }
 /*---------------------------------------------------------------------------*/
-static rpl_parent_t *
+static rpl_parent_t * ICACHE_FLASH_ATTR
 best_parent(rpl_parent_t *p1, rpl_parent_t *p2)
 {
   rpl_dag_t *dag;
@@ -227,7 +227,7 @@ best_parent(rpl_parent_t *p1, rpl_parent_t *p2)
   return p1_cost < p2_cost ? p1 : p2;
 }
 /*---------------------------------------------------------------------------*/
-static rpl_dag_t *
+static rpl_dag_t * ICACHE_FLASH_ATTR
 best_dag(rpl_dag_t *d1, rpl_dag_t *d2)
 {
   if(d1->grounded != d2->grounded) {
@@ -242,7 +242,7 @@ best_dag(rpl_dag_t *d1, rpl_dag_t *d2)
 }
 /*---------------------------------------------------------------------------*/
 #if !RPL_WITH_MC
-static void
+static void ICACHE_FLASH_ATTR
 update_metric_container(rpl_instance_t *instance)
 {
   instance->mc.type = RPL_DAG_MC_NONE;

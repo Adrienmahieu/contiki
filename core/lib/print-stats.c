@@ -38,7 +38,7 @@
  */
 
 #include "lib/print-stats.h"
-
+#include "ets_sys.h"
 #include "net/rime/rime.h"
 #include "sys/energest.h"
 
@@ -52,7 +52,7 @@
 #endif
 
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 print_stats(void)
 {
 #if RIMESTATS_CONF_ENABLED

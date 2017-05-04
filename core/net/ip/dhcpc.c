@@ -32,7 +32,7 @@
 
 #include <stdio.h>
 #include <string.h>
-
+#include "ets_sys.h"
 #include "contiki.h"
 #include "contiki-net.h"
 #include "net/ip/dhcpc.h"
@@ -92,7 +92,7 @@ struct dhcp_msg {
 static uint32_t xid;
 static const uint8_t magic_cookie[4] = {99, 130, 83, 99};
 /*---------------------------------------------------------------------------*/
-static uint8_t *
+static uint8_t * ICACHE_FLASH_ATTR
 add_msg_type(uint8_t *optptr, uint8_t type)
 {
   *optptr++ = DHCP_OPTION_MSG_TYPE;
@@ -101,7 +101,7 @@ add_msg_type(uint8_t *optptr, uint8_t type)
   return optptr;
 }
 /*---------------------------------------------------------------------------*/
-static uint8_t *
+static uint8_t * ICACHE_FLASH_ATTR
 add_server_id(uint8_t *optptr)
 {
   *optptr++ = DHCP_OPTION_SERVER_ID;
@@ -110,7 +110,7 @@ add_server_id(uint8_t *optptr)
   return optptr + 4;
 }
 /*---------------------------------------------------------------------------*/
-static uint8_t *
+static uint8_t * ICACHE_FLASH_ATTR
 add_req_ipaddr(uint8_t *optptr)
 {
   *optptr++ = DHCP_OPTION_REQ_IPADDR;
@@ -119,7 +119,7 @@ add_req_ipaddr(uint8_t *optptr)
   return optptr + 4;
 }
 /*---------------------------------------------------------------------------*/
-static uint8_t *
+static uint8_t * ICACHE_FLASH_ATTR
 add_req_options(uint8_t *optptr)
 {
   *optptr++ = DHCP_OPTION_REQ_LIST;
@@ -130,14 +130,14 @@ add_req_options(uint8_t *optptr)
   return optptr;
 }
 /*---------------------------------------------------------------------------*/
-static uint8_t *
+static uint8_t * ICACHE_FLASH_ATTR
 add_end(uint8_t *optptr)
 {
   *optptr++ = DHCP_OPTION_END;
   return optptr;
 }
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 create_msg(CC_REGISTER_ARG struct dhcp_msg *m)
 {
   m->op = DHCP_REQUEST;
@@ -162,7 +162,7 @@ create_msg(CC_REGISTER_ARG struct dhcp_msg *m)
   memcpy(m->options, magic_cookie, sizeof(magic_cookie));
 }
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 send_discover(void)
 {
   uint8_t *end;
@@ -177,7 +177,7 @@ send_discover(void)
   uip_send(uip_appdata, (int)(end - (uint8_t *)uip_appdata));
 }
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 send_request(void)
 {
   uint8_t *end;
@@ -193,7 +193,7 @@ send_request(void)
   uip_send(uip_appdata, (int)(end - (uint8_t *)uip_appdata));
 }
 /*---------------------------------------------------------------------------*/
-static uint8_t
+static uint8_t ICACHE_FLASH_ATTR
 parse_options(uint8_t *optptr, int len)
 {
   uint8_t *end = optptr + len;
@@ -228,7 +228,7 @@ parse_options(uint8_t *optptr, int len)
   return type;
 }
 /*---------------------------------------------------------------------------*/
-static uint8_t
+static uint8_t ICACHE_FLASH_ATTR
 parse_msg(void)
 {
   struct dhcp_msg *m = (struct dhcp_msg *)uip_appdata;
@@ -245,7 +245,7 @@ parse_msg(void)
 /*
  * Is this a "fresh" reply for me? If it is, return the type.
  */
-static int
+static int ICACHE_FLASH_ATTR
 msg_for_me(void)
 {
   struct dhcp_msg *m = (struct dhcp_msg *)uip_appdata;
@@ -267,7 +267,7 @@ msg_for_me(void)
   return -1;
 }
 /*---------------------------------------------------------------------------*/
-static
+static ICACHE_FLASH_ATTR
 PT_THREAD(handle_dhcp(process_event_t ev, void *data))
 {
   clock_time_t ticks;
@@ -392,7 +392,7 @@ PT_THREAD(handle_dhcp(process_event_t ev, void *data))
   PT_END(&s.pt);
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 dhcpc_init(const void *mac_addr, int mac_len)
 {
   uip_ipaddr_t addr;
@@ -409,7 +409,7 @@ dhcpc_init(const void *mac_addr, int mac_len)
   PT_INIT(&s.pt);
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 dhcpc_appcall(process_event_t ev, void *data)
 {
   if(ev == tcpip_event || ev == PROCESS_EVENT_TIMER) {
@@ -417,7 +417,7 @@ dhcpc_appcall(process_event_t ev, void *data)
   }
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 dhcpc_request(void)
 {
   uip_ipaddr_t ipaddr;

@@ -40,7 +40,7 @@
  */
 #include "net/ipv6/uip-ds6.h"
 #include "net/ip/uip.h"
-
+#include "ets_sys.h"
 #include "lib/list.h"
 #include "lib/memb.h"
 #include "net/nbr-table.h"
@@ -92,7 +92,7 @@ LIST(notificationlist);
 
 /*---------------------------------------------------------------------------*/
 #if DEBUG != DEBUG_NONE
-static void
+static void ICACHE_FLASH_ATTR
 assert_nbr_routes_list_sane(void)
 {
   uip_ds6_route_t *r;
@@ -120,7 +120,7 @@ assert_nbr_routes_list_sane(void)
 #endif /* DEBUG != DEBUG_NONE */
 /*---------------------------------------------------------------------------*/
 #if UIP_DS6_NOTIFICATIONS
-static void
+static void ICACHE_FLASH_ATTR
 call_route_callback(int event, uip_ipaddr_t *route,
 		    uip_ipaddr_t *nexthop)
 {
@@ -139,7 +139,7 @@ call_route_callback(int event, uip_ipaddr_t *route,
   }
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 uip_ds6_notification_add(struct uip_ds6_notification *n,
 			 uip_ds6_notification_callback c)
 {
@@ -149,14 +149,14 @@ uip_ds6_notification_add(struct uip_ds6_notification *n,
   }
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 uip_ds6_notification_rm(struct uip_ds6_notification *n)
 {
   list_remove(notificationlist, n);
 }
 #endif
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 uip_ds6_route_init(void)
 {
 #if (UIP_CONF_MAX_ROUTES != 0)
@@ -175,7 +175,7 @@ uip_ds6_route_init(void)
 }
 #if (UIP_CONF_MAX_ROUTES != 0)
 /*---------------------------------------------------------------------------*/
-static uip_lladdr_t *
+static uip_lladdr_t * ICACHE_FLASH_ATTR
 uip_ds6_route_nexthop_lladdr(uip_ds6_route_t *route)
 {
   if(route != NULL) {
@@ -187,7 +187,7 @@ uip_ds6_route_nexthop_lladdr(uip_ds6_route_t *route)
 }
 #endif /* (UIP_CONF_MAX_ROUTES != 0) */
 /*---------------------------------------------------------------------------*/
-uip_ipaddr_t *
+uip_ipaddr_t * ICACHE_FLASH_ATTR
 uip_ds6_route_nexthop(uip_ds6_route_t *route)
 {
 #if (UIP_CONF_MAX_ROUTES != 0)
@@ -201,7 +201,7 @@ uip_ds6_route_nexthop(uip_ds6_route_t *route)
 #endif /* (UIP_CONF_MAX_ROUTES != 0) */
 }
 /*---------------------------------------------------------------------------*/
-uip_ds6_route_t *
+uip_ds6_route_t * ICACHE_FLASH_ATTR
 uip_ds6_route_head(void)
 {
 #if (UIP_CONF_MAX_ROUTES != 0)
@@ -211,7 +211,7 @@ uip_ds6_route_head(void)
 #endif /* (UIP_CONF_MAX_ROUTES != 0) */
 }
 /*---------------------------------------------------------------------------*/
-uip_ds6_route_t *
+uip_ds6_route_t * ICACHE_FLASH_ATTR
 uip_ds6_route_next(uip_ds6_route_t *r)
 {
 #if (UIP_CONF_MAX_ROUTES != 0)
@@ -223,7 +223,7 @@ uip_ds6_route_next(uip_ds6_route_t *r)
   return NULL;
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 uip_ds6_route_is_nexthop(const uip_ipaddr_t *ipaddr)
 {
 #if (UIP_CONF_MAX_ROUTES != 0)
@@ -240,7 +240,7 @@ uip_ds6_route_is_nexthop(const uip_ipaddr_t *ipaddr)
 #endif /* (UIP_CONF_MAX_ROUTES != 0) */
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 uip_ds6_route_num_routes(void)
 {
 #if (UIP_CONF_MAX_ROUTES != 0)
@@ -250,7 +250,7 @@ uip_ds6_route_num_routes(void)
 #endif /* (UIP_CONF_MAX_ROUTES != 0) */
 }
 /*---------------------------------------------------------------------------*/
-uip_ds6_route_t *
+uip_ds6_route_t * ICACHE_FLASH_ATTR
 uip_ds6_route_lookup(uip_ipaddr_t *addr)
 {
 #if (UIP_CONF_MAX_ROUTES != 0)
@@ -305,7 +305,7 @@ uip_ds6_route_lookup(uip_ipaddr_t *addr)
 #endif /* (UIP_CONF_MAX_ROUTES != 0) */
 }
 /*---------------------------------------------------------------------------*/
-uip_ds6_route_t *
+uip_ds6_route_t * ICACHE_FLASH_ATTR
 uip_ds6_route_add(uip_ipaddr_t *ipaddr, uint8_t length,
 		  uip_ipaddr_t *nexthop)
 {
@@ -463,7 +463,7 @@ uip_ds6_route_add(uip_ipaddr_t *ipaddr, uint8_t length,
 }
 
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 uip_ds6_route_rm(uip_ds6_route_t *route)
 {
 #if (UIP_CONF_MAX_ROUTES != 0)
@@ -529,7 +529,7 @@ uip_ds6_route_rm(uip_ds6_route_t *route)
 }
 #if (UIP_CONF_MAX_ROUTES != 0)
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 rm_routelist(struct uip_ds6_route_neighbor_routes *routes)
 {
 #if DEBUG != DEBUG_NONE
@@ -550,14 +550,14 @@ rm_routelist(struct uip_ds6_route_neighbor_routes *routes)
 #endif /* DEBUG != DEBUG_NONE */
 }
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 rm_routelist_callback(nbr_table_item_t *ptr)
 {
   rm_routelist((struct uip_ds6_route_neighbor_routes *)ptr);
 }
 #endif /* (UIP_CONF_MAX_ROUTES != 0) */
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 uip_ds6_route_rm_by_nexthop(uip_ipaddr_t *nexthop)
 {
 #if (UIP_CONF_MAX_ROUTES != 0)
@@ -572,13 +572,13 @@ uip_ds6_route_rm_by_nexthop(uip_ipaddr_t *nexthop)
 #endif /* (UIP_CONF_MAX_ROUTES != 0) */
 }
 /*---------------------------------------------------------------------------*/
-uip_ds6_defrt_t *
+uip_ds6_defrt_t * ICACHE_FLASH_ATTR
 uip_ds6_defrt_head(void)
 {
   return list_head(defaultrouterlist);
 }
 /*---------------------------------------------------------------------------*/
-uip_ds6_defrt_t *
+uip_ds6_defrt_t * ICACHE_FLASH_ATTR
 uip_ds6_defrt_add(uip_ipaddr_t *ipaddr, unsigned long interval)
 {
   uip_ds6_defrt_t *d;
@@ -626,7 +626,7 @@ uip_ds6_defrt_add(uip_ipaddr_t *ipaddr, unsigned long interval)
   return d;
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 uip_ds6_defrt_rm(uip_ds6_defrt_t *defrt)
 {
   uip_ds6_defrt_t *d;
@@ -657,7 +657,7 @@ uip_ds6_defrt_rm(uip_ds6_defrt_t *defrt)
 
 }
 /*---------------------------------------------------------------------------*/
-uip_ds6_defrt_t *
+uip_ds6_defrt_t * ICACHE_FLASH_ATTR
 uip_ds6_defrt_lookup(uip_ipaddr_t *ipaddr)
 {
   uip_ds6_defrt_t *d;
@@ -671,7 +671,7 @@ uip_ds6_defrt_lookup(uip_ipaddr_t *ipaddr)
   return NULL;
 }
 /*---------------------------------------------------------------------------*/
-uip_ipaddr_t *
+uip_ipaddr_t * ICACHE_FLASH_ATTR
 uip_ds6_defrt_choose(void)
 {
   uip_ds6_defrt_t *d;
@@ -701,7 +701,7 @@ uip_ds6_defrt_choose(void)
   return addr;
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 uip_ds6_defrt_periodic(void)
 {
   uip_ds6_defrt_t *d;

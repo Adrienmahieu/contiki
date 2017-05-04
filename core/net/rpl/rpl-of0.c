@@ -41,7 +41,7 @@
  * \addtogroup uip6
  * @{
  */
-
+#include "ets_sys.h"
 #include "net/rpl/rpl.h"
 #include "net/rpl/rpl-private.h"
 #include "net/nbr-table.h"
@@ -84,14 +84,14 @@
 #endif /* RPL_OF0_ETX_BASED_SR */
 
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 reset(rpl_dag_t *dag)
 {
   PRINTF("RPL: Reset OF0\n");
 }
 /*---------------------------------------------------------------------------*/
 #if RPL_WITH_DAO_ACK
-static void
+static void ICACHE_FLASH_ATTR
 dao_ack_callback(rpl_parent_t *p, int status)
 {
   if(status == RPL_DAO_ACK_UNABLE_TO_ADD_ROUTE_AT_ROOT) {
@@ -109,7 +109,7 @@ dao_ack_callback(rpl_parent_t *p, int status)
 }
 #endif /* RPL_WITH_DAO_ACK */
 /*---------------------------------------------------------------------------*/
-static uint16_t
+static uint16_t ICACHE_FLASH_ATTR
 parent_link_metric(rpl_parent_t *p)
 {
   /* OF0 operates without metric container; the only metric we have is ETX */
@@ -117,7 +117,7 @@ parent_link_metric(rpl_parent_t *p)
   return stats != NULL ? stats->etx : 0xffff;
 }
 /*---------------------------------------------------------------------------*/
-static uint16_t
+static uint16_t ICACHE_FLASH_ATTR
 parent_rank_increase(rpl_parent_t *p)
 {
   uint16_t min_hoprankinc;
@@ -128,7 +128,7 @@ parent_rank_increase(rpl_parent_t *p)
   return (RANK_FACTOR * STEP_OF_RANK(p) + RANK_STRETCH) * min_hoprankinc;
 }
 /*---------------------------------------------------------------------------*/
-static uint16_t
+static uint16_t ICACHE_FLASH_ATTR
 parent_path_cost(rpl_parent_t *p)
 {
   if(p == NULL) {
@@ -138,7 +138,7 @@ parent_path_cost(rpl_parent_t *p)
   return MIN((uint32_t)p->rank + parent_link_metric(p), 0xffff);
 }
 /*---------------------------------------------------------------------------*/
-static rpl_rank_t
+static rpl_rank_t ICACHE_FLASH_ATTR
 rank_via_parent(rpl_parent_t *p)
 {
   if(p == NULL) {
@@ -148,20 +148,20 @@ rank_via_parent(rpl_parent_t *p)
   }
 }
 /*---------------------------------------------------------------------------*/
-static int
+static int ICACHE_FLASH_ATTR
 parent_is_acceptable(rpl_parent_t *p)
 {
   return STEP_OF_RANK(p) >= MIN_STEP_OF_RANK
       && STEP_OF_RANK(p) <= MAX_STEP_OF_RANK;
 }
 /*---------------------------------------------------------------------------*/
-static int
+static int ICACHE_FLASH_ATTR
 parent_has_usable_link(rpl_parent_t *p)
 {
   return parent_is_acceptable(p);
 }
 /*---------------------------------------------------------------------------*/
-static rpl_parent_t *
+static rpl_parent_t * ICACHE_FLASH_ATTR
 best_parent(rpl_parent_t *p1, rpl_parent_t *p2)
 {
   rpl_dag_t *dag;
@@ -200,7 +200,7 @@ best_parent(rpl_parent_t *p1, rpl_parent_t *p2)
   }
 }
 /*---------------------------------------------------------------------------*/
-static rpl_dag_t *
+static rpl_dag_t * ICACHE_FLASH_ATTR
 best_dag(rpl_dag_t *d1, rpl_dag_t *d2)
 {
   if(d1->grounded != d2->grounded) {
@@ -214,7 +214,7 @@ best_dag(rpl_dag_t *d1, rpl_dag_t *d2)
   return d1->rank < d2->rank ? d1 : d2;
 }
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 update_metric_container(rpl_instance_t *instance)
 {
   instance->mc.type = RPL_DAG_MC_NONE;

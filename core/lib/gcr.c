@@ -29,7 +29,7 @@
  * This file is part of the Contiki operating system.
  *
  */
-
+#include "ets_sys.h"
 /**
  * \file
  *         Implementation of GCR coding/decoding
@@ -64,18 +64,18 @@ static unsigned char gcr_bits = 0;
 static unsigned short gcr_val = 0;
 
 /* Call before starting encoding or decoding */
-void gcr_init(void) {
+void ICACHE_FLASH_ATTR gcr_init(void) {
   gcr_val = 0;
   gcr_bits = 0;
 }
 
 /* Use this to check if encoding / decoding is complete for now */
-unsigned char gcr_finished(void) {
+unsigned char ICACHE_FLASH_ATTR gcr_finished(void) {
   return gcr_bits == 0;
 }
 
 /* Encode one character - and store in bits - get encoded with get_encoded */
-void gcr_encode(unsigned char raw_data) {
+void ICACHE_FLASH_ATTR gcr_encode(unsigned char raw_data) {
   gcr_val |=
     ((GCR_encode[raw_data >> 4u] << 5u ) |
      GCR_encode[raw_data & 0xf]) << gcr_bits;
@@ -83,7 +83,7 @@ void gcr_encode(unsigned char raw_data) {
 }
 
 /* Gets the current char of the encoded stream */
-unsigned char gcr_get_encoded(unsigned char *raw_data) {
+unsigned char ICACHE_FLASH_ATTR gcr_get_encoded(unsigned char *raw_data) {
   if (gcr_bits >= 8) {
     *raw_data = (unsigned char) (gcr_val & 0xff);
     gcr_val = gcr_val >> 8u;
@@ -94,13 +94,13 @@ unsigned char gcr_get_encoded(unsigned char *raw_data) {
 }
 
 /* Decode one char - result can be get from get_decoded */
-void gcr_decode(unsigned char gcr_data) {
+void ICACHE_FLASH_ATTR gcr_decode(unsigned char gcr_data) {
   gcr_val |= gcr_data << gcr_bits;
   gcr_bits += 8;
 }
 
 /* check if the current decoded stream is correct */
-unsigned char gcr_valid(void) {
+unsigned char ICACHE_FLASH_ATTR gcr_valid(void) {
   if (gcr_bits >= 10) {
     unsigned short val = gcr_val & 0x3ff;
     if ((GCR_decode[val >> 5u] << 4u) == 0xff ||
@@ -112,7 +112,7 @@ unsigned char gcr_valid(void) {
 }
 
 /* gets the decoded stream - if any char is available */
-unsigned char gcr_get_decoded(unsigned char *raw_data) {
+unsigned char ICACHE_FLASH_ATTR gcr_get_decoded(unsigned char *raw_data) {
   if (gcr_bits >= 10) {
     unsigned short val = gcr_val & 0x3ff;
     *raw_data = (unsigned char) ((GCR_decode[val >> 5] << 4) |

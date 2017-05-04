@@ -39,9 +39,9 @@
  */
 
 #include "net/net-debug.h"
-
+#include "ets_sys.h"
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 net_debug_lladdr_print(const uip_lladdr_t *addr)
 {
   if(addr == NULL) {

@@ -41,7 +41,7 @@
  * Adam Dunkels <adam@sics.se>
  *
  */
-
+#include "ets_sys.h"
 #include "contiki.h"
 #include "sys/mt.h"
 #include "sys/cc.h"
@@ -49,19 +49,19 @@
 static struct mt_thread *current;
 
 /*--------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 mt_init(void)
 {
   mtarch_init();
 }
 /*--------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 mt_remove(void)
 {
   mtarch_remove();
 }
 /*--------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 mt_start(struct mt_thread *thread, void (* function)(void *), void *data)
 {
   /* Call the architecture dependant function to set up the processor
@@ -71,7 +71,7 @@ mt_start(struct mt_thread *thread, void (* function)(void *), void *data)
   thread->state = MT_STATE_STARTED;
 }
 /*--------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 mt_exec(struct mt_thread *thread)
 {
   if(thread->state == MT_STATE_STARTED) {
@@ -82,7 +82,7 @@ mt_exec(struct mt_thread *thread)
   }
 }
 /*--------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 mt_yield(void)
 {
   mtarch_pstop();
@@ -93,7 +93,7 @@ mt_yield(void)
   mtarch_yield();
 }
 /*--------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 mt_exit(void)
 {
   mtarch_pstop();
@@ -101,7 +101,7 @@ mt_exit(void)
   mtarch_yield();
 }
 /*--------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 mt_stop(struct mt_thread *thread)
 {
   mtarch_stop(&thread->thread);

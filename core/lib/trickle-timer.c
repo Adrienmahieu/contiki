@@ -40,7 +40,7 @@
  * \addtogroup trickle-timer
  * @{
  */
-
+#include "ets_sys.h"
 #include "contiki-conf.h"
 #include "lib/trickle-timer.h"
 #include "sys/ctimer.h"
@@ -78,7 +78,7 @@ static void double_interval(void *ptr);
 /*---------------------------------------------------------------------------*/
 #if TRICKLE_TIMER_WIDE_RAND
 /* Returns a 4-byte wide, unsigned random number */
-static uint32_t
+static uint32_t ICACHE_FLASH_ATTR
 wide_rand(void)
 {
   return ((uint32_t)random_rand() << 16 | random_rand());
@@ -94,7 +94,7 @@ wide_rand(void)
  * in the platform's contiki-conf.h
  */
 #if TRICKLE_TIMER_ERROR_CHECKING
-static uint8_t
+static uint8_t ICACHE_FLASH_ATTR
 max_imax(clock_time_t value)
 {
   uint8_t zeros = 0;
@@ -154,7 +154,7 @@ max_imax(clock_time_t value)
 #endif /* TRICKLE_TIMER_ERROR_CHECKING */
 /*---------------------------------------------------------------------------*/
 /* Returns a random time point t in [I/2 , I) */
-static clock_time_t
+static clock_time_t ICACHE_FLASH_ATTR
 get_t(clock_time_t i_cur)
 {
   i_cur >>= 1;
@@ -165,7 +165,7 @@ get_t(clock_time_t i_cur)
   return i_cur + (tt_rand() % i_cur);
 }
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 schedule_for_end(struct trickle_timer *tt)
 {
   /* Reset our ctimer, schedule interval_end to run at time I */
@@ -188,7 +188,7 @@ schedule_for_end(struct trickle_timer *tt)
 /*---------------------------------------------------------------------------*/
 /* This is used as a ctimer callback, thus its argument must be void *. ptr is
  * a pointer to the struct trickle_timer that fired */
-static void
+static void ICACHE_FLASH_ATTR
 double_interval(void *ptr)
 {
   clock_time_t last_end;
@@ -256,7 +256,7 @@ double_interval(void *ptr)
 /*---------------------------------------------------------------------------*/
 /* Called by the ctimer module at time t within the current interval. ptr is
  * a pointer to the struct trickle_timer of interest */
-static void
+static void ICACHE_FLASH_ATTR
 fire(void *ptr)
 {
   /* 'cast' c to a struct trickle_timer */
@@ -284,7 +284,7 @@ fire(void *ptr)
 /*---------------------------------------------------------------------------*/
 /* New trickle interval, either due to a newly set trickle timer or due to an
  * inconsistency. Schedule 'fire' to be called in t ticks. */
-static void
+static void ICACHE_FLASH_ATTR
 new_interval(struct trickle_timer *tt)
 {
   tt->c = 0;
@@ -304,7 +304,7 @@ new_interval(struct trickle_timer *tt)
 /*---------------------------------------------------------------------------*/
 /* Functions to be called by the protocol implementation */
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 trickle_timer_consistency(struct trickle_timer *tt)
 {
   if(tt->c < 0xFF) {
@@ -313,7 +313,7 @@ trickle_timer_consistency(struct trickle_timer *tt)
   PRINTF("trickle_timer consistency: c=%u\n", tt->c);
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 trickle_timer_inconsistency(struct trickle_timer *tt)
 {
   /* "If I is equal to Imin when Trickle hears an "inconsistent" transmission,
@@ -326,7 +326,7 @@ trickle_timer_inconsistency(struct trickle_timer *tt)
   }
 }
 /*---------------------------------------------------------------------------*/
-uint8_t
+uint8_t ICACHE_FLASH_ATTR
 trickle_timer_config(struct trickle_timer *tt, clock_time_t i_min,
                      uint8_t i_max, uint8_t k)
 {
@@ -373,7 +373,7 @@ trickle_timer_config(struct trickle_timer *tt, clock_time_t i_min,
   return TRICKLE_TIMER_SUCCESS;
 }
 /*---------------------------------------------------------------------------*/
-uint8_t
+uint8_t ICACHE_FLASH_ATTR
 trickle_timer_set(struct trickle_timer *tt, trickle_timer_cb_t proto_cb,
                   void *ptr)
 {

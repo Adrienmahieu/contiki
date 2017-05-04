@@ -36,11 +36,11 @@
  * \author
  *         Adam Dunkels <adam@sics.se>
  */
-
+#include "ets_sys.h"
 #include "lib/ringbuf.h"
 #include <sys/cc.h>
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 ringbuf_init(struct ringbuf *r, uint8_t *dataptr, uint8_t size)
 {
   r->data = dataptr;
@@ -49,7 +49,7 @@ ringbuf_init(struct ringbuf *r, uint8_t *dataptr, uint8_t size)
   r->get_ptr = 0;
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 ringbuf_put(struct ringbuf *r, uint8_t c)
 {
   /* Check if buffer is full. If it is full, return 0 to indicate that
@@ -76,7 +76,7 @@ ringbuf_put(struct ringbuf *r, uint8_t c)
   return 1;
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 ringbuf_get(struct ringbuf *r)
 {
   uint8_t c;
@@ -109,13 +109,13 @@ ringbuf_get(struct ringbuf *r)
   }
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 ringbuf_size(struct ringbuf *r)
 {
   return r->mask + 1;
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 ringbuf_elements(struct ringbuf *r)
 {
   return (r->put_ptr - r->get_ptr) & r->mask;

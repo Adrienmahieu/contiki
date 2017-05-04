@@ -30,7 +30,7 @@
  *
  */
 #include "ip64-addr.h"
-
+#include "ets_sys.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -40,19 +40,19 @@ static uip_ip6addr_t ip64_prefix = {{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0xff, 0xff, 
 static uint8_t ip64_prefix_len = 96;
 
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 ip64_addr_copy4(uip_ip4addr_t *dest, const uip_ip4addr_t *src)
 {
   memcpy(dest, src, sizeof(uip_ip4addr_t));
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 ip64_addr_copy6(uip_ip6addr_t *dest, const uip_ip6addr_t *src)
 {
   memcpy(dest, src, sizeof(uip_ip6addr_t));
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 ip64_addr_4to6(const uip_ip4addr_t *ipv4addr,
 	       uip_ip6addr_t *ipv6addr)
 {
@@ -73,7 +73,7 @@ ip64_addr_4to6(const uip_ip4addr_t *ipv4addr,
   return 1;
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 ip64_addr_6to4(const uip_ip6addr_t *ipv6addr,
 	       uip_ip4addr_t *ipv4addr)
 {
@@ -98,13 +98,13 @@ ip64_addr_6to4(const uip_ip6addr_t *ipv6addr,
   return 0;
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 ip64_addr_is_ip64(const uip_ip6addr_t *ipv6addr)
 {
   return uip_ipaddr_prefixcmp(ipv6addr, &ip64_prefix, ip64_prefix_len);
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 ip64_addr_set_prefix(const uip_ip6addr_t *prefix, uint8_t prefix_len)
 {
   uip_ipaddr_copy(&ip64_prefix, prefix);

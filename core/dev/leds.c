@@ -29,14 +29,14 @@
  * This file is part of the Contiki operating system.
  *
  */
-
+#include "ets_sys.h"
 #include "dev/leds.h"
 #include "sys/clock.h"
 #include "sys/energest.h"
 
 static unsigned char leds;
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 show_leds(unsigned char new_leds)
 {
   unsigned char changed;
@@ -68,14 +68,14 @@ show_leds(unsigned char new_leds)
   leds_arch_set(leds);
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 leds_init(void)
 {
   leds_arch_init();
   leds = 0;
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 leds_blink(void)
 {
   /* Blink all leds that were initially off. */
@@ -88,30 +88,30 @@ leds_blink(void)
   leds_toggle(blink);
 }
 /*---------------------------------------------------------------------------*/
-unsigned char
+unsigned char ICACHE_FLASH_ATTR
 leds_get(void) {
   return leds_arch_get();
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 leds_set(unsigned char ledv)
 {
   show_leds(ledv);
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 leds_on(unsigned char ledv)
 {
   show_leds(leds | ledv);
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 leds_off(unsigned char ledv)
 {
   show_leds(leds & ~ledv);
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 leds_toggle(unsigned char ledv)
 {
   show_leds(leds ^ ledv);

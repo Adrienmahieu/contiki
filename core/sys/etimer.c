@@ -45,7 +45,7 @@
  */
 
 #include "contiki-conf.h"
-
+#include "ets_sys.h"
 #include "sys/etimer.h"
 #include "sys/process.h"
 
@@ -54,7 +54,7 @@ static clock_time_t next_expiration;
 
 PROCESS(etimer_process, "Event timer");
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 update_time(void)
 {
   clock_time_t tdist;
@@ -77,7 +77,7 @@ update_time(void)
   }
 }
 /*---------------------------------------------------------------------------*/
-PROCESS_THREAD(etimer_process, ev, data)
+ICACHE_FLASH_ATTR PROCESS_THREAD(etimer_process, ev, data)
 {
   struct etimer *t, *u;
 	
@@ -141,13 +141,13 @@ PROCESS_THREAD(etimer_process, ev, data)
   PROCESS_END();
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 etimer_request_poll(void)
 {
   process_poll(&etimer_process);
 }
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 add_timer(struct etimer *timer)
 {
   struct etimer *t;
@@ -173,14 +173,14 @@ add_timer(struct etimer *timer)
   update_time();
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 etimer_set(struct etimer *et, clock_time_t interval)
 {
   timer_set(&et->timer, interval);
   add_timer(et);
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 etimer_reset_with_new_interval(struct etimer *et, clock_time_t interval)
 {
   timer_reset(&et->timer);
@@ -188,58 +188,58 @@ etimer_reset_with_new_interval(struct etimer *et, clock_time_t interval)
   add_timer(et);
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 etimer_reset(struct etimer *et)
 {
   timer_reset(&et->timer);
   add_timer(et);
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 etimer_restart(struct etimer *et)
 {
   timer_restart(&et->timer);
   add_timer(et);
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 etimer_adjust(struct etimer *et, int timediff)
 {
   et->timer.start += timediff;
   update_time();
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 etimer_expired(struct etimer *et)
 {
   return et->p == PROCESS_NONE;
 }
 /*---------------------------------------------------------------------------*/
-clock_time_t
+clock_time_t ICACHE_FLASH_ATTR
 etimer_expiration_time(struct etimer *et)
 {
   return et->timer.start + et->timer.interval;
 }
 /*---------------------------------------------------------------------------*/
-clock_time_t
+clock_time_t ICACHE_FLASH_ATTR
 etimer_start_time(struct etimer *et)
 {
   return et->timer.start;
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 etimer_pending(void)
 {
   return timerlist != NULL;
 }
 /*---------------------------------------------------------------------------*/
-clock_time_t
+clock_time_t ICACHE_FLASH_ATTR
 etimer_next_expiration_time(void)
 {
   return etimer_pending() ? next_expiration : 0;
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 etimer_stop(struct etimer *et)
 {
   struct etimer *t;

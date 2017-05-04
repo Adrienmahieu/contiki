@@ -79,7 +79,7 @@
 #include "net/ipv6/uip-nd6.h"
 #include "net/ipv6/uip-ds6.h"
 #include "net/ipv6/multicast/uip-mcast6.h"
-
+#include "ets_sys.h"
 #if UIP_CONF_IPV6_RPL
 #include "rpl/rpl.h"
 #include "rpl/rpl-private.h"
@@ -291,7 +291,7 @@ struct uip_icmp6_conn uip_icmp6_conns;
 #if UIP_ARCH_ADD32
 void uip_add32(uint8_t *op32, uint16_t op16);
 #else /* UIP_ARCH_ADD32 */
-void
+void ICACHE_FLASH_ATTR
 uip_add32(uint8_t *op32, uint16_t op16)
 {
   uip_acc32[3] = op32[3] + (op16 & 0xff);
@@ -322,7 +322,7 @@ uip_add32(uint8_t *op32, uint16_t op16)
 
 #if ! UIP_ARCH_CHKSUM
 /*---------------------------------------------------------------------------*/
-static uint16_t
+static uint16_t ICACHE_FLASH_ATTR
 chksum(uint16_t sum, const uint8_t *data, uint16_t len)
 {
   uint16_t t;
@@ -353,14 +353,14 @@ chksum(uint16_t sum, const uint8_t *data, uint16_t len)
   return sum;
 }
 /*---------------------------------------------------------------------------*/
-uint16_t
+uint16_t ICACHE_FLASH_ATTR
 uip_chksum(uint16_t *data, uint16_t len)
 {
   return uip_htons(chksum(0, (uint8_t *)data, len));
 }
 /*---------------------------------------------------------------------------*/
 #ifndef UIP_ARCH_IPCHKSUM
-uint16_t
+uint16_t ICACHE_FLASH_ATTR
 uip_ipchksum(void)
 {
   uint16_t sum;
@@ -371,7 +371,7 @@ uip_ipchksum(void)
 }
 #endif
 /*---------------------------------------------------------------------------*/
-static uint16_t
+static uint16_t ICACHE_FLASH_ATTR
 upper_layer_chksum(uint8_t proto)
 {
 /* gcc 4.4.0 - 4.6.1 (maybe 4.3...) with -Os on 8 bit CPUS incorrectly compiles:
@@ -404,7 +404,7 @@ upper_layer_chksum(uint8_t proto)
   return (sum == 0) ? 0xffff : uip_htons(sum);
 }
 /*---------------------------------------------------------------------------*/
-uint16_t
+uint16_t ICACHE_FLASH_ATTR
 uip_icmp6chksum(void)
 {
   return upper_layer_chksum(UIP_PROTO_ICMP6);
@@ -412,7 +412,7 @@ uip_icmp6chksum(void)
 }
 /*---------------------------------------------------------------------------*/
 #if UIP_TCP
-uint16_t
+uint16_t ICACHE_FLASH_ATTR
 uip_tcpchksum(void)
 {
   return upper_layer_chksum(UIP_PROTO_TCP);
@@ -420,7 +420,7 @@ uip_tcpchksum(void)
 #endif /* UIP_TCP */
 /*---------------------------------------------------------------------------*/
 #if UIP_UDP && UIP_UDP_CHECKSUMS
-uint16_t
+uint16_t ICACHE_FLASH_ATTR
 uip_udpchksum(void)
 {
   return upper_layer_chksum(UIP_PROTO_UDP);
@@ -428,7 +428,7 @@ uip_udpchksum(void)
 #endif /* UIP_UDP && UIP_UDP_CHECKSUMS */
 #endif /* UIP_ARCH_CHKSUM */
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 uip_init(void)
 {
   int c;
@@ -462,7 +462,7 @@ uip_init(void)
 }
 /*---------------------------------------------------------------------------*/
 #if UIP_TCP && UIP_ACTIVE_OPEN
-struct uip_conn *
+struct uip_conn * ICACHE_FLASH_ATTR
 uip_connect(const uip_ipaddr_t *ripaddr, uint16_t rport)
 {
   register struct uip_conn *conn, *cconn;
@@ -533,7 +533,7 @@ uip_connect(const uip_ipaddr_t *ripaddr, uint16_t rport)
 }
 #endif /* UIP_TCP && UIP_ACTIVE_OPEN */
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 remove_ext_hdr(void)
 {
   /* Remove ext header before TCP/UDP processing. */
@@ -558,7 +558,7 @@ remove_ext_hdr(void)
 }
 /*---------------------------------------------------------------------------*/
 #if UIP_UDP
-struct uip_udp_conn *
+struct uip_udp_conn * ICACHE_FLASH_ATTR
 uip_udp_new(const uip_ipaddr_t *ripaddr, uint16_t rport)
 {
   int c;
@@ -604,7 +604,7 @@ uip_udp_new(const uip_ipaddr_t *ripaddr, uint16_t rport)
 #endif /* UIP_UDP */
 /*---------------------------------------------------------------------------*/
 #if UIP_TCP
-void
+void ICACHE_FLASH_ATTR
 uip_unlisten(uint16_t port)
 {
   int c;
@@ -616,7 +616,7 @@ uip_unlisten(uint16_t port)
   }
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 uip_listen(uint16_t port)
 {
   int c;
@@ -812,7 +812,7 @@ uip_reass(void)
   return 0;
 }
 
-void
+void ICACHE_FLASH_ATTR
 uip_reass_over(void)
 {
   /* to late, we abandon the reassembly of the packet */
@@ -845,7 +845,7 @@ uip_reass_over(void)
 
 /*---------------------------------------------------------------------------*/
 #if UIP_TCP
-static void
+static void ICACHE_FLASH_ATTR
 uip_add_rcv_nxt(uint16_t n)
 {
   uip_add32(uip_conn->rcv_nxt, n);
@@ -860,7 +860,7 @@ uip_add_rcv_nxt(uint16_t n)
 /**
  * \brief Process the options in Destination and Hop By Hop extension headers
  */
-static uint8_t
+static uint8_t ICACHE_FLASH_ATTR
 ext_hdr_options_process(void)
 {
   /*
@@ -941,7 +941,7 @@ ext_hdr_options_process(void)
 
 
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 uip_process(uint8_t flag)
 {
 #if UIP_TCP
@@ -2322,19 +2322,19 @@ uip_process(uint8_t flag)
   return;
 }
 /*---------------------------------------------------------------------------*/
-uint16_t
+uint16_t ICACHE_FLASH_ATTR
 uip_htons(uint16_t val)
 {
   return UIP_HTONS(val);
 }
 
-uint32_t
+uint32_t ICACHE_FLASH_ATTR
 uip_htonl(uint32_t val)
 {
   return UIP_HTONL(val);
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 uip_send(const void *data, int len)
 {
   int copylen;

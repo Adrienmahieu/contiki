@@ -37,7 +37,7 @@
  *         Justin King-Lacroix <justin.kinglacroix@gmail.com>
  *         Konrad Krentz <konrad.krentz@gmail.com>
  */
-
+#include "ets_sys.h"
 #include "llsec/ccm-star-packetbuf.h"
 #include "net/linkaddr.h"
 #include "net/packetbuf.h"
@@ -47,7 +47,7 @@
 #if LLSEC802154_USES_AUX_HEADER && LLSEC802154_USES_FRAME_COUNTER
 
 /*---------------------------------------------------------------------------*/
-static const uint8_t *
+static const uint8_t * ICACHE_FLASH_ATTR
 get_extended_address(const linkaddr_t *addr)
 #if LINKADDR_SIZE == 2
 {
@@ -65,7 +65,7 @@ get_extended_address(const linkaddr_t *addr)
 }
 #endif /* LINKADDR_SIZE == 2 */
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 ccm_star_packetbuf_set_nonce(uint8_t *nonce, int forward)
 {
   const linkaddr_t *source_addr;

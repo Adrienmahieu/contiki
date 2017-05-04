@@ -34,12 +34,14 @@
 
 #include <stdio.h>
 #include <string.h>
-
+#include "ets_sys.h"
 #include "contiki.h"
 
 #include "net/ip/uip.h"
 #include "net/ipv4/uip-fw.h"
 #define BUF ((struct uip_tcpip_hdr *)&uip_buf[UIP_LLH_LEN])
+
+
 
 #include "dev/slip.h"
 
@@ -86,8 +88,30 @@ static uint8_t rxbuf[RX_BUFSIZE];
 static uint16_t pkt_end;		/* SLIP_END tracker. */
 
 static void (* input_callback)(void) = NULL;
+
+/*inline struct uip_tcpip_hdr * BUF(void){
+  struct uip_tcpip_hdr * copy_buf;
+  memcpy(&copy_buf, &uip_buf[UIP_LLH_LEN], sizeof(struct uip_tcpip_hdr));
+  return copy_buf;
+}*/
+
+/*inline struct uip_tcpip_hdr * BUF(void){
+  struct uip_tcpip_hdr * copy_buf;
+  copy_buf = (struct uip_tcpip_hdr *) malloc(sizeof(struct uip_tcpip_hdr));
+  memcpy(copy_buf, &uip_buf[UIP_LLH_LEN], sizeof(struct uip_tcpip_hdr));
+  return copy_buf;
+}*/
+
+//#define BUF(struct uip_tcpip_hdr copy_buf; memcpy(&copy_buf, &uip_buf[UIP_LLH_LEN], sizeof(struct uip_tcpip_hdr)); &copy_buf;)
+
+/*#define BUF({ \
+  struct uip_tcpip_hdr copy_buf; \
+  memcpy(&copy_buf, &uip_buf[UIP_LLH_LEN], sizeof(struct uip_tcpip_hdr)); \
+  &copy_buf; \
+})*/
+
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 slip_set_input_callback(void (*c)(void))
 {
   input_callback = c;
@@ -96,7 +120,7 @@ slip_set_input_callback(void (*c)(void))
 /* slip_send: forward (IPv4) packets with {UIP_FW_NETIF(..., slip_send)}
  * was used in slip-bridge.c
  */
-uint8_t
+uint8_t ICACHE_FLASH_ATTR
 slip_send(void)
 {
   uint16_t i;
@@ -122,7 +146,7 @@ slip_send(void)
   return UIP_FW_OK;
 }
 /*---------------------------------------------------------------------------*/
-uint8_t
+uint8_t ICACHE_FLASH_ATTR
 slip_write(const void *_ptr, int len)
 {
   const uint8_t *ptr = _ptr;
@@ -147,7 +171,7 @@ slip_write(const void *_ptr, int len)
   return len;
 }
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 rxbuf_init(void)
 {
   begin = next_free = pkt_end = 0;
@@ -155,7 +179,7 @@ rxbuf_init(void)
 }
 /*---------------------------------------------------------------------------*/
 /* Upper half does the polling. */
-static uint16_t
+static uint16_t ICACHE_FLASH_ATTR
 slip_poll_handler(uint8_t *outbuf, uint16_t blen)
 {
 #ifdef SLIP_CONF_MICROSOFT_CHAT
@@ -320,7 +344,7 @@ slip_poll_handler(uint8_t *outbuf, uint16_t blen)
   return 0;
 }
 /*---------------------------------------------------------------------------*/
-PROCESS_THREAD(slip_process, ev, data)
+ICACHE_FLASH_ATTR PROCESS_THREAD(slip_process, ev, data)
 {
   PROCESS_BEGIN();
 
@@ -385,7 +409,7 @@ PROCESS_THREAD(slip_process, ev, data)
   PROCESS_END();
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 slip_input_byte(unsigned char c)
 {
   uint16_t cur_end;

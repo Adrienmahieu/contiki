@@ -42,7 +42,7 @@
  * \author Simon Duquennoy <simonduq@sics.se>
  *
  */
-
+#include "ets_sys.h"
 #include <string.h>
 #include <stdlib.h>
 #include <stddef.h>
@@ -72,14 +72,14 @@ void LINK_NEIGHBOR_CALLBACK(const linkaddr_t *addr, int status, int numtx);
 NBR_TABLE_GLOBAL(uip_ds6_nbr_t, ds6_neighbors);
 
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 uip_ds6_neighbors_init(void)
 {
   link_stats_init();
   nbr_table_register(ds6_neighbors, (nbr_table_callback *)uip_ds6_nbr_rm);
 }
 /*---------------------------------------------------------------------------*/
-uip_ds6_nbr_t *
+uip_ds6_nbr_t * ICACHE_FLASH_ATTR
 uip_ds6_nbr_add(const uip_ipaddr_t *ipaddr, const uip_lladdr_t *lladdr,
                 uint8_t isrouter, uint8_t state, nbr_table_reason_t reason,
                 void *data)
@@ -123,7 +123,7 @@ uip_ds6_nbr_add(const uip_ipaddr_t *ipaddr, const uip_lladdr_t *lladdr,
 }
 
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 uip_ds6_nbr_rm(uip_ds6_nbr_t *nbr)
 {
   if(nbr != NULL) {
@@ -137,20 +137,20 @@ uip_ds6_nbr_rm(uip_ds6_nbr_t *nbr)
 }
 
 /*---------------------------------------------------------------------------*/
-const uip_ipaddr_t *
+const uip_ipaddr_t * ICACHE_FLASH_ATTR
 uip_ds6_nbr_get_ipaddr(const uip_ds6_nbr_t *nbr)
 {
   return (nbr != NULL) ? &nbr->ipaddr : NULL;
 }
 
 /*---------------------------------------------------------------------------*/
-const uip_lladdr_t *
+const uip_lladdr_t * ICACHE_FLASH_ATTR
 uip_ds6_nbr_get_ll(const uip_ds6_nbr_t *nbr)
 {
   return (const uip_lladdr_t *)nbr_table_get_lladdr(ds6_neighbors, nbr);
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 uip_ds6_nbr_num(void)
 {
   uip_ds6_nbr_t *nbr;
@@ -165,7 +165,7 @@ uip_ds6_nbr_num(void)
   return num;
 }
 /*---------------------------------------------------------------------------*/
-uip_ds6_nbr_t *
+uip_ds6_nbr_t * ICACHE_FLASH_ATTR
 uip_ds6_nbr_lookup(const uip_ipaddr_t *ipaddr)
 {
   uip_ds6_nbr_t *nbr = nbr_table_head(ds6_neighbors);
@@ -180,14 +180,14 @@ uip_ds6_nbr_lookup(const uip_ipaddr_t *ipaddr)
   return NULL;
 }
 /*---------------------------------------------------------------------------*/
-uip_ds6_nbr_t *
+uip_ds6_nbr_t * ICACHE_FLASH_ATTR
 uip_ds6_nbr_ll_lookup(const uip_lladdr_t *lladdr)
 {
   return nbr_table_get_from_lladdr(ds6_neighbors, (linkaddr_t*)lladdr);
 }
 
 /*---------------------------------------------------------------------------*/
-uip_ipaddr_t *
+uip_ipaddr_t * ICACHE_FLASH_ATTR
 uip_ds6_nbr_ipaddr_from_lladdr(const uip_lladdr_t *lladdr)
 {
   uip_ds6_nbr_t *nbr = uip_ds6_nbr_ll_lookup(lladdr);
@@ -195,14 +195,14 @@ uip_ds6_nbr_ipaddr_from_lladdr(const uip_lladdr_t *lladdr)
 }
 
 /*---------------------------------------------------------------------------*/
-const uip_lladdr_t *
+const uip_lladdr_t * ICACHE_FLASH_ATTR
 uip_ds6_nbr_lladdr_from_ipaddr(const uip_ipaddr_t *ipaddr)
 {
   uip_ds6_nbr_t *nbr = uip_ds6_nbr_lookup(ipaddr);
   return nbr ? uip_ds6_nbr_get_ll(nbr) : NULL;
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 uip_ds6_link_neighbor_callback(int status, int numtx)
 {
   const linkaddr_t *dest = packetbuf_addr(PACKETBUF_ADDR_RECEIVER);
@@ -248,7 +248,7 @@ uip_ds6_link_neighbor_callback(int status, int numtx)
 #if UIP_ND6_SEND_NS
 /*---------------------------------------------------------------------------*/
 /** Periodic processing on neighbors */
-void
+void ICACHE_FLASH_ATTR
 uip_ds6_neighbor_periodic(void)
 {
   uip_ds6_nbr_t *nbr = nbr_table_head(ds6_neighbors);
@@ -326,7 +326,7 @@ uip_ds6_neighbor_periodic(void)
   }
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 uip_ds6_nbr_refresh_reachable_state(const uip_ipaddr_t *ipaddr)
 {
   uip_ds6_nbr_t *nbr;
@@ -338,7 +338,7 @@ uip_ds6_nbr_refresh_reachable_state(const uip_ipaddr_t *ipaddr)
   }
 }
 /*---------------------------------------------------------------------------*/
-uip_ds6_nbr_t *
+uip_ds6_nbr_t * ICACHE_FLASH_ATTR
 uip_ds6_get_least_lifetime_neighbor(void)
 {
   uip_ds6_nbr_t *nbr = nbr_table_head(ds6_neighbors);

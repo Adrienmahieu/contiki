@@ -41,7 +41,7 @@
  * \addtogroup ctimer
  * @{
  */
-
+#include "ets_sys.h"
 #include "sys/ctimer.h"
 #include "contiki.h"
 #include "lib/list.h"
@@ -60,7 +60,7 @@ static char initialized;
 
 /*---------------------------------------------------------------------------*/
 PROCESS(ctimer_process, "Ctimer process");
-PROCESS_THREAD(ctimer_process, ev, data)
+ICACHE_FLASH_ATTR PROCESS_THREAD(ctimer_process, ev, data)
 {
   struct ctimer *c;
   PROCESS_BEGIN();
@@ -87,7 +87,7 @@ PROCESS_THREAD(ctimer_process, ev, data)
   PROCESS_END();
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 ctimer_init(void)
 {
   initialized = 0;
@@ -95,14 +95,14 @@ ctimer_init(void)
   process_start(&ctimer_process, NULL);
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 ctimer_set(struct ctimer *c, clock_time_t t,
 	   void (*f)(void *), void *ptr)
 {
   ctimer_set_with_process(c, t, f, ptr, PROCESS_CURRENT());
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 ctimer_set_with_process(struct ctimer *c, clock_time_t t,
 	   void (*f)(void *), void *ptr, struct process *p)
 {
@@ -121,7 +121,7 @@ ctimer_set_with_process(struct ctimer *c, clock_time_t t,
   list_add(ctimer_list, c);
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 ctimer_reset(struct ctimer *c)
 {
   if(initialized) {
@@ -133,7 +133,7 @@ ctimer_reset(struct ctimer *c)
   list_add(ctimer_list, c);
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 ctimer_restart(struct ctimer *c)
 {
   if(initialized) {
@@ -145,7 +145,7 @@ ctimer_restart(struct ctimer *c)
   list_add(ctimer_list, c);
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 ctimer_stop(struct ctimer *c)
 {
   if(initialized) {
@@ -157,7 +157,7 @@ ctimer_stop(struct ctimer *c)
   list_remove(ctimer_list, c);
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 ctimer_expired(struct ctimer *c)
 {
   struct ctimer *t;

@@ -43,7 +43,7 @@
  * \addtogroup uip6
  * @{
  */
-
+#include "ets_sys.h"
 #include "net/ip/uip.h"
 #include "net/ip/tcpip.h"
 #include "net/ipv6/uip-ds6.h"
@@ -68,7 +68,7 @@
 #define UIP_EXT_HDR_OPT_PADN_BUF  ((struct uip_ext_hdr_opt_padn *)&uip_buf[uip_l2_l3_hdr_len + uip_ext_opt_offset])
 #define UIP_EXT_HDR_OPT_RPL_BUF   ((struct uip_ext_hdr_opt_rpl *)&uip_buf[uip_l2_l3_hdr_len + uip_ext_opt_offset])
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 rpl_verify_hbh_header(int uip_ext_opt_offset)
 {
   rpl_instance_t *instance;
@@ -175,7 +175,7 @@ rpl_verify_hbh_header(int uip_ext_opt_offset)
 }
 /*---------------------------------------------------------------------------*/
 #if RPL_WITH_NON_STORING
-int
+int ICACHE_FLASH_ATTR
 rpl_srh_get_next_hop(uip_ipaddr_t *ipaddr)
 {
   uint8_t *uip_next_hdr;
@@ -465,7 +465,7 @@ insert_srh_header(void)
 int insert_srh_header(void);
 #endif /* RPL_WITH_NON_STORING */
 /*---------------------------------------------------------------------------*/
-static int
+static int ICACHE_FLASH_ATTR
 update_hbh_header(void)
 {
   rpl_instance_t *instance;
@@ -540,7 +540,7 @@ update_hbh_header(void)
   return 1;
 }
 /*---------------------------------------------------------------------------*/
-static int
+static int ICACHE_FLASH_ATTR
 insert_hbh_header(const rpl_instance_t *instance)
 {
   int uip_ext_opt_offset;
@@ -587,7 +587,7 @@ insert_hbh_header(const rpl_instance_t *instance)
   return update_hbh_header();
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 rpl_remove_header(void)
 {
   uint8_t temp_len;
@@ -632,7 +632,7 @@ rpl_remove_header(void)
   }
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 rpl_update_header(void)
 {
   if(default_instance == NULL || default_instance->current_dag == NULL

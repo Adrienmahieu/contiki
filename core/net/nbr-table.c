@@ -33,7 +33,7 @@
  */
 
 #include "contiki.h"
-
+#include "ets_sys.h"
 #include <stddef.h>
 #include <string.h>
 #include "lib/memb.h"
@@ -85,49 +85,49 @@ LIST(nbr_table_keys);
 
 /*---------------------------------------------------------------------------*/
 /* Get a key from a neighbor index */
-static nbr_table_key_t *
+static nbr_table_key_t * ICACHE_FLASH_ATTR
 key_from_index(int index)
 {
   return index != -1 ? &((nbr_table_key_t *)neighbor_addr_mem.mem)[index] : NULL;
 }
 /*---------------------------------------------------------------------------*/
 /* Get an item from its neighbor index */
-static nbr_table_item_t *
+static nbr_table_item_t * ICACHE_FLASH_ATTR
 item_from_index(nbr_table_t *table, int index)
 {
   return table != NULL && index != -1 ? (char *)table->data + index * table->item_size : NULL;
 }
 /*---------------------------------------------------------------------------*/
 /* Get the neighbor index of an item */
-static int
+static int ICACHE_FLASH_ATTR
 index_from_key(nbr_table_key_t *key)
 {
   return key != NULL ? key - (nbr_table_key_t *)neighbor_addr_mem.mem : -1;
 }
 /*---------------------------------------------------------------------------*/
 /* Get the neighbor index of an item */
-static int
+static int ICACHE_FLASH_ATTR
 index_from_item(nbr_table_t *table, const nbr_table_item_t *item)
 {
   return table != NULL && item != NULL ? ((int)((char *)item - (char *)table->data)) / table->item_size : -1;
 }
 /*---------------------------------------------------------------------------*/
 /* Get an item from its key */
-static nbr_table_item_t *
+static nbr_table_item_t * ICACHE_FLASH_ATTR
 item_from_key(nbr_table_t *table, nbr_table_key_t *key)
 {
   return item_from_index(table, index_from_key(key));
 }
 /*---------------------------------------------------------------------------*/
 /* Get the key af an item */
-static nbr_table_key_t *
+static nbr_table_key_t * ICACHE_FLASH_ATTR
 key_from_item(nbr_table_t *table, const nbr_table_item_t *item)
 {
   return key_from_index(index_from_item(table, item));
 }
 /*---------------------------------------------------------------------------*/
 /* Get the index of a neighbor from its link-layer address */
-static int
+static int ICACHE_FLASH_ATTR
 index_from_lladdr(const linkaddr_t *lladdr)
 {
   nbr_table_key_t *key;
@@ -147,7 +147,7 @@ index_from_lladdr(const linkaddr_t *lladdr)
 }
 /*---------------------------------------------------------------------------*/
 /* Get bit from "used" or "locked" bitmap */
-static int
+static int ICACHE_FLASH_ATTR
 nbr_get_bit(uint8_t *bitmap, nbr_table_t *table, nbr_table_item_t *item)
 {
   int item_index = index_from_item(table, item);
@@ -160,7 +160,7 @@ nbr_get_bit(uint8_t *bitmap, nbr_table_t *table, nbr_table_item_t *item)
 }
 /*---------------------------------------------------------------------------*/
 /* Set bit in "used" or "locked" bitmap */
-static int
+static int ICACHE_FLASH_ATTR
 nbr_set_bit(uint8_t *bitmap, nbr_table_t *table, nbr_table_item_t *item, int value)
 {
   int item_index = index_from_item(table, item);
@@ -178,7 +178,7 @@ nbr_set_bit(uint8_t *bitmap, nbr_table_t *table, nbr_table_item_t *item, int val
   return 0;
 }
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 remove_key(nbr_table_key_t *least_used_key)
 {
   int i;
@@ -197,7 +197,7 @@ remove_key(nbr_table_key_t *least_used_key)
   list_remove(nbr_table_keys, least_used_key);
 }
 /*---------------------------------------------------------------------------*/
-static nbr_table_key_t *
+static nbr_table_key_t * ICACHE_FLASH_ATTR
 nbr_table_allocate(nbr_table_reason_t reason, void *data)
 {
   nbr_table_key_t *key;
@@ -280,7 +280,7 @@ nbr_table_allocate(nbr_table_reason_t reason, void *data)
 /*---------------------------------------------------------------------------*/
 /* Register a new neighbor table. To be used at initialization by modules
  * using a neighbor table */
-int
+int ICACHE_FLASH_ATTR
 nbr_table_register(nbr_table_t *table, nbr_table_callback *callback)
 {
 #if DEBUG
@@ -302,7 +302,7 @@ nbr_table_register(nbr_table_t *table, nbr_table_callback *callback)
 }
 /*---------------------------------------------------------------------------*/
 /* Returns the first item of the current table */
-nbr_table_item_t *
+nbr_table_item_t * ICACHE_FLASH_ATTR
 nbr_table_head(nbr_table_t *table)
 {
   /* Get item from first key */
@@ -316,7 +316,7 @@ nbr_table_head(nbr_table_t *table)
 }
 /*---------------------------------------------------------------------------*/
 /* Iterates over the current table */
-nbr_table_item_t *
+nbr_table_item_t * ICACHE_FLASH_ATTR
 nbr_table_next(nbr_table_t *table, nbr_table_item_t *item)
 {
   do {
@@ -329,7 +329,7 @@ nbr_table_next(nbr_table_t *table, nbr_table_item_t *item)
 }
 /*---------------------------------------------------------------------------*/
 /* Add a neighbor indexed with its link-layer address */
-nbr_table_item_t *
+nbr_table_item_t * ICACHE_FLASH_ATTR
 nbr_table_add_lladdr(nbr_table_t *table, const linkaddr_t *lladdr, nbr_table_reason_t reason, void *data)
 {
   int index;
@@ -375,7 +375,7 @@ nbr_table_add_lladdr(nbr_table_t *table, const linkaddr_t *lladdr, nbr_table_rea
 }
 /*---------------------------------------------------------------------------*/
 /* Get an item from its link-layer address */
-void *
+void * ICACHE_FLASH_ATTR
 nbr_table_get_from_lladdr(nbr_table_t *table, const linkaddr_t *lladdr)
 {
   void *item = item_from_index(table, index_from_lladdr(lladdr));
@@ -383,7 +383,7 @@ nbr_table_get_from_lladdr(nbr_table_t *table, const linkaddr_t *lladdr)
 }
 /*---------------------------------------------------------------------------*/
 /* Removes a neighbor from the current table (unset "used" bit) */
-int
+int ICACHE_FLASH_ATTR
 nbr_table_remove(nbr_table_t *table, void *item)
 {
   int ret = nbr_set_bit(used_map, table, item, 0);
@@ -392,7 +392,7 @@ nbr_table_remove(nbr_table_t *table, void *item)
 }
 /*---------------------------------------------------------------------------*/
 /* Lock a neighbor for the current table (set "locked" bit) */
-int
+int ICACHE_FLASH_ATTR
 nbr_table_lock(nbr_table_t *table, void *item)
 {
 #if DEBUG
@@ -403,7 +403,7 @@ nbr_table_lock(nbr_table_t *table, void *item)
 }
 /*---------------------------------------------------------------------------*/
 /* Release the lock on a neighbor for the current table (unset "locked" bit) */
-int
+int ICACHE_FLASH_ATTR
 nbr_table_unlock(nbr_table_t *table, void *item)
 {
 #if DEBUG
@@ -414,7 +414,7 @@ nbr_table_unlock(nbr_table_t *table, void *item)
 }
 /*---------------------------------------------------------------------------*/
 /* Get link-layer address of an item */
-linkaddr_t *
+linkaddr_t * ICACHE_FLASH_ATTR
 nbr_table_get_lladdr(nbr_table_t *table, const void *item)
 {
   nbr_table_key_t *key = key_from_item(table, item);
@@ -422,7 +422,7 @@ nbr_table_get_lladdr(nbr_table_t *table, const void *item)
 }
 /*---------------------------------------------------------------------------*/
 /* Update link-layer address of an item */
-int
+int ICACHE_FLASH_ATTR
 nbr_table_update_lladdr(const linkaddr_t *old_addr, const linkaddr_t *new_addr,
                         int remove_if_duplicate)
 {
@@ -455,7 +455,7 @@ nbr_table_update_lladdr(const linkaddr_t *old_addr, const linkaddr_t *new_addr,
 }
 /*---------------------------------------------------------------------------*/
 #if DEBUG
-static void
+static void ICACHE_FLASH_ATTR
 print_table()
 {
   int i, j;
@@ -473,7 +473,7 @@ print_table()
   }
 }
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 handle_periodic_timer(void *ptr)
 {
   print_table();

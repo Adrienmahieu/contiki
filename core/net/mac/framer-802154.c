@@ -35,7 +35,7 @@
  *         Niclas Finne <nfi@sics.se>
  *         Joakim Eriksson <joakime@sics.se>
  */
-
+#include "ets_sys.h"
 #include "net/mac/framer-802154.h"
 #include "net/mac/frame802154.h"
 #include "net/llsec/llsec802154.h"
@@ -63,7 +63,7 @@ static uint8_t mac_dsn;
 static uint8_t initialized = 0;
 
 /*---------------------------------------------------------------------------*/
-static int
+static int ICACHE_FLASH_ATTR
 create_frame(int type, int do_create)
 {
   frame802154_t params;
@@ -196,19 +196,19 @@ create_frame(int type, int do_create)
   }
 }
 /*---------------------------------------------------------------------------*/
-static int
+static int ICACHE_FLASH_ATTR
 hdr_length(void)
 {
   return create_frame(FRAME802154_DATAFRAME, 0);
 }
 /*---------------------------------------------------------------------------*/
-static int
+static int ICACHE_FLASH_ATTR
 create(void)
 {
   return create_frame(FRAME802154_DATAFRAME, 1);
 }
 /*---------------------------------------------------------------------------*/
-static int
+static int ICACHE_FLASH_ATTR
 parse(void)
 {
   frame802154_t frame;

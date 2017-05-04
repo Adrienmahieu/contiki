@@ -39,9 +39,9 @@
 
 #include "net/ip/uip-debug.h"
 #include "net/ip/ip64-addr.h"
-
+#include "ets_sys.h"
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 uip_debug_ipaddr_print(const uip_ipaddr_t *addr)
 {
 #if NETSTACK_CONF_WITH_IPV6

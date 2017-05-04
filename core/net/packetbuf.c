@@ -43,7 +43,7 @@
  */
 
 #include <string.h>
-
+#include "ets_sys.h"
 #include "contiki-net.h"
 #include "net/packetbuf.h"
 #include "net/rime/rime.h"
@@ -72,7 +72,7 @@ static uint8_t *packetbuf = (uint8_t *)packetbuf_aligned;
 #endif
 
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 packetbuf_clear(void)
 {
   buflen = bufptr = 0;
@@ -81,7 +81,7 @@ packetbuf_clear(void)
   packetbuf_attr_clear();
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 packetbuf_copyfrom(const void *from, uint16_t len)
 {
   uint16_t l;
@@ -93,7 +93,7 @@ packetbuf_copyfrom(const void *from, uint16_t len)
   return l;
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 packetbuf_compact(void)
 {
   int16_t i;
@@ -107,7 +107,7 @@ packetbuf_compact(void)
   }
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 packetbuf_copyto(void *to)
 {
   if(hdrlen + buflen > PACKETBUF_SIZE) {
@@ -118,7 +118,7 @@ packetbuf_copyto(void *to)
   return hdrlen + buflen;
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 packetbuf_hdralloc(int size)
 {
   int16_t i;
@@ -135,7 +135,7 @@ packetbuf_hdralloc(int size)
   return 1;
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 packetbuf_hdrreduce(int size)
 {
   if(buflen < size) {
@@ -147,50 +147,50 @@ packetbuf_hdrreduce(int size)
   return 1;
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 packetbuf_set_datalen(uint16_t len)
 {
   PRINTF("packetbuf_set_len: len %d\n", len);
   buflen = len;
 }
 /*---------------------------------------------------------------------------*/
-void *
+void * ICACHE_FLASH_ATTR
 packetbuf_dataptr(void)
 {
   return packetbuf + packetbuf_hdrlen();
 }
 /*---------------------------------------------------------------------------*/
-void *
+void * ICACHE_FLASH_ATTR
 packetbuf_hdrptr(void)
 {
   return packetbuf;
 }
 /*---------------------------------------------------------------------------*/
-uint16_t
+uint16_t ICACHE_FLASH_ATTR
 packetbuf_datalen(void)
 {
   return buflen;
 }
 /*---------------------------------------------------------------------------*/
-uint8_t
+uint8_t ICACHE_FLASH_ATTR
 packetbuf_hdrlen(void)
 {
   return bufptr + hdrlen;
 }
 /*---------------------------------------------------------------------------*/
-uint16_t
+uint16_t ICACHE_FLASH_ATTR
 packetbuf_totlen(void)
 {
   return packetbuf_hdrlen() + packetbuf_datalen();
 }
 /*---------------------------------------------------------------------------*/
-uint16_t
+uint16_t ICACHE_FLASH_ATTR
 packetbuf_remaininglen(void)
 {
   return PACKETBUF_SIZE - packetbuf_totlen();
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 packetbuf_attr_clear(void)
 {
   int i;
@@ -200,7 +200,7 @@ packetbuf_attr_clear(void)
   }
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 packetbuf_attr_copyto(struct packetbuf_attr *attrs,
                       struct packetbuf_addr *addrs)
 {
@@ -208,7 +208,7 @@ packetbuf_attr_copyto(struct packetbuf_attr *attrs,
   memcpy(addrs, packetbuf_addrs, sizeof(packetbuf_addrs));
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 packetbuf_attr_copyfrom(struct packetbuf_attr *attrs,
                         struct packetbuf_addr *addrs)
 {
@@ -217,34 +217,34 @@ packetbuf_attr_copyfrom(struct packetbuf_attr *attrs,
 }
 /*---------------------------------------------------------------------------*/
 #if !PACKETBUF_CONF_ATTRS_INLINE
-int
+int ICACHE_FLASH_ATTR
 packetbuf_set_attr(uint8_t type, const packetbuf_attr_t val)
 {
   packetbuf_attrs[type].val = val;
   return 1;
 }
 /*---------------------------------------------------------------------------*/
-packetbuf_attr_t
+packetbuf_attr_t ICACHE_FLASH_ATTR
 packetbuf_attr(uint8_t type)
 {
   return packetbuf_attrs[type].val;
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 packetbuf_set_addr(uint8_t type, const linkaddr_t *addr)
 {
   linkaddr_copy(&packetbuf_addrs[type - PACKETBUF_ADDR_FIRST].addr, addr);
   return 1;
 }
 /*---------------------------------------------------------------------------*/
-const linkaddr_t *
+const linkaddr_t * ICACHE_FLASH_ATTR
 packetbuf_addr(uint8_t type)
 {
   return &packetbuf_addrs[type - PACKETBUF_ADDR_FIRST].addr;
 }
 /*---------------------------------------------------------------------------*/
 #endif /* PACKETBUF_CONF_ATTRS_INLINE */
-int
+int ICACHE_FLASH_ATTR
 packetbuf_holds_broadcast(void)
 {
   return linkaddr_cmp(&packetbuf_addrs[PACKETBUF_ADDR_RECEIVER - PACKETBUF_ADDR_FIRST].addr, &linkaddr_null);

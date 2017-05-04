@@ -31,7 +31,7 @@
 
 #include "contiki-net.h"
 #include "udp-socket.h"
-
+#include "ets_sys.h"
 #include <string.h>
 
 PROCESS(udp_socket_process, "UDP socket process");
@@ -42,7 +42,7 @@ static uint8_t buf[UIP_BUFSIZE];
 
 
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 init(void)
 {
   static uint8_t inited = 0;
@@ -52,7 +52,7 @@ init(void)
   }
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 udp_socket_register(struct udp_socket *c,
                     void *ptr,
                     udp_socket_input_callback_t input_callback)
@@ -76,7 +76,7 @@ udp_socket_register(struct udp_socket *c,
   return 1;
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 udp_socket_close(struct udp_socket *c)
 {
   if(c == NULL) {
@@ -89,7 +89,7 @@ udp_socket_close(struct udp_socket *c)
   return -1;
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 udp_socket_bind(struct udp_socket *c,
                 uint16_t local_port)
 {
@@ -101,7 +101,7 @@ udp_socket_bind(struct udp_socket *c,
   return 1;
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 udp_socket_connect(struct udp_socket *c,
                    uip_ipaddr_t *remote_addr,
                    uint16_t remote_port)
@@ -117,7 +117,7 @@ udp_socket_connect(struct udp_socket *c,
   return 1;
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 udp_socket_send(struct udp_socket *c,
                 const void *data, uint16_t datalen)
 {
@@ -129,7 +129,7 @@ udp_socket_send(struct udp_socket *c,
   return datalen;
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 udp_socket_sendto(struct udp_socket *c,
                   const void *data, uint16_t datalen,
                   const uip_ipaddr_t *to,

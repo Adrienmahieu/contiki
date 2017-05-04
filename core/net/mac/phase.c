@@ -36,7 +36,7 @@
  * \author
  *         Adam Dunkels <adam@sics.se>
  */
-
+#include "ets_sys.h"
 #include "net/mac/phase.h"
 #include "net/packetbuf.h"
 #include "sys/clock.h"
@@ -87,7 +87,7 @@ NBR_TABLE(struct phase, nbr_phase);
 #define PRINTDEBUG(...)
 #endif
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 phase_update(const linkaddr_t *neighbor, rtimer_clock_t time,
              int mac_status)
 {
@@ -134,7 +134,7 @@ phase_update(const linkaddr_t *neighbor, rtimer_clock_t time,
   }
 }
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 send_packet(void *ptr)
 {
   struct phase_queueitem *p = ptr;
@@ -150,7 +150,7 @@ send_packet(void *ptr)
   memb_free(&queued_packets_memb, p);
 }
 /*---------------------------------------------------------------------------*/
-phase_status_t
+phase_status_t ICACHE_FLASH_ATTR
 phase_wait(const linkaddr_t *neighbor, rtimer_clock_t cycle_time,
            rtimer_clock_t guard_time,
            mac_callback_t mac_callback, void *mac_callback_ptr,
@@ -243,7 +243,7 @@ phase_wait(const linkaddr_t *neighbor, rtimer_clock_t cycle_time,
   return PHASE_UNKNOWN;
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 phase_init(void)
 {
   memb_init(&queued_packets_memb);

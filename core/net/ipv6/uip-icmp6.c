@@ -41,11 +41,12 @@
  * \author Julien Abeille <jabeille@cisco.com>
  * \author Mathilde Durvy <mdurvy@cisco.com>
  */
-
+#include "ets_sys.h"
 #include <string.h>
 #include "net/ipv6/uip-ds6.h"
 #include "net/ipv6/uip-icmp6.h"
 #include "contiki-default-conf.h"
+
 
 #define DEBUG 0
 #if DEBUG
@@ -76,7 +77,7 @@ LIST(echo_reply_callback_list);
 /* List of input handlers */
 LIST(input_handler_list);
 /*---------------------------------------------------------------------------*/
-static uip_icmp6_input_handler_t *
+static uip_icmp6_input_handler_t * ICACHE_FLASH_ATTR
 input_handler_lookup(uint8_t type, uint8_t icode)
 {
   uip_icmp6_input_handler_t *handler = NULL;
@@ -94,7 +95,7 @@ input_handler_lookup(uint8_t type, uint8_t icode)
   return NULL;
 }
 /*---------------------------------------------------------------------------*/
-uint8_t
+uint8_t ICACHE_FLASH_ATTR
 uip_icmp6_input(uint8_t type, uint8_t icode)
 {
   uip_icmp6_input_handler_t *handler = input_handler_lookup(type, icode);
@@ -111,13 +112,13 @@ uip_icmp6_input(uint8_t type, uint8_t icode)
   return UIP_ICMP6_INPUT_SUCCESS;
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 uip_icmp6_register_input_handler(uip_icmp6_input_handler_t *handler)
 {
   list_add(input_handler_list, handler);
 }
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 echo_request_input(void)
 {
   /*
@@ -179,7 +180,7 @@ echo_request_input(void)
   return;
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 uip_icmp6_error_output(uint8_t type, uint8_t code, uint32_t param) {
   /* check if originating packet is not an ICMP error */
   if(uip_ext_len) {
@@ -266,7 +267,7 @@ uip_icmp6_error_output(uint8_t type, uint8_t code, uint32_t param) {
 }
 
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 uip_icmp6_send(const uip_ipaddr_t *dest, int type, int code, int payload_len)
 {
 
@@ -295,7 +296,7 @@ uip_icmp6_send(const uip_ipaddr_t *dest, int type, int code, int payload_len)
   tcpip_ipv6_output();
 }
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 echo_reply_input(void)
 {
   int ttl;
@@ -346,7 +347,7 @@ echo_reply_input(void)
   return;
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 uip_icmp6_echo_reply_callback_add(struct uip_icmp6_echo_reply_notification *n,
                                   uip_icmp6_echo_reply_callback_t c)
 {
@@ -356,7 +357,7 @@ uip_icmp6_echo_reply_callback_add(struct uip_icmp6_echo_reply_notification *n,
   }
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 uip_icmp6_echo_reply_callback_rm(struct uip_icmp6_echo_reply_notification *n)
 {
   list_remove(echo_reply_callback_list, n);
@@ -367,7 +368,7 @@ UIP_ICMP6_HANDLER(echo_request_handler, ICMP6_ECHO_REQUEST,
 UIP_ICMP6_HANDLER(echo_reply_handler, ICMP6_ECHO_REPLY,
                   UIP_ICMP6_HANDLER_CODE_ANY, echo_reply_input);
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 uip_icmp6_init()
 {
   /* Register Echo Request and Reply handlers */

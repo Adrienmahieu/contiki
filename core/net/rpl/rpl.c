@@ -41,7 +41,7 @@
  * \addtogroup uip6
  * @{
  */
-
+#include "ets_sys.h"
 #include "net/ip/uip.h"
 #include "net/ip/tcpip.h"
 #include "net/ipv6/uip-ds6.h"
@@ -62,13 +62,13 @@ rpl_stats_t rpl_stats;
 
 static enum rpl_mode mode = RPL_MODE_MESH;
 /*---------------------------------------------------------------------------*/
-enum rpl_mode
+enum rpl_mode ICACHE_FLASH_ATTR
 rpl_get_mode(void)
 {
   return mode;
 }
 /*---------------------------------------------------------------------------*/
-enum rpl_mode
+enum rpl_mode ICACHE_FLASH_ATTR
 rpl_set_mode(enum rpl_mode m)
 {
   enum rpl_mode oldmode = mode;
@@ -108,7 +108,7 @@ rpl_set_mode(enum rpl_mode m)
   return oldmode;
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 rpl_purge_routes(void)
 {
   uip_ds6_route_t *r;
@@ -174,7 +174,7 @@ rpl_purge_routes(void)
 #endif
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 rpl_remove_routes(rpl_dag_t *dag)
 {
   uip_ds6_route_t *r;
@@ -207,7 +207,7 @@ rpl_remove_routes(rpl_dag_t *dag)
 #endif
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 rpl_remove_routes_by_nexthop(uip_ipaddr_t *nexthop, rpl_dag_t *dag)
 {
   uip_ds6_route_t *r;
@@ -224,7 +224,7 @@ rpl_remove_routes_by_nexthop(uip_ipaddr_t *nexthop, rpl_dag_t *dag)
   ANNOTATE("#L %u 0\n", nexthop->u8[sizeof(uip_ipaddr_t) - 1]);
 }
 /*---------------------------------------------------------------------------*/
-uip_ds6_route_t *
+uip_ds6_route_t * ICACHE_FLASH_ATTR
 rpl_add_route(rpl_dag_t *dag, uip_ipaddr_t *prefix, int prefix_len,
               uip_ipaddr_t *next_hop)
 {
@@ -249,7 +249,7 @@ rpl_add_route(rpl_dag_t *dag, uip_ipaddr_t *prefix, int prefix_len,
   return rep;
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 rpl_link_neighbor_callback(const linkaddr_t *addr, int status, int numtx)
 {
   uip_ipaddr_t ipaddr;
@@ -272,7 +272,7 @@ rpl_link_neighbor_callback(const linkaddr_t *addr, int status, int numtx)
   }
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 rpl_ipv6_neighbor_callback(uip_ds6_nbr_t *nbr)
 {
   rpl_parent_t *p;
@@ -299,7 +299,7 @@ rpl_ipv6_neighbor_callback(uip_ds6_nbr_t *nbr)
   }
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 rpl_purge_dags(void)
 {
   rpl_instance_t *instance;
@@ -327,7 +327,7 @@ rpl_purge_dags(void)
   }
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 rpl_init(void)
 {
   uip_ipaddr_t rplmaddr;

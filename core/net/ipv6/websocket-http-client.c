@@ -32,7 +32,7 @@
 #include "websocket-http-client.h"
 #include "net/ip/uiplib.h"
 #include "net/ip/resolv.h"
-
+#include "ets_sys.h"
 #include "ip64-addr.h"
 
 #include <stdio.h>
@@ -47,7 +47,7 @@ enum {
   STATE_STEADY_STATE,
 };
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 send_get(struct websocket_http_client_state *s)
 {
   struct tcp_socket *tcps;
@@ -81,7 +81,7 @@ send_get(struct websocket_http_client_state *s)
   PRINTF("websocket-http-client: send_get(): output buffer left %d\n", tcp_socket_max_sendlen(tcps));
 }
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 send_connect(struct websocket_http_client_state *s)
 {
   struct tcp_socket *tcps;
@@ -100,7 +100,7 @@ send_connect(struct websocket_http_client_state *s)
   tcp_socket_send_str(tcps, "Proxy-Connection: Keep-Alive\r\n\r\n");
 }
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 event(struct tcp_socket *tcps, void *ptr,
       tcp_socket_event_t e)
 {
@@ -124,7 +124,7 @@ event(struct tcp_socket *tcps, void *ptr,
   }
 }
 /*---------------------------------------------------------------------------*/
-static int
+static int ICACHE_FLASH_ATTR
 parse_header_byte(struct websocket_http_client_state *s,
                   uint8_t b)
 {
@@ -189,7 +189,7 @@ parse_header_byte(struct websocket_http_client_state *s,
   PT_END(&s->parse_header_pt);
 }
 /*---------------------------------------------------------------------------*/
-static int
+static int ICACHE_FLASH_ATTR
 input(struct tcp_socket *tcps, void *ptr,
       const uint8_t *inputptr, int inputdatalen)
 {
@@ -216,7 +216,7 @@ input(struct tcp_socket *tcps, void *ptr,
   return 0; /* all data consumed */
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 websocket_http_client_register(struct websocket_http_client_state *s,
                                const char *host,
                                uint16_t port,
@@ -253,7 +253,7 @@ websocket_http_client_register(struct websocket_http_client_state *s,
   return 1;
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 websocket_http_client_get(struct websocket_http_client_state *s)
 {
   uip_ip4addr_t ip4addr;
@@ -295,7 +295,7 @@ websocket_http_client_get(struct websocket_http_client_state *s)
   return tcp_socket_connect(&s->s, &ip6addr, port);
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 websocket_http_client_send(struct websocket_http_client_state *s,
                            const uint8_t *data,
                            uint16_t datalen)
@@ -306,32 +306,32 @@ websocket_http_client_send(struct websocket_http_client_state *s,
   return -1;
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 websocket_http_client_sendbuflen(struct websocket_http_client_state *s)
 {
   return tcp_socket_max_sendlen(&s->s);
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 websocket_http_client_close(struct websocket_http_client_state *s)
 {
   tcp_socket_close(&s->s);
 }
 /*---------------------------------------------------------------------------*/
-const char *
+const char * ICACHE_FLASH_ATTR
 websocket_http_client_hostname(struct websocket_http_client_state *s)
 {
   return s->host;
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 websocket_http_client_init(struct websocket_http_client_state *s)
 {
   uip_create_unspecified(&s->proxy_addr);
   s->proxy_port = 0;
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 websocket_http_client_set_proxy(struct websocket_http_client_state *s,
                                 const uip_ipaddr_t *addr, uint16_t port)
 {
@@ -339,7 +339,7 @@ websocket_http_client_set_proxy(struct websocket_http_client_state *s,
   s->proxy_port = port;
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 websocket_http_client_queuelen(struct websocket_http_client_state *s)
 {
   return tcp_socket_queuelen(&s->s);

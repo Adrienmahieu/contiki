@@ -44,7 +44,7 @@
  */
 
 #include <stdio.h>
-
+#include "ets_sys.h"
 #include "sys/process.h"
 #include "sys/arg.h"
 
@@ -89,13 +89,13 @@ static void call_process(struct process *p, process_event_t ev, process_data_t d
 #endif
 
 /*---------------------------------------------------------------------------*/
-process_event_t
+process_event_t ICACHE_FLASH_ATTR
 process_alloc_event(void)
 {
   return lastevent++;
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 process_start(struct process *p, process_data_t data)
 {
   struct process *q;
@@ -120,7 +120,7 @@ process_start(struct process *p, process_data_t data)
   process_post_synch(p, PROCESS_EVENT_INIT, data);
 }
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 exit_process(struct process *p, struct process *fromprocess)
 {
   register struct process *q;
@@ -171,7 +171,7 @@ exit_process(struct process *p, struct process *fromprocess)
   process_current = old_current;
 }
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 call_process(struct process *p, process_event_t ev, process_data_t data)
 {
   int ret;
@@ -198,13 +198,13 @@ call_process(struct process *p, process_event_t ev, process_data_t data)
   }
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 process_exit(struct process *p)
 {
   exit_process(p, PROCESS_CURRENT());
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 process_init(void)
 {
   lastevent = PROCESS_EVENT_MAX;
@@ -221,7 +221,7 @@ process_init(void)
  * Call each process' poll handler.
  */
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 do_poll(void)
 {
   struct process *p;
@@ -242,7 +242,7 @@ do_poll(void)
  * listening processes.
  */
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 do_event(void)
 {
   process_event_t ev;
@@ -298,7 +298,7 @@ do_event(void)
   }
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 process_run(void)
 {
   /* Process poll events. */
@@ -312,13 +312,13 @@ process_run(void)
   return nevents + poll_requested;
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 process_nevents(void)
 {
   return nevents + poll_requested;
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 process_post(struct process *p, process_event_t ev, process_data_t data)
 {
   process_num_events_t snum;
@@ -358,7 +358,7 @@ process_post(struct process *p, process_event_t ev, process_data_t data)
   return PROCESS_ERR_OK;
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 process_post_synch(struct process *p, process_event_t ev, process_data_t data)
 {
   struct process *caller = process_current;
@@ -367,7 +367,7 @@ process_post_synch(struct process *p, process_event_t ev, process_data_t data)
   process_current = caller;
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 process_poll(struct process *p)
 {
   if(p != NULL) {
@@ -379,7 +379,7 @@ process_poll(struct process *p)
   }
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 process_is_running(struct process *p)
 {
   return p->state != PROCESS_STATE_NONE;

@@ -36,7 +36,7 @@
  *           $Revision: 1.3 $
  */
 #include "lib/ifft.h"
-
+#include "ets_sys.h"
 /*---------------------------------------------------------------------------*/
 /* constant table of sin values in 8/7 bits resolution */
 /* NOTE: symmetry can be used to reduce this to 1/2 or 1/4 the size */
@@ -59,7 +59,7 @@ static const int8_t SIN_TAB[] = {
 };
 
 
-static uint16_t bitrev(uint16_t j, uint16_t nu)
+static uint16_t ICACHE_FLASH_ATTR bitrev(uint16_t j, uint16_t nu)
 {
   uint16_t k;
   k = 0;
@@ -72,19 +72,19 @@ static uint16_t bitrev(uint16_t j, uint16_t nu)
 
 
 /* Non interpolating sine... which takes an angle of 0 - 999 */
-static int16_t sinI(uint16_t angleMilli)
+static int16_t ICACHE_FLASH_ATTR sinI(uint16_t angleMilli)
 {
   uint16_t pos;
   pos = (uint16_t) ((SIN_TAB_LEN * (uint32_t) angleMilli) / 1000);
   return SIN_TAB[pos % SIN_TAB_LEN];
 }
 
-static int16_t cosI(uint16_t angleMilli)
+static int16_t ICACHE_FLASH_ATTR cosI(uint16_t angleMilli)
 {
   return sinI(angleMilli + 250);
 }
 
-static uint16_t ilog2(uint16_t val)
+static uint16_t ICACHE_FLASH_ATTR ilog2(uint16_t val)
 {
   uint16_t log;
   log = 0;
@@ -110,7 +110,7 @@ static uint16_t ilog2(uint16_t val)
    FFT:s since to large sample arrays might cause it to overflow during
    calculations.
 */
-void
+void ICACHE_FLASH_ATTR
 ifft(int16_t xre[], int16_t xim[], uint16_t n)
 {
   uint16_t nu;

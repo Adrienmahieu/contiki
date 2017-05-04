@@ -62,7 +62,7 @@
  * buffer pointer. If the pointer to arg_free() is not an argument
  * buffer, the function does nothing.
  */
-
+#include "ets_sys.h"
 #include "contiki.h"
 #include "sys/arg.h"
 
@@ -81,7 +81,7 @@ static struct argbuf bufs[1];
  * \internal Initalizer, called by the dispatcher module.
  */
 /*-----------------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 arg_init(void)
 {
   bufs[0].used = 0;
@@ -100,7 +100,7 @@ arg_init(void)
  *
  */
 /*-----------------------------------------------------------------------------------*/
-char *
+char * ICACHE_FLASH_ATTR
 arg_alloc(char size)
 {
   if(bufs[0].used == 0) {
@@ -121,7 +121,7 @@ arg_alloc(char size)
  * \param arg A pointer.
  */
 /*-----------------------------------------------------------------------------------*/
-void
+void  ICACHE_FLASH_ATTR
 arg_free(char *arg)
 {
   if(arg == bufs[0].buf) {

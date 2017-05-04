@@ -31,7 +31,7 @@
 
 #define DEBUG DEBUG_NONE
 #include "net/ip/uip-debug.h"
-
+#include "ets_sys.h"
 #include "contiki.h"
 #include "sys/cc.h"
 #include "contiki-net.h"
@@ -48,7 +48,7 @@ LIST(socketlist);
 /*---------------------------------------------------------------------------*/
 PROCESS(tcp_socket_process, "TCP socket process");
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 call_event(struct tcp_socket *s, tcp_socket_event_t event)
 {
   if(s != NULL && s->event_callback != NULL) {
@@ -56,7 +56,7 @@ call_event(struct tcp_socket *s, tcp_socket_event_t event)
   }
 }
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 senddata(struct tcp_socket *s)
 {
   int len = MIN(s->output_data_max_seg, uip_mss());
@@ -68,7 +68,7 @@ senddata(struct tcp_socket *s)
   }
 }
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 acked(struct tcp_socket *s)
 {
   if(s->output_senddata_len > 0) {
@@ -98,7 +98,7 @@ acked(struct tcp_socket *s)
   }
 }
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 newdata(struct tcp_socket *s)
 {
   uint16_t len, copylen, bytesleft;
@@ -130,7 +130,7 @@ newdata(struct tcp_socket *s)
   } while(len > 0);
 }
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 relisten(struct tcp_socket *s)
 {
   if(s != NULL && s->listen_port != 0) {
@@ -138,7 +138,7 @@ relisten(struct tcp_socket *s)
   }
 }
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 appcall(void *state)
 {
   struct tcp_socket *s = state;
@@ -247,7 +247,7 @@ PROCESS_THREAD(tcp_socket_process, ev, data)
   PROCESS_END();
 }
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 init(void)
 {
   static uint8_t inited = 0;
@@ -258,7 +258,7 @@ init(void)
   }
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 tcp_socket_register(struct tcp_socket *s, void *ptr,
 		    uint8_t *input_databuf, int input_databuf_len,
 		    uint8_t *output_databuf, int output_databuf_len,
@@ -286,7 +286,7 @@ tcp_socket_register(struct tcp_socket *s, void *ptr,
   return 1;
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 tcp_socket_connect(struct tcp_socket *s,
                    const uip_ipaddr_t *ipaddr,
                    uint16_t port)
@@ -307,7 +307,7 @@ tcp_socket_connect(struct tcp_socket *s,
   }
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 tcp_socket_listen(struct tcp_socket *s,
            uint16_t port)
 {
@@ -323,7 +323,7 @@ tcp_socket_listen(struct tcp_socket *s,
   return 1;
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 tcp_socket_unlisten(struct tcp_socket *s)
 {
   if(s == NULL) {
@@ -338,7 +338,7 @@ tcp_socket_unlisten(struct tcp_socket *s)
   return 1;
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 tcp_socket_send(struct tcp_socket *s,
                 const uint8_t *data, int datalen)
 {
@@ -362,14 +362,14 @@ tcp_socket_send(struct tcp_socket *s,
   return len;
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 tcp_socket_send_str(struct tcp_socket *s,
              const char *str)
 {
   return tcp_socket_send(s, (const uint8_t *)str, strlen(str));
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 tcp_socket_close(struct tcp_socket *s)
 {
   if(s == NULL) {
@@ -380,7 +380,7 @@ tcp_socket_close(struct tcp_socket *s)
   return 1;
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 tcp_socket_unregister(struct tcp_socket *s)
 {
   if(s == NULL) {
@@ -395,13 +395,13 @@ tcp_socket_unregister(struct tcp_socket *s)
   return 1;
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 tcp_socket_max_sendlen(struct tcp_socket *s)
 {
   return s->output_data_maxlen - s->output_data_len;
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 tcp_socket_queuelen(struct tcp_socket *s)
 {
   return s->output_data_len;

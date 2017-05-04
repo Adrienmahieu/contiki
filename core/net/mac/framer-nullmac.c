@@ -35,7 +35,7 @@
  *         Niclas Finne <nfi@sics.se>
  *         Joakim Eriksson <joakime@sics.se>
  */
-
+#include "ets_sys.h"
 #include "net/mac/framer-nullmac.h"
 #include "net/packetbuf.h"
 
@@ -56,13 +56,13 @@ struct nullmac_hdr {
 };
 
 /*---------------------------------------------------------------------------*/
-static int
+static int ICACHE_FLASH_ATTR
 hdr_length(void)
 {
   return sizeof(struct nullmac_hdr);
 }
 /*---------------------------------------------------------------------------*/
-static int
+static int ICACHE_FLASH_ATTR
 create(void)
 {
   struct nullmac_hdr *hdr;
@@ -77,7 +77,7 @@ create(void)
   return FRAMER_FAILED;
 }
 /*---------------------------------------------------------------------------*/
-static int
+static int ICACHE_FLASH_ATTR
 parse(void)
 {
   struct nullmac_hdr *hdr;

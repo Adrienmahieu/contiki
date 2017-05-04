@@ -74,7 +74,7 @@
 #include "net/ipv6/uip-ds6.h"
 #include "net/ip/uip-nameserver.h"
 #include "lib/random.h"
-
+#include "ets_sys.h"
 /*------------------------------------------------------------------*/
 #define DEBUG 0
 #include "net/ip/uip-debug.h"
@@ -138,7 +138,7 @@ static uip_ds6_prefix_t *prefix; /**  Pointer to a prefix list entry */
 #if UIP_ND6_SEND_NA || UIP_ND6_SEND_RA || !UIP_CONF_ROUTER
 /*------------------------------------------------------------------*/
 /* Copy link-layer address from LLAO option to a word-aligned uip_lladdr_t */
-static int
+static int ICACHE_FLASH_ATTR
 extract_lladdr_from_llao_aligned(uip_lladdr_t *dest) {
   if(dest != NULL && nd6_opt_llao != NULL) {
     memcpy(dest, &nd6_opt_llao[UIP_ND6_OPT_DATA_OFFSET], UIP_LLADDR_LEN);
@@ -149,7 +149,7 @@ extract_lladdr_from_llao_aligned(uip_lladdr_t *dest) {
 #endif /* UIP_ND6_SEND_NA || UIP_ND6_SEND_RA || !UIP_CONF_ROUTER */
 /*------------------------------------------------------------------*/
 /* create a llao */
-static void
+static void ICACHE_FLASH_ATTR
 create_llao(uint8_t *llao, uint8_t type) {
   llao[UIP_ND6_OPT_TYPE_OFFSET] = type;
   llao[UIP_ND6_OPT_LEN_OFFSET] = UIP_ND6_OPT_LLAO_LEN >> 3;
@@ -182,7 +182,7 @@ create_llao(uint8_t *llao, uint8_t type) {
  *
  */
 #if UIP_ND6_SEND_NA
-static void
+static void ICACHE_FLASH_ATTR
 ns_input(void)
 {
   uint8_t flags;
@@ -370,7 +370,7 @@ discard:
 
 /*------------------------------------------------------------------*/
 #if UIP_ND6_SEND_NS
-void
+void ICACHE_FLASH_ATTR
 uip_nd6_ns_output(uip_ipaddr_t * src, uip_ipaddr_t * dest, uip_ipaddr_t * tgt)
 {
   uip_ext_len = 0;
@@ -453,7 +453,7 @@ uip_nd6_ns_output(uip_ipaddr_t * src, uip_ipaddr_t * dest, uip_ipaddr_t * tgt)
  * If the NS was for DAD, it means DAD failed
  *
  */
-static void
+static void ICACHE_FLASH_ATTR
 na_input(void)
 {
   uint8_t is_llchange;
@@ -614,7 +614,7 @@ discard:
 #if UIP_CONF_ROUTER
 #if UIP_ND6_SEND_RA
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 rs_input(void)
 {
 
@@ -707,7 +707,7 @@ discard:
 }
 
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 uip_nd6_ra_output(uip_ipaddr_t * dest)
 {
 
@@ -818,7 +818,7 @@ uip_nd6_ra_output(uip_ipaddr_t * dest)
 
 #if !UIP_CONF_ROUTER
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 uip_nd6_rs_output(void)
 {
   UIP_IP_BUF->vtc = 0x60;
@@ -865,7 +865,7 @@ uip_nd6_rs_output(void)
  * - If SLLAO option: update entry in neighbor cache
  * - If prefix option: start autoconf, add prefix to prefix list
  */
-void
+void ICACHE_FLASH_ATTR
 ra_input(void)
 {
   uip_lladdr_t lladdr_aligned;
@@ -1119,7 +1119,7 @@ UIP_ICMP6_HANDLER(ra_input_handler, ICMP6_RA, UIP_ICMP6_HANDLER_CODE_ANY,
                   ra_input);
 #endif
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 uip_nd6_init()
 {
 #if UIP_ND6_SEND_NA

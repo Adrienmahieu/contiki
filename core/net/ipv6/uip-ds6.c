@@ -41,7 +41,7 @@
  * \author Mathilde Durvy <mdurvy@cisco.com>
  * \author Julien Abeille <jabeille@cisco.com>
  */
-
+#include "ets_sys.h"
 #include <string.h>
 #include <stdlib.h>
 #include <stddef.h>
@@ -90,7 +90,7 @@ static uip_ds6_aaddr_t *locaaddr;
 static uip_ds6_prefix_t *locprefix;
 
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 uip_ds6_init(void)
 {
 
@@ -144,7 +144,7 @@ uip_ds6_init(void)
 
 
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 uip_ds6_periodic(void)
 {
 
@@ -202,7 +202,7 @@ uip_ds6_periodic(void)
 }
 
 /*---------------------------------------------------------------------------*/
-uint8_t
+uint8_t ICACHE_FLASH_ATTR
 uip_ds6_list_loop(uip_ds6_element_t *list, uint8_t size,
                   uint16_t elementsize, uip_ipaddr_t *ipaddr,
                   uint8_t ipaddrlen, uip_ds6_element_t **out_element)
@@ -231,7 +231,7 @@ uip_ds6_list_loop(uip_ds6_element_t *list, uint8_t size,
 /*---------------------------------------------------------------------------*/
 #if UIP_CONF_ROUTER
 /*---------------------------------------------------------------------------*/
-uip_ds6_prefix_t *
+uip_ds6_prefix_t * ICACHE_FLASH_ATTR
 uip_ds6_prefix_add(uip_ipaddr_t *ipaddr, uint8_t ipaddrlen,
                    uint8_t advertise, uint8_t flags, unsigned long vtime,
                    unsigned long ptime)
@@ -287,7 +287,7 @@ uip_ds6_prefix_add(uip_ipaddr_t *ipaddr, uint8_t ipaddrlen,
 #endif /* UIP_CONF_ROUTER */
 
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 uip_ds6_prefix_rm(uip_ds6_prefix_t *prefix)
 {
   if(prefix != NULL) {
@@ -296,7 +296,7 @@ uip_ds6_prefix_rm(uip_ds6_prefix_t *prefix)
   return;
 }
 /*---------------------------------------------------------------------------*/
-uip_ds6_prefix_t *
+uip_ds6_prefix_t * ICACHE_FLASH_ATTR
 uip_ds6_prefix_lookup(uip_ipaddr_t *ipaddr, uint8_t ipaddrlen)
 {
   if(uip_ds6_list_loop((uip_ds6_element_t *)uip_ds6_prefix_list,
@@ -309,7 +309,7 @@ uip_ds6_prefix_lookup(uip_ipaddr_t *ipaddr, uint8_t ipaddrlen)
 }
 
 /*---------------------------------------------------------------------------*/
-uint8_t
+uint8_t ICACHE_FLASH_ATTR
 uip_ds6_is_addr_onlink(uip_ipaddr_t *ipaddr)
 {
   for(locprefix = uip_ds6_prefix_list;
@@ -323,7 +323,7 @@ uip_ds6_is_addr_onlink(uip_ipaddr_t *ipaddr)
 }
 
 /*---------------------------------------------------------------------------*/
-uip_ds6_addr_t *
+uip_ds6_addr_t * ICACHE_FLASH_ATTR
 uip_ds6_addr_add(uip_ipaddr_t *ipaddr, unsigned long vlifetime, uint8_t type)
 {
   if(uip_ds6_list_loop
@@ -356,7 +356,7 @@ uip_ds6_addr_add(uip_ipaddr_t *ipaddr, unsigned long vlifetime, uint8_t type)
 }
 
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 uip_ds6_addr_rm(uip_ds6_addr_t *addr)
 {
   if(addr != NULL) {
@@ -370,7 +370,7 @@ uip_ds6_addr_rm(uip_ds6_addr_t *addr)
 }
 
 /*---------------------------------------------------------------------------*/
-uip_ds6_addr_t *
+uip_ds6_addr_t * ICACHE_FLASH_ATTR
 uip_ds6_addr_lookup(uip_ipaddr_t *ipaddr)
 {
   if(uip_ds6_list_loop
@@ -388,7 +388,7 @@ uip_ds6_addr_lookup(uip_ipaddr_t *ipaddr)
  * state = -1 => any address is ok. Otherwise state = desired state of addr.
  * (TENTATIVE, PREFERRED, DEPRECATED)
  */
-uip_ds6_addr_t *
+uip_ds6_addr_t * ICACHE_FLASH_ATTR
 uip_ds6_get_link_local(int8_t state)
 {
   for(locaddr = uip_ds6_if.addr_list;
@@ -407,7 +407,7 @@ uip_ds6_get_link_local(int8_t state)
  * state = -1 => any address is ok. Otherwise state = desired state of addr.
  * (TENTATIVE, PREFERRED, DEPRECATED)
  */
-uip_ds6_addr_t *
+uip_ds6_addr_t * ICACHE_FLASH_ATTR
 uip_ds6_get_global(int8_t state)
 {
   for(locaddr = uip_ds6_if.addr_list;
@@ -421,7 +421,7 @@ uip_ds6_get_global(int8_t state)
 }
 
 /*---------------------------------------------------------------------------*/
-uip_ds6_maddr_t *
+uip_ds6_maddr_t * ICACHE_FLASH_ATTR
 uip_ds6_maddr_add(const uip_ipaddr_t *ipaddr)
 {
   if(uip_ds6_list_loop
@@ -436,7 +436,7 @@ uip_ds6_maddr_add(const uip_ipaddr_t *ipaddr)
 }
 
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 uip_ds6_maddr_rm(uip_ds6_maddr_t *maddr)
 {
   if(maddr != NULL) {
@@ -446,7 +446,7 @@ uip_ds6_maddr_rm(uip_ds6_maddr_t *maddr)
 }
 
 /*---------------------------------------------------------------------------*/
-uip_ds6_maddr_t *
+uip_ds6_maddr_t * ICACHE_FLASH_ATTR
 uip_ds6_maddr_lookup(const uip_ipaddr_t *ipaddr)
 {
   if(uip_ds6_list_loop
@@ -460,7 +460,7 @@ uip_ds6_maddr_lookup(const uip_ipaddr_t *ipaddr)
 
 
 /*---------------------------------------------------------------------------*/
-uip_ds6_aaddr_t *
+uip_ds6_aaddr_t * ICACHE_FLASH_ATTR
 uip_ds6_aaddr_add(uip_ipaddr_t *ipaddr)
 {
 #if UIP_DS6_AADDR_NB
@@ -477,7 +477,7 @@ uip_ds6_aaddr_add(uip_ipaddr_t *ipaddr)
 }
 
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 uip_ds6_aaddr_rm(uip_ds6_aaddr_t *aaddr)
 {
   if(aaddr != NULL) {
@@ -487,7 +487,7 @@ uip_ds6_aaddr_rm(uip_ds6_aaddr_t *aaddr)
 }
 
 /*---------------------------------------------------------------------------*/
-uip_ds6_aaddr_t *
+uip_ds6_aaddr_t * ICACHE_FLASH_ATTR
 uip_ds6_aaddr_lookup(uip_ipaddr_t *ipaddr)
 {
 #if UIP_DS6_AADDR_NB
@@ -501,7 +501,7 @@ uip_ds6_aaddr_lookup(uip_ipaddr_t *ipaddr)
 }
 
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 uip_ds6_select_src(uip_ipaddr_t *src, uip_ipaddr_t *dst)
 {
   uint8_t best = 0;             /* number of bit in common with best match */
@@ -539,7 +539,7 @@ uip_ds6_select_src(uip_ipaddr_t *src, uip_ipaddr_t *dst)
 }
 
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 uip_ds6_set_addr_iid(uip_ipaddr_t *ipaddr, uip_lladdr_t *lladdr)
 {
   /* We consider only links with IEEE EUI-64 identifier or
@@ -559,7 +559,7 @@ uip_ds6_set_addr_iid(uip_ipaddr_t *ipaddr, uip_lladdr_t *lladdr)
 }
 
 /*---------------------------------------------------------------------------*/
-uint8_t
+uint8_t ICACHE_FLASH_ATTR
 get_match_length(uip_ipaddr_t *src, uip_ipaddr_t *dst)
 {
   uint8_t j, k, x_or;
@@ -586,7 +586,7 @@ get_match_length(uip_ipaddr_t *src, uip_ipaddr_t *dst)
 
 /*---------------------------------------------------------------------------*/
 #if UIP_ND6_DEF_MAXDADNS > 0
-void
+void ICACHE_FLASH_ATTR
 uip_ds6_dad(uip_ds6_addr_t *addr)
 {
   /* send maxdadns NS for DAD  */
@@ -614,7 +614,7 @@ uip_ds6_dad(uip_ds6_addr_t *addr)
  * Calling code must handle when this returns 0 (e.g. link local
  * address can not be used).
  */
-int
+int ICACHE_FLASH_ATTR
 uip_ds6_dad_failed(uip_ds6_addr_t *addr)
 {
   if(uip_is_addr_linklocal(&addr->ipaddr)) {
@@ -629,7 +629,7 @@ uip_ds6_dad_failed(uip_ds6_addr_t *addr)
 /*---------------------------------------------------------------------------*/
 #if UIP_CONF_ROUTER
 #if UIP_ND6_SEND_RA
-void
+void ICACHE_FLASH_ATTR
 uip_ds6_send_ra_sollicited(void)
 {
   /* We have a pb here: RA timer max possible value is 1800s,
@@ -654,7 +654,7 @@ uip_ds6_send_ra_sollicited(void)
 }
 
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 uip_ds6_send_ra_periodic(void)
 {
   if(racount > 0) {
@@ -681,7 +681,7 @@ uip_ds6_send_ra_periodic(void)
 #endif /* UIP_ND6_SEND_RA */
 #else /* UIP_CONF_ROUTER */
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 uip_ds6_send_rs(void)
 {
   if((uip_ds6_defrt_choose() == NULL)
@@ -701,7 +701,7 @@ uip_ds6_send_rs(void)
 
 #endif /* UIP_CONF_ROUTER */
 /*---------------------------------------------------------------------------*/
-uint32_t
+uint32_t ICACHE_FLASH_ATTR
 uip_ds6_compute_reachable_time(void)
 {
   return (uint32_t) (UIP_ND6_MIN_RANDOM_FACTOR

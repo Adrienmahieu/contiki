@@ -36,7 +36,7 @@
  * \author
  *         Adam Dunkels <adam@sics.se>
  */
-
+#include "ets_sys.h"
 #include "sys/energest.h"
 #include "contiki-conf.h"
 
@@ -51,7 +51,7 @@ energest_t energest_leveldevice_current_leveltime[ENERGEST_CONF_LEVELDEVICE_LEVE
 unsigned char energest_current_mode[ENERGEST_TYPE_MAX];
 
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 energest_init(void)
 {
   int i;
@@ -66,7 +66,7 @@ energest_init(void)
 #endif
 }
 /*---------------------------------------------------------------------------*/
-unsigned long
+unsigned long ICACHE_FLASH_ATTR
 energest_type_time(int type)
 {
   /* Note: does not support ENERGEST_CONF_LEVELDEVICE_LEVELS! */
@@ -81,7 +81,7 @@ energest_type_time(int type)
   return energest_total_time[type].current;
 }
 /*---------------------------------------------------------------------------*/
-unsigned long
+unsigned long ICACHE_FLASH_ATTR
 energest_leveldevice_leveltime(int powerlevel)
 {
 #ifdef ENERGEST_CONF_LEVELDEVICE_LEVELS
@@ -91,14 +91,14 @@ energest_leveldevice_leveltime(int powerlevel)
 #endif
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 energest_type_set(int type, unsigned long val)
 {
   energest_total_time[type].current = val;
 }
 /*---------------------------------------------------------------------------*/
 /* Note: does not support ENERGEST_CONF_LEVELDEVICE_LEVELS! */
-void
+void ICACHE_FLASH_ATTR
 energest_flush(void)
 {
   rtimer_clock_t now;
@@ -114,8 +114,8 @@ energest_flush(void)
 }
 /*---------------------------------------------------------------------------*/
 #else /* ENERGEST_CONF_ON */
-void energest_type_set(int type, unsigned long val) {}
-void energest_init(void) {}
-unsigned long energest_type_time(int type) { return 0; }
-void energest_flush(void) {}
+void  ICACHE_FLASH_ATTR energest_type_set(int type, unsigned long val) {}
+void  ICACHE_FLASH_ATTR energest_init(void) {}
+unsigned long  ICACHE_FLASH_ATTR energest_type_time(int type) { return 0; }
+void  ICACHE_FLASH_ATTR energest_flush(void) {}
 #endif /* ENERGEST_CONF_ON */

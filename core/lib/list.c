@@ -46,8 +46,8 @@
  */
 
 #include "lib/list.h"
-
-#define NULL 0
+#include "ets_sys.h"
+#define _NULL 0
 
 struct list {
   struct list *next;
@@ -62,10 +62,10 @@ struct list {
  *
  * \param list The list to be initialized.
  */
-void
+void ICACHE_FLASH_ATTR
 list_init(list_t list)
 {
-  *list = NULL;
+  *list = _NULL;
 }
 /*---------------------------------------------------------------------------*/
 /**
@@ -79,7 +79,7 @@ list_init(list_t list)
  *
  * \sa list_tail()
  */
-void *
+void * ICACHE_FLASH_ATTR
 list_head(list_t list)
 {
   return *list;
@@ -97,7 +97,7 @@ list_head(list_t list)
  * \param dest The destination list.
  * \param src The source list.
  */
-void
+void ICACHE_FLASH_ATTR
 list_copy(list_t dest, list_t src)
 {
   *dest = *src;
@@ -114,16 +114,16 @@ list_copy(list_t dest, list_t src)
  *
  * \sa list_head()
  */
-void *
+void * ICACHE_FLASH_ATTR
 list_tail(list_t list)
 {
   struct list *l;
   
-  if(*list == NULL) {
-    return NULL;
+  if(*list == _NULL) {
+    return _NULL;
   }
   
-  for(l = *list; l->next != NULL; l = l->next);
+  for(l = *list; l->next != _NULL; l = l->next);
   
   return l;
 }
@@ -139,7 +139,7 @@ list_tail(list_t list)
  * \sa list_push()
  *
  */
-void
+void ICACHE_FLASH_ATTR
 list_add(list_t list, void *item)
 {
   struct list *l;
@@ -147,11 +147,11 @@ list_add(list_t list, void *item)
   /* Make sure not to add the same element twice */
   list_remove(list, item);
 
-  ((struct list *)item)->next = NULL;
+  ((struct list *)item)->next = _NULL;
   
   l = list_tail(list);
 
-  if(l == NULL) {
+  if(l == _NULL) {
     *list = item;
   } else {
     l->next = item;
@@ -161,7 +161,7 @@ list_add(list_t list, void *item)
 /**
  * Add an item to the start of the list.
  */
-void
+void ICACHE_FLASH_ATTR
 list_push(list_t list, void *item)
 {
   /*  struct list *l;*/
@@ -182,24 +182,24 @@ list_push(list_t list, void *item)
  * \return The removed object
  *
  */
-void *
+void * ICACHE_FLASH_ATTR
 list_chop(list_t list)
 {
   struct list *l, *r;
   
-  if(*list == NULL) {
-    return NULL;
+  if(*list == _NULL) {
+    return _NULL;
   }
-  if(((struct list *)*list)->next == NULL) {
+  if(((struct list *)*list)->next == _NULL) {
     l = *list;
-    *list = NULL;
+    *list = _NULL;
     return l;
   }
   
-  for(l = *list; l->next->next != NULL; l = l->next);
+  for(l = *list; l->next->next != _NULL; l = l->next);
 
   r = l->next;
-  l->next = NULL;
+  l->next = _NULL;
   
   return r;
 }
@@ -214,12 +214,12 @@ list_chop(list_t list)
  * \return Pointer to the removed element of list.
  */
 /*---------------------------------------------------------------------------*/
-void *
+void * ICACHE_FLASH_ATTR
 list_pop(list_t list)
 {
   struct list *l;
   l = *list;
-  if(*list != NULL) {
+  if(*list != _NULL) {
     *list = ((struct list *)*list)->next;
   }
 
@@ -236,26 +236,26 @@ list_pop(list_t list)
  *
  */
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 list_remove(list_t list, void *item)
 {
   struct list *l, *r;
   
-  if(*list == NULL) {
+  if(*list == _NULL) {
     return;
   }
   
-  r = NULL;
-  for(l = *list; l != NULL; l = l->next) {
+  r = _NULL;
+  for(l = *list; l != _NULL; l = l->next) {
     if(l == item) {
-      if(r == NULL) {
+      if(r == _NULL) {
 	/* First on list */
 	*list = l->next;
       } else {
 	/* Not first on list */
 	r->next = l->next;
       }
-      l->next = NULL;
+      l->next = _NULL;
       return;
     }
     r = l;
@@ -271,13 +271,13 @@ list_remove(list_t list, void *item)
  * \return The length of the list.
  */
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 list_length(list_t list)
 {
   struct list *l;
   int n = 0;
 
-  for(l = *list; l != NULL; l = l->next) {
+  for(l = *list; l != _NULL; l = l->next) {
     ++n;
   }
 
@@ -299,10 +299,10 @@ list_length(list_t list)
  *             start of the list.
  *
  */
-void
+void ICACHE_FLASH_ATTR
 list_insert(list_t list, void *previtem, void *newitem)
 {
-  if(previtem == NULL) {
+  if(previtem == _NULL) {
     list_push(list, newitem);
   } else {
   
@@ -317,14 +317,14 @@ list_insert(list_t list, void *previtem, void *newitem)
  * \returns    A next item on the list
  *
  *             This function takes a list item and returns the next
- *             item on the list, or NULL if there are no more items on
+ *             item on the list, or _NULL if there are no more items on
  *             the list. This function is used when iterating through
  *             lists.
  */
-void *
+void * ICACHE_FLASH_ATTR
 list_item_next(void *item)
 {
-  return item == NULL? NULL: ((struct list *)item)->next;
+  return item == _NULL? _NULL: ((struct list *)item)->next;
 }
 /*---------------------------------------------------------------------------*/
 /** @} */

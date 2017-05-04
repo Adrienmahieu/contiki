@@ -31,7 +31,7 @@
  */
 #include "dev/serial-line.h"
 #include <string.h> /* for memcpy() */
-
+#include "ets_sys.h"
 #include "lib/ringbuf.h"
 
 #ifdef SERIAL_LINE_CONF_BUFSIZE
@@ -56,7 +56,7 @@ PROCESS(serial_line_process, "Serial driver");
 process_event_t serial_line_event_message;
 
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 serial_line_input_byte(unsigned char c)
 {
   static uint8_t overflow = 0; /* Buffer overflow: ignore until END */
@@ -84,7 +84,7 @@ serial_line_input_byte(unsigned char c)
   return 1;
 }
 /*---------------------------------------------------------------------------*/
-PROCESS_THREAD(serial_line_process, ev, data)
+ICACHE_FLASH_ATTR PROCESS_THREAD(serial_line_process, ev, data)
 {
   static char buf[BUFSIZE];
   static int ptr;
@@ -128,7 +128,7 @@ PROCESS_THREAD(serial_line_process, ev, data)
   PROCESS_END();
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 serial_line_init(void)
 {
   ringbuf_init(&rxbuf, rxbuf_data, sizeof(rxbuf_data));

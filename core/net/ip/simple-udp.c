@@ -44,7 +44,7 @@
 
 #include "contiki-net.h"
 #include "net/ip/simple-udp.h"
-
+#include "ets_sys.h"
 #include <string.h>
 
 
@@ -55,7 +55,7 @@ static uint8_t databuffer[UIP_BUFSIZE];
 #define UIP_IP_BUF   ((struct uip_udpip_hdr *)&uip_buf[UIP_LLH_LEN])
 
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 init_simple_udp(void)
 {
   if(started == 0) {
@@ -64,7 +64,7 @@ init_simple_udp(void)
   }
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 simple_udp_send(struct simple_udp_connection *c,
                 const void *data, uint16_t datalen)
 {
@@ -75,7 +75,7 @@ simple_udp_send(struct simple_udp_connection *c,
   return 0;
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 simple_udp_sendto(struct simple_udp_connection *c,
                   const void *data, uint16_t datalen,
                   const uip_ipaddr_t *to)
@@ -87,7 +87,7 @@ simple_udp_sendto(struct simple_udp_connection *c,
   return 0;
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 simple_udp_sendto_port(struct simple_udp_connection *c,
 		       const void *data, uint16_t datalen,
 		       const uip_ipaddr_t *to,
@@ -100,7 +100,7 @@ simple_udp_sendto_port(struct simple_udp_connection *c,
   return 0;
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 simple_udp_register(struct simple_udp_connection *c,
                     uint16_t local_port,
                     uip_ipaddr_t *remote_addr,

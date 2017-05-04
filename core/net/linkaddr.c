@@ -41,7 +41,7 @@
  * \addtogroup linkaddr
  * @{
  */
-
+#include "ets_sys.h"
 #include "net/linkaddr.h"
 #include <string.h>
 
@@ -59,19 +59,19 @@ const linkaddr_t linkaddr_null = { { 0, 0, 0, 0, 0, 0 } };
 
 
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 linkaddr_copy(linkaddr_t *dest, const linkaddr_t *src)
 {
 	memcpy(dest, src, LINKADDR_SIZE);
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 linkaddr_cmp(const linkaddr_t *addr1, const linkaddr_t *addr2)
 {
 	return (memcmp(addr1, addr2, LINKADDR_SIZE) == 0);
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 linkaddr_set_node_addr(linkaddr_t *t)
 {
   linkaddr_copy(&linkaddr_node_addr, t);

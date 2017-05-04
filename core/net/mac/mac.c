@@ -29,7 +29,7 @@
  * This file is part of the Contiki operating system.
  *
  */
-
+#include "ets_sys.h"
 #include "net/mac/mac.h"
 
 #define DEBUG 0
@@ -41,7 +41,7 @@
 #endif /* DEBUG */
 
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 mac_call_sent_callback(mac_callback_t sent, void *ptr, int status, int num_tx)
 {
   PRINTF("mac_callback_t %p ptr %p status %d num_tx %d\n",

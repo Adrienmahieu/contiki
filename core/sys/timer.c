@@ -43,7 +43,7 @@
  * \addtogroup timer
  * @{
  */
-
+#include "ets_sys.h"
 #include "contiki-conf.h"
 #include "sys/clock.h"
 #include "sys/timer.h"
@@ -60,7 +60,7 @@
  * \param interval The interval before the timer expires.
  *
  */
-void
+void ICACHE_FLASH_ATTR
 timer_set(struct timer *t, clock_time_t interval)
 {
   t->interval = interval;
@@ -81,7 +81,7 @@ timer_set(struct timer *t, clock_time_t interval)
  * \param t A pointer to the timer.
  * \sa timer_restart()
  */
-void
+void ICACHE_FLASH_ATTR
 timer_reset(struct timer *t)
 {
   t->start += t->interval;
@@ -101,7 +101,7 @@ timer_reset(struct timer *t)
  *
  * \sa timer_reset()
  */
-void
+void ICACHE_FLASH_ATTR
 timer_restart(struct timer *t)
 {
   t->start = clock_time();
@@ -118,7 +118,7 @@ timer_restart(struct timer *t)
  * \return Non-zero if the timer has expired, zero otherwise.
  *
  */
-int
+int ICACHE_FLASH_ATTR
 timer_expired(struct timer *t)
 {
   /* Note: Can not return diff >= t->interval so we add 1 to diff and return
@@ -138,7 +138,7 @@ timer_expired(struct timer *t)
  * \return The time until the timer expires
  *
  */
-clock_time_t
+clock_time_t ICACHE_FLASH_ATTR
 timer_remaining(struct timer *t)
 {
   return t->start + t->interval - clock_time();

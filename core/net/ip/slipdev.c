@@ -68,7 +68,7 @@
 #include "uip.h"
 #include "slipdev.h"
 #include <string.h>  /* For memcpy() */
-
+#include "ets_sys.h"
 #define SLIP_END     0300
 #define SLIP_ESC     0333
 #define SLIP_ESC_END 0334
@@ -91,7 +91,7 @@ static uint8_t lastc;
  * \return This function will always return 0.
  */
 /*-----------------------------------------------------------------------------------*/
-uint8_t
+uint8_t ICACHE_FLASH_ATTR
 slipdev_send(void)
 {
   uint16_t i;
@@ -135,7 +135,7 @@ slipdev_send(void)
  * zero if no packet is available.
  */
 /*-----------------------------------------------------------------------------------*/
-uint16_t
+uint16_t ICACHE_FLASH_ATTR
 slipdev_poll(void)
 {
   uint8_t c;
@@ -192,7 +192,7 @@ slipdev_poll(void)
  * only the SLIP part.
  */ 
 /*-----------------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 slipdev_init(void)
 {
   lastc = len = 0;

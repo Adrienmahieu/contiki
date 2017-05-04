@@ -37,7 +37,7 @@
  *         Original: Konrad Krentz <konrad.krentz@gmail.com>
  *         Generified version: Justin King-Lacroix <justin.kinglacroix@gmail.com>
  */
-
+#include "ets_sys.h"
 #include "ccm-star.h"
 #include "lib/aes-128.h"
 #include <string.h>
@@ -47,7 +47,7 @@
 #define CCM_STAR_ENCRYPTION_FLAGS     1
 
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 set_iv(uint8_t *iv,
     uint8_t flags,
     const uint8_t *nonce,
@@ -60,7 +60,7 @@ set_iv(uint8_t *iv,
 }
 /*---------------------------------------------------------------------------*/
 /* XORs the block m[pos] ... m[pos + 15] with K_{counter} */
-static void
+static void ICACHE_FLASH_ATTR
 ctr_step(const uint8_t *nonce,
     uint8_t pos,
     uint8_t *m_and_result,
@@ -78,7 +78,7 @@ ctr_step(const uint8_t *nonce,
   }
 }
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 mic(const uint8_t *nonce,
     const uint8_t *m, uint8_t m_len,
     const uint8_t *a, uint8_t a_len,
@@ -126,7 +126,7 @@ mic(const uint8_t *nonce,
   memcpy(result, x, mic_len);
 }
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 ctr(const uint8_t *nonce, uint8_t *m, uint8_t m_len)
 {
   uint8_t pos;
@@ -140,13 +140,13 @@ ctr(const uint8_t *nonce, uint8_t *m, uint8_t m_len)
   }
 }
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 set_key(const uint8_t *key)
 {
   AES_128.set_key(key);
 }
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 aead(const uint8_t* nonce,
     uint8_t* m, uint8_t m_len,
     const uint8_t* a, uint8_t a_len,

@@ -36,7 +36,7 @@
  * \author
  *         Adam Dunkels <adam@sics.se>
  */
-
+#include "ets_sys.h"
 #include "sys/autostart.h"
 
 #define DEBUG 0
@@ -48,7 +48,7 @@
 #endif
 
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 autostart_start(struct process * const processes[])
 {
   int i;
@@ -59,7 +59,7 @@ autostart_start(struct process * const processes[])
   }
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 autostart_exit(struct process * const processes[])
 {
   int i;

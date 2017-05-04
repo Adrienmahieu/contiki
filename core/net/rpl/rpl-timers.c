@@ -40,7 +40,7 @@
  * \addtogroup uip6
  * @{
  */
-
+#include "ets_sys.h"
 #include "contiki-conf.h"
 #include "net/rpl/rpl-private.h"
 #include "net/rpl/rpl-ns.h"
@@ -78,7 +78,7 @@ static uint16_t next_dis;
 static uint8_t dio_send_ok;
 
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 handle_periodic_timer(void *ptr)
 {
   rpl_dag_t *dag = rpl_get_any_dag();
@@ -105,7 +105,7 @@ handle_periodic_timer(void *ptr)
   ctimer_reset(&periodic_timer);
 }
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 new_dio_interval(rpl_instance_t *instance)
 {
   uint32_t time;
@@ -154,7 +154,7 @@ new_dio_interval(rpl_instance_t *instance)
 #endif /* RPL_CALLBACK_NEW_DIO_INTERVAL */
 }
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 handle_dio_timer(void *ptr)
 {
   rpl_instance_t *instance;
@@ -201,7 +201,7 @@ handle_dio_timer(void *ptr)
 #endif
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 rpl_reset_periodic_timer(void)
 {
   next_dis = RPL_DIS_INTERVAL / 2 +
@@ -211,7 +211,7 @@ rpl_reset_periodic_timer(void)
 }
 /*---------------------------------------------------------------------------*/
 /* Resets the DIO timer in the instance to its minimal interval. */
-void
+void ICACHE_FLASH_ATTR
 rpl_reset_dio_timer(rpl_instance_t *instance)
 {
 #if !RPL_LEAF_ONLY
@@ -229,7 +229,7 @@ rpl_reset_dio_timer(rpl_instance_t *instance)
 }
 /*---------------------------------------------------------------------------*/
 static void handle_dao_timer(void *ptr);
-static void
+static void ICACHE_FLASH_ATTR
 set_dao_lifetime_timer(rpl_instance_t *instance)
 {
   if(rpl_get_mode() == RPL_MODE_FEATHER) {
@@ -252,7 +252,7 @@ set_dao_lifetime_timer(rpl_instance_t *instance)
   }
 }
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 handle_dao_timer(void *ptr)
 {
   rpl_instance_t *instance;
@@ -310,7 +310,7 @@ handle_dao_timer(void *ptr)
   }
 }
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 schedule_dao(rpl_instance_t *instance, clock_time_t latency)
 {
   clock_time_t expiration_time;
@@ -339,26 +339,26 @@ schedule_dao(rpl_instance_t *instance, clock_time_t latency)
   }
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 rpl_schedule_dao(rpl_instance_t *instance)
 {
   schedule_dao(instance, RPL_DAO_DELAY);
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 rpl_schedule_dao_immediately(rpl_instance_t *instance)
 {
   schedule_dao(instance, 0);
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 rpl_cancel_dao(rpl_instance_t *instance)
 {
   ctimer_stop(&instance->dao_timer);
   ctimer_stop(&instance->dao_lifetime_timer);
 }
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 handle_unicast_dio_timer(void *ptr)
 {
   rpl_instance_t *instance = (rpl_instance_t *)ptr;
@@ -369,7 +369,7 @@ handle_unicast_dio_timer(void *ptr)
   }
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 rpl_schedule_unicast_dio_immediately(rpl_instance_t *instance)
 {
   ctimer_set(&instance->unicast_dio_timer, 0,
@@ -377,7 +377,7 @@ rpl_schedule_unicast_dio_immediately(rpl_instance_t *instance)
 }
 /*---------------------------------------------------------------------------*/
 #if RPL_WITH_PROBING
-clock_time_t
+clock_time_t ICACHE_FLASH_ATTR
 get_probing_delay(rpl_dag_t *dag)
 {
   if(dag != NULL && dag->instance != NULL
@@ -390,7 +390,7 @@ get_probing_delay(rpl_dag_t *dag)
   }
 }
 /*---------------------------------------------------------------------------*/
-rpl_parent_t *
+rpl_parent_t * ICACHE_FLASH_ATTR
 get_probing_target(rpl_dag_t *dag)
 {
   /* Returns the next probing target. The current implementation probes the urgent
@@ -457,7 +457,7 @@ get_probing_target(rpl_dag_t *dag)
   return probing_target;
 }
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 handle_probing_timer(void *ptr)
 {
   rpl_instance_t *instance = (rpl_instance_t *)ptr;
@@ -487,7 +487,7 @@ handle_probing_timer(void *ptr)
 #endif
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 rpl_schedule_probing(rpl_instance_t *instance)
 {
   ctimer_set(&instance->probing_timer, RPL_PROBING_DELAY_FUNC(instance->current_dag),

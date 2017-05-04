@@ -43,7 +43,7 @@
  * Contributors: Niclas Finne <nfi@sics.se>, Oriol Piñol <oriol@yanzi.se>,
  *
  */
-
+#include "ets_sys.h"
 #include "net/rpl/rpl-private.h"
 #include "net/nbr-table.h"
 #include "net/ipv6/uip-ds6-nbr.h"
@@ -87,7 +87,7 @@ handle_periodic_timer(void *ptr)
 }
 #endif /* DEBUG == DEBUG_FULL */
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 update_nbr(void)
 {
   uip_ds6_nbr_t *nbr;
@@ -169,7 +169,7 @@ update_nbr(void)
 /*---------------------------------------------------------------------------*/
 /* Called whenever we get a unicast DIS - e.g. someone that already
    have this node in its table - since it is a unicast */
-const linkaddr_t *
+const linkaddr_t * ICACHE_FLASH_ATTR
 find_removable_dis(uip_ipaddr_t *from)
 {
 
@@ -186,7 +186,7 @@ find_removable_dis(uip_ipaddr_t *from)
   return NULL;
 }
 /*---------------------------------------------------------------------------*/
-const linkaddr_t *
+const linkaddr_t * ICACHE_FLASH_ATTR
 find_removable_dio(uip_ipaddr_t *from, rpl_dio_t *dio)
 {
   rpl_instance_t *instance;
@@ -213,7 +213,7 @@ find_removable_dio(uip_ipaddr_t *from, rpl_dio_t *dio)
   return NULL;
 }
 /*---------------------------------------------------------------------------*/
-const linkaddr_t *
+const linkaddr_t * ICACHE_FLASH_ATTR
 find_removable_dao(uip_ipaddr_t *from, rpl_instance_t *instance)
 {
   int max = MAX_CHILDREN;
@@ -236,7 +236,7 @@ find_removable_dao(uip_ipaddr_t *from, rpl_instance_t *instance)
   return worst_rank_nbr;
 }
 /*---------------------------------------------------------------------------*/
-const linkaddr_t *
+const linkaddr_t * ICACHE_FLASH_ATTR
 rpl_nbr_policy_find_removable(nbr_table_reason_t reason,void * data)
 {
   /* When we get the DIO/DAO/DIS we know that UIP contains the

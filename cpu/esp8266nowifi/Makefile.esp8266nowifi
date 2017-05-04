@@ -1,0 +1,153 @@
+#BUILD ?= build
+BUILD ?= $(OBJECTDIR)
+RM = rm
+ECHO = @echo
+CP = cp
+MKDIR = mkdir
+SED = sed
+PYTHON = python
+
+FWBIN = $(BUILD)/firmware-combined.bin
+PORT ?= /dev/ttyUSB0
+BAUD ?= 1152000
+FLASH_MODE ?= qio
+FLASH_SIZE ?= detect
+CROSS_COMPILE = xtensa-lx106-elf-
+#ESP_SDK = $(shell $(CC) -print-sysroot)/usr
+#ESP_SDK = /home/adrien/memoire/ESP8266_NONOS_SDK
+ESP_SDK = $(CONTIKI)/tools/esp8266/nowifisdk
+
+AS = $(CROSS_COMPILE)as
+CC = $(CROSS_COMPILE)gcc
+CXX = $(CROSS_COMPILE)g++
+#LD = $(CROSS_COMPILE)ld
+LD = $(CROSS_COMPILE)gcc
+OBJCOPY = $(CROSS_COMPILE)objcopy
+SIZE = $(CROSS_COMPILE)size
+STRIP = $(CROSS_COMPILE)strip
+AR = $(CROSS_COMPILE)ar
+
+CONTIKI_CPU_DIRS = . dev loader sys
+
+#CONTIKI_SOURCEFILES += mtarch.c rtimer-arch.c elfloader-stub.c watchdog.c eeprom.c
+
+CONTIKI_SOURCEFILES += watchdog.c 
+
+CONTIKI_SOURCEFILES += loader.c deep_sleep.c delay.c libmain.c os_printf.c  spi_flash.c startup.c timer_us.c wdt.c
+
+#echo "SOURCE FILE" $(CONTIKI_SOURCEFILES)
+
+INC += -I.
+INC += -I..
+#INC += -I/usr/include
+INC += -I$(BUILD)
+INC += -I$(ESP_SDK)/include
+INC += -I$(ESP_SDK)/include/bios
+INC += -I$(ESP_SDK)/include/hw
+INC += -I$(ESP_SDK)/include/sys
+#INC += -I$(ESP_SDK)/driver_lib/include
+
+AROPTS = ru
+
+CFLAGS_XTENSA = -fsingle-precision-constant -Wdouble-promotion \
+	-D__ets__ -DICACHE_FLASH \
+	-fno-inline-functions \
+	-Wl,-EL -mlongcalls -mtext-section-literals -mforce-l32
+
+CFLAGS = $(INC) -Wall -Wpointer-arith -fno-strict-aliasing -ansi -std=gnu99 -nostdlib -DNETSTACK_CONF_WITH_IPV6=1 \
+	$(CFLAGS_XTENSA) $(CFLAGS_MOD) $(COPT) $(CFLAGS_EXTRA)
+	
+CFLAGS += -O2 -Wno-pointer-sign -fno-tree-ccp -mno-target-align -mno-serialize-volatile -foptimize-register-move -Wundef -Wl,-EL -Wunused-variable -fno-inline-functions -nostdlib -mlongcalls -mtext-section-literals
+
+LDSCRIPT = $(ESP_SDK)/ld/eagle.app.v6.ld
+#LDFLAGS = -nostdlib -T $(LDSCRIPT) -Map=$(@:.elf=.map) --cref
+LDFLAGS = -nostdlib -T $(LDSCRIPT)
+LIBS = -L$(ESP_SDK)/lib -lmem -lmc -lmgcc
+
+#$(LDFLAGS_MOD)
+
+LIBGCC_FILE_NAME = $(shell $(CC) $(CFLAGS) -print-libgcc-file-name)
+#LIBS += -L$(dir $(LIBGCC_FILE_NAME)) -lgcc
+
+LDFLAGS += -Wl,--start-group $(LIBS) -Wl,--no-check-sections -Wl,--gc-sections -u call_user_start -Wl,-static 
+
+# Debugging/Optimization
+ifeq ($(DEBUG), 1)
+CFLAGS += -g
+COPT = -O0
+else
+CFLAGS += -fdata-sections -ffunction-sections
+COPT += -Os -DNDEBUG
+#LDFLAGS += --gc-sections
+endif
+
+TARGET_LIBFILES += -Wl,--end-group
+
+### Compilation rules
+
+%.so: $(OBJECTDIR)/%.o
+	$(LD) -shared -o $@ $^
+
+ifdef CORE
+.PHONY: symbols.c symbols.h
+symbols.c symbols.h:
+	$(NM) -C $(CORE) | grep -v @ | grep -v dll_crt0 | awk -f $(CONTIKI)/tools/mknmlist > symbols.c
+else
+symbols.c symbols.h:
+	cp ${CONTIKI}/tools/empty-symbols.c symbols.c
+	cp ${CONTIKI}/tools/empty-symbols.h symbols.h
+endif
+
+contiki-$(TARGET).a: ${addprefix $(OBJECTDIR)/,symbols.o}
+
+
+
+
+SRC_C = $(CONTIKI_SOURCEFILES)
+
+
+OBJ =
+OBJ += $(addprefix $(BUILD)/, $(SRC_C:.c=.o))
+OBJ += $(addprefix $(BUILD)/, $(SRC_S:.s=.o))
+
+
+all: $(FWBIN)
+
+#$(BUILD)/uart.o: $(CONFVARS_FILE)
+
+#FROZEN_EXTRA_DEPS = $(CONFVARS_FILE)
+
+.PHONY: deploy
+
+deploy: $(BUILD)/firmware-combined.bin
+	$(ECHO) "Writing $< to the board"
+	$(Q)esptool.py --port $(PORT) --baud $(BAUD) write_flash --verify --flash_size=$(FLASH_SIZE) --flash_mode=$(FLASH_MODE) 0 $<
+
+erase:
+	$(ECHO) "Erase flash"
+	$(Q)esptool.py --port $(PORT) --baud $(BAUD) erase_flash
+	
+flash: all
+	$(Q)esptool.py --port $(PORT) --baud $(BAUD) write_flash 0 $(ESP_SDK)/bin/upgrade/boot_v1.6.bin 0x01000 eagle.app.flash.bin 0x1FC000 $(ESP_SDK)/bin/upgrade/esp_init_data_default.bin  --flash_size 16m-c1
+
+reset:
+	echo -e "\r\nimport machine; machine.reset()\r\n" >$(PORT)
+
+$(FWBIN): eagle.app.v6.out
+	$(ECHO) "Create $@"
+	$(PYTHON) $(ESP_SDK)/tools/gen_appbin.py $^ 2 0 0 5 1
+
+contiki.a:
+	$(AR) ru $@ $(OBJ)
+
+eagle.app.v6.out: contiki.a
+	$(Q)$(LD) $(LDFLAGS) -o $@ $^ $(LIBS)
+	$(Q)$(SIZE) $@
+	mkdir -p bin
+	python /home/adrien/memoire/esp-open-sdk/esptool/esptool.py elf2image -o bin/ -ff 80m -fm qio -fs 4m eagle.app.v6.out
+	#xtensa-lx106-elf-objdump -x -s eagle.app.v6.out > bin/user1.2048.new.5.dump
+	#xtensa-lx106-elf-objdump -S eagle.app.v6.out > bin/user1.2048.new.5.S
+	#$(OBJCOPY) --only-section .text -O binary eagle.app.v6.out eagle.app.v6.text.bin
+	#$(OBJCOPY) --only-section .data -O binary eagle.app.v6.out eagle.app.v6.data.bin
+	#$(OBJCOPY) --only-section .rodata -O binary eagle.app.v6.out eagle.app.v6.rodata.bin
+	#$(OBJCOPY) --only-section .irom0.text -O binary eagle.app.v6.out eagle.app.v6.irom0text.bin

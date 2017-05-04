@@ -43,7 +43,7 @@
  */
 
 #include "contiki-net.h"
-
+#include "ets_sys.h"
 #if WITH_SWAP
 #include "cfs/cfs.h"
 #endif
@@ -136,7 +136,7 @@ uint8_t queuebuf_len, queuebuf_max_len;
 
 #if WITH_SWAP
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 qbuf_renew_file(int file)
 {
   int ret;
@@ -157,7 +157,7 @@ qbuf_renew_file(int file)
 }
 /*---------------------------------------------------------------------------*/
 /* Renews every file with renewable flag set */
-static void
+static void ICACHE_FLASH_ATTR
 qbuf_renew_all(void *unused)
 {
   int i;
@@ -169,7 +169,7 @@ qbuf_renew_all(void *unused)
 }
 /*---------------------------------------------------------------------------*/
 /* Removes a queuebuf from its swap file */
-static void
+static void ICACHE_FLASH_ATTR
 queuebuf_remove_from_file(int swap_id)
 {
   int fileid;
@@ -190,7 +190,7 @@ queuebuf_remove_from_file(int swap_id)
   }
 }
 /*---------------------------------------------------------------------------*/
-static int
+static int ICACHE_FLASH_ATTR
 get_new_swap_id(void)
 {
   int fileid;
@@ -210,7 +210,7 @@ get_new_swap_id(void)
 }
 /*---------------------------------------------------------------------------*/
 /* Flush tmpdata to CFS */
-static int
+static int ICACHE_FLASH_ATTR
 queuebuf_flush_tmpdata(void)
 {
   int fileid, fd, ret;
@@ -239,7 +239,7 @@ queuebuf_flush_tmpdata(void)
 }
 /*---------------------------------------------------------------------------*/
 /* If the queuebuf is in CFS, load it to tmpdata */
-static struct queuebuf_data *
+static struct queuebuf_data * ICACHE_FLASH_ATTR
 queuebuf_load_to_ram(struct queuebuf *b)
 {
   int fileid, fd, ret;
@@ -269,14 +269,14 @@ queuebuf_load_to_ram(struct queuebuf *b)
 }
 #else /* WITH_SWAP */
 /*---------------------------------------------------------------------------*/
-static struct queuebuf_data *
+static struct queuebuf_data * ICACHE_FLASH_ATTR
 queuebuf_load_to_ram(struct queuebuf *b)
 {
   return b->ram_ptr;
 }
 #endif /* WITH_SWAP */
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 queuebuf_init(void)
 {
 #if WITH_SWAP
@@ -293,17 +293,17 @@ queuebuf_init(void)
 #endif /* QUEUEBUF_STATS */
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 queuebuf_numfree(void)
 {
   return memb_numfree(&bufmem);
 }
 /*---------------------------------------------------------------------------*/
 #if QUEUEBUF_DEBUG
-struct queuebuf *
+struct queuebuf * ICACHE_FLASH_ATTR
 queuebuf_new_from_packetbuf_debug(const char *file, int line)
 #else /* QUEUEBUF_DEBUG */
-struct queuebuf *
+struct queuebuf * ICACHE_FLASH_ATTR
 queuebuf_new_from_packetbuf(void)
 #endif /* QUEUEBUF_DEBUG */
 {
@@ -366,7 +366,7 @@ queuebuf_new_from_packetbuf(void)
   return buf;
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 queuebuf_update_attr_from_packetbuf(struct queuebuf *buf)
 {
   struct queuebuf_data *buframptr = queuebuf_load_to_ram(buf);
@@ -378,7 +378,7 @@ queuebuf_update_attr_from_packetbuf(struct queuebuf *buf)
 #endif
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 queuebuf_update_from_packetbuf(struct queuebuf *buf)
 {
   struct queuebuf_data *buframptr = queuebuf_load_to_ram(buf);
@@ -391,7 +391,7 @@ queuebuf_update_from_packetbuf(struct queuebuf *buf)
 #endif
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 queuebuf_free(struct queuebuf *buf)
 {
   if(memb_inmemb(&bufmem, buf)) {
@@ -415,7 +415,7 @@ queuebuf_free(struct queuebuf *buf)
   }
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 queuebuf_to_packetbuf(struct queuebuf *b)
 {
   if(memb_inmemb(&bufmem, b)) {
@@ -425,7 +425,7 @@ queuebuf_to_packetbuf(struct queuebuf *b)
   }
 }
 /*---------------------------------------------------------------------------*/
-void *
+void * ICACHE_FLASH_ATTR
 queuebuf_dataptr(struct queuebuf *b)
 {
   if(memb_inmemb(&bufmem, b)) {
@@ -435,28 +435,28 @@ queuebuf_dataptr(struct queuebuf *b)
   return NULL;
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 queuebuf_datalen(struct queuebuf *b)
 {
   struct queuebuf_data *buframptr = queuebuf_load_to_ram(b);
   return buframptr->len;
 }
 /*---------------------------------------------------------------------------*/
-linkaddr_t *
+linkaddr_t * ICACHE_FLASH_ATTR
 queuebuf_addr(struct queuebuf *b, uint8_t type)
 {
   struct queuebuf_data *buframptr = queuebuf_load_to_ram(b);
   return &buframptr->addrs[type - PACKETBUF_ADDR_FIRST].addr;
 }
 /*---------------------------------------------------------------------------*/
-packetbuf_attr_t
+packetbuf_attr_t ICACHE_FLASH_ATTR
 queuebuf_attr(struct queuebuf *b, uint8_t type)
 {
   struct queuebuf_data *buframptr = queuebuf_load_to_ram(b);
   return buframptr->attrs[type].val;
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 queuebuf_debug_print(void)
 {
 #if QUEUEBUF_DEBUG

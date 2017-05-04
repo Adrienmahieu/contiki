@@ -36,7 +36,7 @@
  * \author
  *         Adam Dunkels <adam@sics.se>
  */
-
+#include "ets_sys.h"
 #include "net/mac/csma.h"
 #include "net/packetbuf.h"
 #include "net/queuebuf.h"
@@ -133,7 +133,7 @@ LIST(neighbor_list);
 static void packet_sent(void *ptr, int status, int num_transmissions);
 static void transmit_packet_list(void *ptr);
 /*---------------------------------------------------------------------------*/
-static struct neighbor_queue *
+static struct neighbor_queue * ICACHE_FLASH_ATTR
 neighbor_queue_from_addr(const linkaddr_t *addr)
 {
   struct neighbor_queue *n = list_head(neighbor_list);
@@ -146,7 +146,7 @@ neighbor_queue_from_addr(const linkaddr_t *addr)
   return NULL;
 }
 /*---------------------------------------------------------------------------*/
-static clock_time_t
+static clock_time_t ICACHE_FLASH_ATTR
 backoff_period(void)
 {
   clock_time_t time;
@@ -163,7 +163,7 @@ backoff_period(void)
   return time;
 }
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 transmit_packet_list(void *ptr)
 {
   struct neighbor_queue *n = ptr;
@@ -178,7 +178,7 @@ transmit_packet_list(void *ptr)
   }
 }
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 schedule_transmission(struct neighbor_queue *n)
 {
   clock_time_t delay;
@@ -198,7 +198,7 @@ schedule_transmission(struct neighbor_queue *n)
   ctimer_set(&n->transmit_timer, delay, transmit_packet_list, n);
 }
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 free_packet(struct neighbor_queue *n, struct rdc_buf_list *p, int status)
 {
   if(p != NULL) {
@@ -225,7 +225,7 @@ free_packet(struct neighbor_queue *n, struct rdc_buf_list *p, int status)
   }
 }
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 tx_done(int status, struct rdc_buf_list *q, struct neighbor_queue *n)
 {
   mac_callback_t sent;
@@ -256,7 +256,7 @@ tx_done(int status, struct rdc_buf_list *q, struct neighbor_queue *n)
   mac_call_sent_callback(sent, cptr, status, ntx);
 }
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 rexmit(struct rdc_buf_list *q, struct neighbor_queue *n)
 {
   schedule_transmission(n);
@@ -265,7 +265,7 @@ rexmit(struct rdc_buf_list *q, struct neighbor_queue *n)
   queuebuf_update_attr_from_packetbuf(q->buf);
 }
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 collision(struct rdc_buf_list *q, struct neighbor_queue *n,
           int num_transmissions)
 {
@@ -289,7 +289,7 @@ collision(struct rdc_buf_list *q, struct neighbor_queue *n,
   }
 }
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 noack(struct rdc_buf_list *q, struct neighbor_queue *n, int num_transmissions)
 {
   struct qbuf_metadata *metadata;
@@ -307,7 +307,7 @@ noack(struct rdc_buf_list *q, struct neighbor_queue *n, int num_transmissions)
   }
 }
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 tx_ok(struct rdc_buf_list *q, struct neighbor_queue *n, int num_transmissions)
 {
   n->collisions = CSMA_MIN_BE;
@@ -315,7 +315,7 @@ tx_ok(struct rdc_buf_list *q, struct neighbor_queue *n, int num_transmissions)
   tx_done(MAC_TX_OK, q, n);
 }
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 packet_sent(void *ptr, int status, int num_transmissions)
 {
   struct neighbor_queue *n;
@@ -362,7 +362,7 @@ packet_sent(void *ptr, int status, int num_transmissions)
   }
 }
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 send_packet(mac_callback_t sent, void *ptr)
 {
   struct rdc_buf_list *q;
@@ -460,25 +460,25 @@ send_packet(mac_callback_t sent, void *ptr)
   mac_call_sent_callback(sent, ptr, MAC_TX_ERR, 1);
 }
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 input_packet(void)
 {
   NETSTACK_LLSEC.input();
 }
 /*---------------------------------------------------------------------------*/
-static int
+static int ICACHE_FLASH_ATTR
 on(void)
 {
   return NETSTACK_RDC.on();
 }
 /*---------------------------------------------------------------------------*/
-static int
+static int ICACHE_FLASH_ATTR
 off(int keep_radio_on)
 {
   return NETSTACK_RDC.off(keep_radio_on);
 }
 /*---------------------------------------------------------------------------*/
-static unsigned short
+static unsigned short ICACHE_FLASH_ATTR
 channel_check_interval(void)
 {
   if(NETSTACK_RDC.channel_check_interval) {
@@ -487,7 +487,7 @@ channel_check_interval(void)
   return 0;
 }
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 init(void)
 {
   memb_init(&packet_memb);

@@ -67,7 +67,7 @@
 #include "net/ip/uip-udp-packet.h"
 #include "net/ip/uip-nameserver.h"
 #include "lib/random.h"
-
+#include "ets_sys.h"
 #ifndef DEBUG
 #define DEBUG CONTIKI_TARGET_COOJA
 #endif
@@ -99,13 +99,13 @@
 #endif
 
 #ifdef __SDCC
-static int
+static int ICACHE_FLASH_ATTR
 strncasecmp(const char *s1, const char *s2, size_t n)
 {
   /* TODO: Add case support! */
   return strncmp(s1, s2, n);
 }
-static int
+static int ICACHE_FLASH_ATTR
 strcasecmp(const char *s1, const char *s2)
 {
   /* TODO: Add case support! */
@@ -328,7 +328,7 @@ PROCESS(mdns_probe_process, "mDNS probe");
  * \note `dest` must point to a buffer with at least
  *       `RESOLV_CONF_MAX_DOMAIN_NAME_SIZE+1` bytes large.
  */
-static uint8_t
+static uint8_t ICACHE_FLASH_ATTR
 decode_name(const unsigned char *query, char *dest,
             const unsigned char *packet)
 {
@@ -377,7 +377,7 @@ decode_name(const unsigned char *query, char *dest,
 /*---------------------------------------------------------------------------*/
 /** \internal
  */
-static uint8_t
+static uint8_t ICACHE_FLASH_ATTR
 dns_name_isequal(const unsigned char *queryptr, const char *name,
                  const unsigned char *packet)
 {
@@ -418,7 +418,7 @@ dns_name_isequal(const unsigned char *queryptr, const char *name,
 /*---------------------------------------------------------------------------*/
 /** \internal
  */
-static unsigned char *
+static unsigned char * ICACHE_FLASH_ATTR
 skip_name(unsigned char *query)
 {
   unsigned char n;
@@ -448,7 +448,7 @@ skip_name(unsigned char *query)
 /*---------------------------------------------------------------------------*/
 /** \internal
  */
-static unsigned char *
+static unsigned char * ICACHE_FLASH_ATTR
 encode_name(unsigned char *query, const char *nameptr)
 {
   char *nptr;
@@ -478,7 +478,7 @@ encode_name(unsigned char *query, const char *nameptr)
 #if RESOLV_CONF_SUPPORTS_MDNS
 /** \internal
  */
-static void
+static void ICACHE_FLASH_ATTR
 mdns_announce_requested(void)
 {
   mdns_needs_host_announce = 1;
@@ -486,7 +486,7 @@ mdns_announce_requested(void)
 /*---------------------------------------------------------------------------*/
 /** \internal
  */
-static void
+static void ICACHE_FLASH_ATTR
 start_name_collision_check(clock_time_t after)
 {
   process_exit(&mdns_probe_process);
@@ -495,7 +495,7 @@ start_name_collision_check(clock_time_t after)
 /*---------------------------------------------------------------------------*/
 /** \internal
  */
-static unsigned char *
+static unsigned char * ICACHE_FLASH_ATTR
 mdns_write_announce_records(unsigned char *queryptr, uint8_t *count)
 {
 #if NETSTACK_CONF_WITH_IPV6
@@ -554,7 +554,7 @@ mdns_write_announce_records(unsigned char *queryptr, uint8_t *count)
 /** \internal
  * Called when we need to announce ourselves
  */
-static size_t
+static size_t ICACHE_FLASH_ATTR
 mdns_prep_host_announce_packet(void)
 {
   static const struct {
@@ -631,7 +631,7 @@ mdns_prep_host_announce_packet(void)
 }
 #endif /* RESOLV_CONF_SUPPORTS_MDNS */
 /*---------------------------------------------------------------------------*/
-static char
+static char ICACHE_FLASH_ATTR
 try_next_server(struct namemap *namemapptr)
 {
 #if VERBOSE_DEBUG
@@ -650,7 +650,7 @@ try_next_server(struct namemap *namemapptr)
  * Runs through the list of names to see if there are any that have
  * not yet been queried and, if so, sends out a query.
  */
-static void
+static void ICACHE_FLASH_ATTR
 check_entries(void)
 {
   volatile uint8_t i;
@@ -783,7 +783,7 @@ check_entries(void)
 /** \internal
  * Called when new UDP data arrives.
  */
-static void
+static void ICACHE_FLASH_ATTR
 newdata(void)
 {
   uint8_t nquestions, nanswers;
@@ -1086,7 +1086,7 @@ newdata(void)
  * \brief           Changes the local hostname advertised by MDNS.
  * \param hostname  The new hostname to advertise.
  */
-void
+void ICACHE_FLASH_ATTR
 resolv_set_hostname(const char *hostname)
 {
   strncpy(resolv_hostname, hostname, RESOLV_CONF_MAX_DOMAIN_NAME_SIZE);
@@ -1094,7 +1094,7 @@ resolv_set_hostname(const char *hostname)
   /* Add the .local suffix if it isn't already there */
   if(strlen(resolv_hostname) < 7 ||
      strcasecmp(resolv_hostname + strlen(resolv_hostname) - 6, ".local") != 0) {
-    strncat(resolv_hostname, ".local", RESOLV_CONF_MAX_DOMAIN_NAME_SIZE - strlen(resolv_hostname));
+    strncat(resolv_hostname, ".local", RESOLV_CONF_MAX_DOMAIN_NAME_SIZE);
   }
 
   PRINTF("resolver: hostname changed to \"%s\"\n", resolv_hostname);
@@ -1106,7 +1106,7 @@ resolv_set_hostname(const char *hostname)
  * \brief      Returns the local hostname being advertised via MDNS.
  * \return     C-string containing the local hostname.
  */
-const char *
+const char * ICACHE_FLASH_ATTR
 resolv_get_hostname(void)
 {
   return resolv_hostname;
@@ -1232,7 +1232,7 @@ PROCESS_THREAD(resolv_process, ev, data)
   PROCESS_END();
 }
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 init(void)
 {
   static uint8_t initialized = 0;
@@ -1243,13 +1243,13 @@ init(void)
 }
 /*---------------------------------------------------------------------------*/
 #if RESOLV_AUTO_REMOVE_TRAILING_DOTS
-static const char *
+static const char * ICACHE_FLASH_ATTR
 remove_trailing_dots(const char *name) {
   static char dns_name_without_dots[RESOLV_CONF_MAX_DOMAIN_NAME_SIZE + 1];
   size_t len = strlen(name);
 
-  if(len && name[len - 1] == '.') {
-    strncpy(dns_name_without_dots, name, RESOLV_CONF_MAX_DOMAIN_NAME_SIZE);
+  if(name[len - 1] == '.') {
+    strncpy(dns_name_without_dots, name, sizeof(dns_name_without_dots));
     while(len && (dns_name_without_dots[len - 1] == '.')) {
       dns_name_without_dots[--len] = 0;
     }
@@ -1266,7 +1266,7 @@ remove_trailing_dots(const char *name) {
  *
  * \param name The hostname that is to be queried.
  */
-void
+void ICACHE_FLASH_ATTR
 resolv_query(const char *name)
 {
   uint8_t i;
@@ -1309,7 +1309,7 @@ resolv_query(const char *name)
 
   memset(nameptr, 0, sizeof(*nameptr));
 
-  strncpy(nameptr->name, name, sizeof(nameptr->name) - 1);
+  strncpy(nameptr->name, name, sizeof(nameptr->name));
   nameptr->state = STATE_NEW;
   nameptr->seqno = seqno;
   ++seqno;
@@ -1345,7 +1345,7 @@ resolv_query(const char *name)
  * for a hostname.
  *
  */
-resolv_status_t
+resolv_status_t ICACHE_FLASH_ATTR
 resolv_lookup(const char *name, uip_ipaddr_t ** ipaddr)
 {
   resolv_status_t ret = RESOLV_STATUS_UNCACHED;
@@ -1442,7 +1442,7 @@ resolv_lookup(const char *name, uip_ipaddr_t ** ipaddr)
  * Callback function which is called when a hostname is found.
  *
  */
-static void
+static void ICACHE_FLASH_ATTR
 resolv_found(char *name, uip_ipaddr_t * ipaddr)
 {
 #if RESOLV_CONF_SUPPORTS_MDNS
@@ -1479,7 +1479,7 @@ resolv_found(char *name, uip_ipaddr_t * ipaddr)
       }
 
       /* Re-add the .local suffix */
-      strncat(resolv_hostname, ".local", RESOLV_CONF_MAX_DOMAIN_NAME_SIZE - strlen(resolv_hostname));
+      strncat(resolv_hostname, ".local", RESOLV_CONF_MAX_DOMAIN_NAME_SIZE);
 
       start_name_collision_check(CLOCK_SECOND * 5);
     } else if(mdns_state == MDNS_STATE_READY) {

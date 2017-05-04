@@ -59,7 +59,7 @@
  */
 
 #include <string.h>
-
+#include "ets_sys.h"
 #include "contiki.h"
 #include "dev/watchdog.h"
 #include "net/link-stats.h"
@@ -288,7 +288,7 @@ struct sicslowpan_frag_buf {
 static struct sicslowpan_frag_buf frag_buf[SICSLOWPAN_FRAGMENT_BUFFERS];
 
 /*---------------------------------------------------------------------------*/
-static int
+static int ICACHE_FLASH_ATTR
 clear_fragments(uint8_t frag_info_index)
 {
   int i, clear_count;
@@ -304,7 +304,7 @@ clear_fragments(uint8_t frag_info_index)
   return clear_count;
 }
 /*---------------------------------------------------------------------------*/
-static int
+static int ICACHE_FLASH_ATTR
 timeout_fragments(int not_context)
 {
   int i;
@@ -319,7 +319,7 @@ timeout_fragments(int not_context)
   return count;
 }
 /*---------------------------------------------------------------------------*/
-static int
+static int ICACHE_FLASH_ATTR
 store_fragment(uint8_t index, uint8_t offset)
 {
   int i;
@@ -342,7 +342,7 @@ store_fragment(uint8_t index, uint8_t offset)
 }
 /*---------------------------------------------------------------------------*/
 /* add a new fragment to the buffer */
-static int8_t
+static int8_t ICACHE_FLASH_ATTR
 add_fragment(uint16_t tag, uint16_t frag_size, uint8_t offset)
 {
   int i;
@@ -415,7 +415,7 @@ add_fragment(uint16_t tag, uint16_t frag_size, uint8_t offset)
 /*---------------------------------------------------------------------------*/
 /* Copy all the fragments that are associated with a specific context
    into uip */
-static void
+static void ICACHE_FLASH_ATTR
 copy_frags2uip(int context)
 {
   int i;
@@ -442,19 +442,19 @@ copy_frags2uip(int context)
 /*-------------------------------------------------------------------------*/
 static struct rime_sniffer *callback = NULL;
 
-void
+void ICACHE_FLASH_ATTR
 rime_sniffer_add(struct rime_sniffer *s)
 {
   callback = s;
 }
 
-void
+void ICACHE_FLASH_ATTR
 rime_sniffer_remove(struct rime_sniffer *s)
 {
   callback = NULL;
 }
 
-static void
+static void ICACHE_FLASH_ATTR
 set_packet_attrs(void)
 {
   int c = 0;
@@ -537,7 +537,7 @@ static const uint8_t ttl_values[] = {0, 1, 64, 255};
  * @{                                                                 */
 /*--------------------------------------------------------------------*/
 /** \brief find the context corresponding to prefix ipaddr */
-static struct sicslowpan_addr_context*
+static struct sicslowpan_addr_context* ICACHE_FLASH_ATTR
 addr_context_lookup_by_prefix(uip_ipaddr_t *ipaddr)
 {
 /* Remove code to avoid warnings and save flash if no context is used */
@@ -554,7 +554,7 @@ addr_context_lookup_by_prefix(uip_ipaddr_t *ipaddr)
 }
 /*--------------------------------------------------------------------*/
 /** \brief find the context with the given number */
-static struct sicslowpan_addr_context*
+static struct sicslowpan_addr_context* ICACHE_FLASH_ATTR
 addr_context_lookup_by_number(uint8_t number)
 {
 /* Remove code to avoid warnings and save flash if no context is used */
@@ -570,7 +570,7 @@ addr_context_lookup_by_number(uint8_t number)
   return NULL;
 }
 /*--------------------------------------------------------------------*/
-static uint8_t
+static uint8_t ICACHE_FLASH_ATTR
 compress_addr_64(uint8_t bitpos, uip_ipaddr_t *ipaddr, uip_lladdr_t *lladdr)
 {
   if(uip_is_addr_mac_addr_based(ipaddr, lladdr)) {
@@ -595,7 +595,7 @@ compress_addr_64(uint8_t bitpos, uip_ipaddr_t *ipaddr, uip_lladdr_t *lladdr)
  * pref_post_count takes a byte where the first nibble specify prefix count
  * and the second postfix count (NOTE: 15/0xf => 16 bytes copy).
  */
-static void
+static void ICACHE_FLASH_ATTR
 uncompress_addr(uip_ipaddr_t *ipaddr, uint8_t const prefix[],
                 uint8_t pref_post_count, uip_lladdr_t *lladdr)
 {
@@ -665,7 +665,7 @@ uncompress_addr(uip_ipaddr_t *ipaddr, uint8_t const prefix[],
  * \param link_destaddr L2 destination address, needed to compress IP
  * dest
  */
-static void
+static void ICACHE_FLASH_ATTR
 compress_hdr_iphc(linkaddr_t *link_destaddr)
 {
   uint8_t tmp, iphc0, iphc1;
@@ -952,7 +952,7 @@ compress_hdr_iphc(linkaddr_t *link_destaddr)
  * is then inferred from the L2 length), non 0 if the packet is a 1st
  * fragment.
  */
-static void
+static void ICACHE_FLASH_ATTR
 uncompress_hdr_iphc(uint8_t *buf, uint16_t ip_len)
 {
   uint8_t tmp, iphc0, iphc1;
@@ -1204,7 +1204,7 @@ uncompress_hdr_iphc(uint8_t *buf, uint16_t ip_len)
  * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
  * \endverbatim
  */
-static void
+static void ICACHE_FLASH_ATTR
 compress_hdr_ipv6(linkaddr_t *link_destaddr)
 {
   *packetbuf_ptr = SICSLOWPAN_DISPATCH_IPV6;
@@ -1223,7 +1223,7 @@ compress_hdr_ipv6(linkaddr_t *link_destaddr)
 /**
  * Callback function for the MAC packet sent callback
  */
-static void
+static void ICACHE_FLASH_ATTR
 packet_sent(void *ptr, int status, int transmissions)
 {
   uip_ds6_link_neighbor_callback(status, transmissions);
@@ -1239,7 +1239,7 @@ packet_sent(void *ptr, int status, int transmissions)
  * packet.
  * \param dest the link layer destination address of the packet
  */
-static void
+static void ICACHE_FLASH_ATTR
 send_packet(linkaddr_t *dest)
 {
   /* Set the link layer destination address for the packet as a
@@ -1271,7 +1271,7 @@ send_packet(linkaddr_t *dest)
  *  packet/fragments are put in packetbuf and delivered to the 802.15.4
  *  MAC.
  */
-static uint8_t
+static uint8_t ICACHE_FLASH_ATTR
 output(const uip_lladdr_t *localdest)
 {
   int framer_hdrlen;
@@ -1499,7 +1499,7 @@ output(const uip_lladdr_t *localdest)
  * \note We do not check for overlapping sicslowpan fragments
  * (it is a SHALL in the RFC 4944 and should never happen)
  */
-static void
+static void ICACHE_FLASH_ATTR
 input(void)
 {
   /* size of the IP packet (read from fragment) */
@@ -1735,7 +1735,7 @@ input(void)
 /*--------------------------------------------------------------------*/
 /* \brief 6lowpan init function (called by the MAC layer)             */
 /*--------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 sicslowpan_init(void)
 {
   /*
@@ -1790,7 +1790,7 @@ sicslowpan_init(void)
 #endif /* SICSLOWPAN_COMPRESSION == SICSLOWPAN_COMPRESSION_HC06 */
 }
 /*--------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 sicslowpan_get_last_rssi(void)
 {
   return last_rssi;

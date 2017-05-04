@@ -36,13 +36,13 @@
 #include "net/ip/uip.h"
 #include "net/ip/uiplib.h"
 #include <string.h>
-
+#include "ets_sys.h"
 #define DEBUG DEBUG_NONE
 #include "net/ip/uip-debug.h"
 
 /*-----------------------------------------------------------------------------------*/
 #if NETSTACK_CONF_WITH_IPV6
-int
+int ICACHE_FLASH_ATTR
 uiplib_ip6addrconv(const char *addrstr, uip_ip6addr_t *ipaddr)
 {
   uint16_t value;
@@ -107,7 +107,7 @@ uiplib_ip6addrconv(const char *addrstr, uip_ip6addr_t *ipaddr)
 /*-----------------------------------------------------------------------------------*/
 /* Parse a IPv4-address from a string. Returns the number of characters read 
  * for the address. */
-int
+int ICACHE_FLASH_ATTR
 uiplib_ip4addrconv(const char *addrstr, uip_ip4addr_t *ipaddr)
 {
   unsigned char tmp;

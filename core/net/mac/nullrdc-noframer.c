@@ -36,7 +36,7 @@
  * \author
  *         Adam Dunkels <adam@sics.se>
  */
-
+#include "ets_sys.h"
 #include "net/mac/nullrdc-noframer.h"
 #include "net/packetbuf.h"
 #include "net/queuebuf.h"
@@ -44,7 +44,7 @@
 #include <string.h>
 
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 send_packet(mac_callback_t sent, void *ptr)
 {
   int ret;
@@ -56,7 +56,7 @@ send_packet(mac_callback_t sent, void *ptr)
   mac_call_sent_callback(sent, ptr, ret, 1);
 }
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 send_list(mac_callback_t sent, void *ptr, struct rdc_buf_list *buf_list)
 {
   if(buf_list != NULL) {
@@ -65,19 +65,19 @@ send_list(mac_callback_t sent, void *ptr, struct rdc_buf_list *buf_list)
   }
 }
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 packet_input(void)
 {
   NETSTACK_MAC.input();
 }
 /*---------------------------------------------------------------------------*/
-static int
+static int ICACHE_FLASH_ATTR
 on(void)
 {
   return NETSTACK_RADIO.on();
 }
 /*---------------------------------------------------------------------------*/
-static int
+static int ICACHE_FLASH_ATTR
 off(int keep_radio_on)
 {
   if(keep_radio_on) {
@@ -87,13 +87,13 @@ off(int keep_radio_on)
   }
 }
 /*---------------------------------------------------------------------------*/
-static unsigned short
+static unsigned short ICACHE_FLASH_ATTR
 channel_check_interval(void)
 {
   return 0;
 }
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 init(void)
 {
   on();

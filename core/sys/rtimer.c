@@ -42,7 +42,7 @@
  * \addtogroup rt
  * @{
  */
-
+#include "ets_sys.h"
 #include "sys/rtimer.h"
 #include "contiki.h"
 
@@ -57,13 +57,13 @@
 static struct rtimer *next_rtimer;
 
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 rtimer_init(void)
 {
   rtimer_arch_init();
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 rtimer_set(struct rtimer *rtimer, rtimer_clock_t time,
 	   rtimer_clock_t duration,
 	   rtimer_callback_t func, void *ptr)
@@ -88,7 +88,7 @@ rtimer_set(struct rtimer *rtimer, rtimer_clock_t time,
   return RTIMER_OK;
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 rtimer_run_next(void)
 {
   struct rtimer *t;

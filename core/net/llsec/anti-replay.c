@@ -42,7 +42,7 @@
  * \addtogroup llsec802154
  * @{
  */
-
+#include "ets_sys.h"
 #include "net/llsec/anti-replay.h"
 #include "net/packetbuf.h"
 #include "net/llsec/llsec802154.h"
@@ -53,7 +53,7 @@
 static uint32_t counter;
 
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 anti_replay_set_counter(void)
 {
   frame802154_frame_counter_t reordered_counter;
@@ -65,7 +65,7 @@ anti_replay_set_counter(void)
   packetbuf_set_attr(PACKETBUF_ATTR_FRAME_COUNTER_BYTES_2_3, reordered_counter.u16[1]);
 }
 /*---------------------------------------------------------------------------*/
-uint32_t
+uint32_t ICACHE_FLASH_ATTR
 anti_replay_get_counter(void)
 {
   frame802154_frame_counter_t disordered_counter;
@@ -76,7 +76,7 @@ anti_replay_get_counter(void)
   return LLSEC802154_HTONL(disordered_counter.u32); 
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 anti_replay_init_info(struct anti_replay_info *info)
 {
   info->last_broadcast_counter
@@ -84,7 +84,7 @@ anti_replay_init_info(struct anti_replay_info *info)
       = anti_replay_get_counter();
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 anti_replay_was_replayed(struct anti_replay_info *info)
 {
   uint32_t received_counter;

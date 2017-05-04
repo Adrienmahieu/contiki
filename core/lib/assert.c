@@ -27,10 +27,10 @@
  * SUCH DAMAGE. 
  *
  */
-
+#include "ets_sys.h"
 #include <stdio.h>
 
-void
+void ICACHE_FLASH_ATTR
 _xassert(const char *file, int lineno)
 {
   printf("Assertion failed: file %s, line %d.\n", file, lineno);

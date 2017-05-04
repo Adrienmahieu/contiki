@@ -38,7 +38,7 @@
  */
 
 #include "net/rpl/rpl-conf.h"
-
+#include "ets_sys.h"
 #include "net/ip/uip.h"
 #include "net/ip/tcpip.h"
 #include "net/ipv6/uip-ds6.h"
@@ -64,13 +64,13 @@ LIST(nodelist);
 MEMB(nodememb, rpl_ns_node_t, RPL_NS_LINK_NUM);
 
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 rpl_ns_num_nodes(void)
 {
   return num_nodes;
 }
 /*---------------------------------------------------------------------------*/
-static int
+static int ICACHE_FLASH_ATTR
 node_matches_address(const rpl_dag_t *dag, const rpl_ns_node_t *node, const uip_ipaddr_t *addr)
 {
   return addr != NULL
@@ -81,7 +81,7 @@ node_matches_address(const rpl_dag_t *dag, const rpl_ns_node_t *node, const uip_
       && !memcmp(((const unsigned char *)addr) + 8, node->link_identifier, 8);
 }
 /*---------------------------------------------------------------------------*/
-rpl_ns_node_t *
+rpl_ns_node_t * ICACHE_FLASH_ATTR
 rpl_ns_get_node(const rpl_dag_t *dag, const uip_ipaddr_t *addr)
 {
   rpl_ns_node_t *l;
@@ -94,7 +94,7 @@ rpl_ns_get_node(const rpl_dag_t *dag, const uip_ipaddr_t *addr)
   return NULL;
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 rpl_ns_is_node_reachable(const rpl_dag_t *dag, const uip_ipaddr_t *addr)
 {
   int max_depth = RPL_NS_LINK_NUM;
@@ -107,7 +107,7 @@ rpl_ns_is_node_reachable(const rpl_dag_t *dag, const uip_ipaddr_t *addr)
   return node != NULL && node == root_node;
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 rpl_ns_expire_parent(rpl_dag_t *dag, const uip_ipaddr_t *child, const uip_ipaddr_t *parent)
 {
   rpl_ns_node_t *l = rpl_ns_get_node(dag, child);
@@ -117,7 +117,7 @@ rpl_ns_expire_parent(rpl_dag_t *dag, const uip_ipaddr_t *child, const uip_ipaddr
   }
 }
 /*---------------------------------------------------------------------------*/
-rpl_ns_node_t *
+rpl_ns_node_t * ICACHE_FLASH_ATTR
 rpl_ns_update_node(rpl_dag_t *dag, const uip_ipaddr_t *child, const uip_ipaddr_t *parent, uint32_t lifetime)
 {
   rpl_ns_node_t *child_node = rpl_ns_get_node(dag, child);
@@ -170,7 +170,7 @@ rpl_ns_update_node(rpl_dag_t *dag, const uip_ipaddr_t *child, const uip_ipaddr_t
   return child_node;
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 rpl_ns_init(void)
 {
   num_nodes = 0;
@@ -178,19 +178,19 @@ rpl_ns_init(void)
   list_init(nodelist);
 }
 /*---------------------------------------------------------------------------*/
-rpl_ns_node_t *
+rpl_ns_node_t * ICACHE_FLASH_ATTR
 rpl_ns_node_head(void)
 {
   return list_head(nodelist);
 }
 /*---------------------------------------------------------------------------*/
-rpl_ns_node_t *
+rpl_ns_node_t * ICACHE_FLASH_ATTR
 rpl_ns_node_next(rpl_ns_node_t *item)
 {
   return list_item_next(item);
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 rpl_ns_get_node_global_addr(uip_ipaddr_t *addr, rpl_ns_node_t *node)
 {
   if(addr != NULL && node != NULL && node->dag != NULL) {
@@ -199,7 +199,7 @@ rpl_ns_get_node_global_addr(uip_ipaddr_t *addr, rpl_ns_node_t *node)
   }
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 rpl_ns_periodic(void)
 {
   rpl_ns_node_t *l;

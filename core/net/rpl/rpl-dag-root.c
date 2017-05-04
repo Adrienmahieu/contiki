@@ -31,7 +31,7 @@
 
 #include "contiki.h"
 #include "contiki-net.h"
-
+#include "ets_sys.h"
 #include "net/rpl/rpl.h"
 #include "net/rpl/rpl-private.h"
 #include "net/rpl/rpl-dag-root.h"
@@ -49,7 +49,7 @@ static struct uip_ds6_notification n;
 static uint8_t to_become_root;
 static struct ctimer c;
 /*---------------------------------------------------------------------------*/
-static const uip_ipaddr_t *
+static const uip_ipaddr_t * ICACHE_FLASH_ATTR
 dag_root(void)
 {
   rpl_dag_t *dag;
@@ -62,7 +62,7 @@ dag_root(void)
   return NULL;
 }
 /*---------------------------------------------------------------------------*/
-static const uip_ipaddr_t *
+static const uip_ipaddr_t * ICACHE_FLASH_ATTR
 get_global_address(void)
 {
   int i;
@@ -80,7 +80,7 @@ get_global_address(void)
   return ipaddr;
 }
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 create_dag_callback(void *ptr)
 {
   const uip_ipaddr_t *root, *ipaddr;
@@ -125,7 +125,7 @@ create_dag_callback(void *ptr)
 }
 #if (UIP_CONF_MAX_ROUTES != 0)
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 route_callback(int event, uip_ipaddr_t *route, uip_ipaddr_t *ipaddr,
                int numroutes)
 {
@@ -141,7 +141,7 @@ route_callback(int event, uip_ipaddr_t *route, uip_ipaddr_t *ipaddr,
 }
 #endif /* (UIP_CONF_MAX_ROUTES != 0) */
 /*---------------------------------------------------------------------------*/
-static uip_ipaddr_t *
+static uip_ipaddr_t * ICACHE_FLASH_ATTR
 set_global_address(void)
 {
   static uip_ipaddr_t ipaddr;
@@ -167,7 +167,7 @@ set_global_address(void)
   return &ipaddr;
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 rpl_dag_root_init(void)
 {
   static uint8_t initialized = 0;
@@ -182,7 +182,7 @@ rpl_dag_root_init(void)
   }
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 rpl_dag_root_init_dag_immediately(void)
 {
   struct uip_ds6_addr *root_if;
@@ -235,7 +235,7 @@ rpl_dag_root_init_dag_immediately(void)
   }
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 rpl_dag_root_init_dag(void)
 {
   rpl_dag_root_init();
@@ -247,7 +247,7 @@ rpl_dag_root_init_dag(void)
   dis_output(NULL);
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 rpl_dag_root_is_root(void)
 {
   rpl_instance_t *instance;

@@ -38,7 +38,7 @@
  */
 
 #include "contiki-conf.h"
-
+#include "ets_sys.h"
 extern uint16_t uip_slen;
 
 #include "net/ip/uip-udp-packet.h"
@@ -47,7 +47,7 @@ extern uint16_t uip_slen;
 #include <string.h>
 
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 uip_udp_packet_send(struct uip_udp_conn *c, const void *data, int len)
 {
 #if UIP_UDP
@@ -76,7 +76,7 @@ uip_udp_packet_send(struct uip_udp_conn *c, const void *data, int len)
 #endif /* UIP_UDP */
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 uip_udp_packet_sendto(struct uip_udp_conn *c, const void *data, int len,
 		      const uip_ipaddr_t *toaddr, uint16_t toport)
 {

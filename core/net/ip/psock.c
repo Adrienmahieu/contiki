@@ -33,7 +33,7 @@
  */
 
 #include <string.h>
-
+#include "ets_sys.h"
 #include "net/ip/psock.h"
 
 #define STATE_NONE 0
@@ -67,7 +67,7 @@
 #define BUF_FOUND 2
 
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 buf_setup(struct psock_buf *buf,
 	  uint8_t *bufptr, uint16_t bufsize)
 {
@@ -75,7 +75,7 @@ buf_setup(struct psock_buf *buf,
   buf->left = bufsize;
 }
 /*---------------------------------------------------------------------------*/
-static uint8_t
+static uint8_t ICACHE_FLASH_ATTR
 buf_bufdata(struct psock_buf *buf, uint16_t len,
 	    uint8_t **dataptr, uint16_t *datalen)
 {
@@ -103,7 +103,7 @@ buf_bufdata(struct psock_buf *buf, uint16_t len,
   }
 }
 /*---------------------------------------------------------------------------*/
-static uint8_t
+static uint8_t ICACHE_FLASH_ATTR
 buf_bufto(CC_REGISTER_ARG struct psock_buf *buf, uint8_t endmarker,
 	  CC_REGISTER_ARG uint8_t **dataptr, CC_REGISTER_ARG uint16_t *datalen)
 {
@@ -127,7 +127,7 @@ buf_bufto(CC_REGISTER_ARG struct psock_buf *buf, uint8_t endmarker,
   return BUF_FULL;
 }
 /*---------------------------------------------------------------------------*/
-static char
+static char ICACHE_FLASH_ATTR
 data_is_sent_and_acked(CC_REGISTER_ARG struct psock *s)
 {
   /* If data has previously been sent, and the data has been acked, we
@@ -222,13 +222,13 @@ PT_THREAD(psock_generator_send(CC_REGISTER_ARG struct psock *s,
   PT_END(&s->psockpt);
 }
 /*---------------------------------------------------------------------------*/
-uint16_t
+uint16_t ICACHE_FLASH_ATTR
 psock_datalen(struct psock *psock)
 {
   return psock->bufsize - psock->buf.left;
 }
 /*---------------------------------------------------------------------------*/
-char
+char ICACHE_FLASH_ATTR
 psock_newdata(struct psock *s)
 {
   if(s->readlen > 0) {
@@ -304,7 +304,7 @@ PT_THREAD(psock_readbuf_len(CC_REGISTER_ARG struct psock *psock, uint16_t len))
 }
 
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 psock_init(CC_REGISTER_ARG struct psock *psock,
 	   uint8_t *buffer, unsigned int buffersize)
 {

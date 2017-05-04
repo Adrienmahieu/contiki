@@ -41,7 +41,7 @@
  */
 
 #include "me_tabs.h"
-
+#include "ets_sys.h"
 /*---------------------------------------------------------------------------*/
 /**
  * Manchester encode an 8-bit byte.
@@ -54,7 +54,7 @@
  * \retval The encoded word.
  */
 /*---------------------------------------------------------------------------*/
-unsigned short
+unsigned short ICACHE_FLASH_ATTR
 me_encode(unsigned char c)
 {
   return me_encode_tab[c];
@@ -71,7 +71,7 @@ me_encode(unsigned char c)
  * \return The decoded 8-bit byte
  */
 /*---------------------------------------------------------------------------*/
-unsigned char
+unsigned char ICACHE_FLASH_ATTR
 me_decode16(unsigned short m)
 {
   unsigned char m1, m2, c;
@@ -95,7 +95,7 @@ me_decode16(unsigned short m)
  * \return The decoded 4 bits
  */
 /*---------------------------------------------------------------------------*/
-unsigned char
+unsigned char ICACHE_FLASH_ATTR
 me_decode8(unsigned char m)
 {
   return  me_decode_tab[m];
@@ -105,7 +105,7 @@ me_decode8(unsigned char m)
  * Check if an encoded byte is valid.
  */
 /*---------------------------------------------------------------------------*/
-unsigned char
+unsigned char ICACHE_FLASH_ATTR
 me_valid(unsigned char m)
 {
   return me_valid_tab[m];

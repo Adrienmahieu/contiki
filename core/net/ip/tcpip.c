@@ -41,7 +41,7 @@
 #include "contiki-net.h"
 #include "net/ip/uip-split.h"
 #include "net/ip/uip-packetqueue.h"
-
+#include "ets_sys.h"
 #if NETSTACK_CONF_WITH_IPV6
 #include "net/ipv6/uip-nd6.h"
 #include "net/ipv6/uip-ds6.h"
@@ -116,7 +116,7 @@ enum {
 
 static uint8_t (* outputfunc)(const uip_lladdr_t *a);
 
-uint8_t
+uint8_t ICACHE_FLASH_ATTR
 tcpip_output(const uip_lladdr_t *a)
 {
   int ret;
@@ -128,7 +128,7 @@ tcpip_output(const uip_lladdr_t *a)
   return 0;
 }
 
-void
+void ICACHE_FLASH_ATTR
 tcpip_set_outputfunc(uint8_t (*f)(const uip_lladdr_t *))
 {
   outputfunc = f;
@@ -136,7 +136,7 @@ tcpip_set_outputfunc(uint8_t (*f)(const uip_lladdr_t *))
 #else
 
 static uint8_t (* outputfunc)(void);
-uint8_t
+uint8_t ICACHE_FLASH_ATTR
 tcpip_output(void)
 {
   if(outputfunc != NULL) {
@@ -146,7 +146,7 @@ tcpip_output(void)
   return 0;
 }
 
-void
+void ICACHE_FLASH_ATTR
 tcpip_set_outputfunc(uint8_t (*f)(void))
 {
   outputfunc = f;
@@ -161,7 +161,7 @@ PROCESS(tcpip_process, "TCP/IP stack");
 
 /*---------------------------------------------------------------------------*/
 #if UIP_TCP || UIP_CONF_IP_FORWARD
-static void
+static void ICACHE_FLASH_ATTR
 start_periodic_tcp_timer(void)
 {
   if(etimer_expired(&periodic)) {
@@ -170,7 +170,7 @@ start_periodic_tcp_timer(void)
 }
 #endif /* UIP_TCP || UIP_CONF_IP_FORWARD */
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 check_for_tcp_syn(void)
 {
 #if UIP_TCP || UIP_CONF_IP_FORWARD
@@ -187,7 +187,7 @@ check_for_tcp_syn(void)
 #endif /* UIP_TCP || UIP_CONF_IP_FORWARD */
 }
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 packet_input(void)
 {
   if(uip_len > 0) {
@@ -220,7 +220,7 @@ packet_input(void)
 /*---------------------------------------------------------------------------*/
 #if UIP_TCP
 #if UIP_ACTIVE_OPEN
-struct uip_conn *
+/*struct uip_conn *
 tcp_connect(const uip_ipaddr_t *ripaddr, uint16_t port, void *appstate)
 {
   struct uip_conn *c;
@@ -236,10 +236,10 @@ tcp_connect(const uip_ipaddr_t *ripaddr, uint16_t port, void *appstate)
   tcpip_poll_tcp(c);
 
   return c;
-}
+}*/
 #endif /* UIP_ACTIVE_OPEN */
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 tcp_unlisten(uint16_t port)
 {
   unsigned char i;
@@ -257,7 +257,7 @@ tcp_unlisten(uint16_t port)
   }
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 tcp_listen(uint16_t port)
 {
   unsigned char i;
@@ -275,7 +275,7 @@ tcp_listen(uint16_t port)
   }
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 tcp_attach(struct uip_conn *conn,
 	   void *appstate)
 {
@@ -289,7 +289,7 @@ tcp_attach(struct uip_conn *conn,
 #endif /* UIP_TCP */
 /*---------------------------------------------------------------------------*/
 #if UIP_UDP
-void
+void ICACHE_FLASH_ATTR
 udp_attach(struct uip_udp_conn *conn,
 	   void *appstate)
 {
@@ -300,7 +300,7 @@ udp_attach(struct uip_udp_conn *conn,
   s->state = appstate;
 }
 /*---------------------------------------------------------------------------*/
-struct uip_udp_conn *
+/*struct uip_udp_conn *
 udp_new(const uip_ipaddr_t *ripaddr, uint16_t port, void *appstate)
 {
   struct uip_udp_conn *c;
@@ -316,9 +316,9 @@ udp_new(const uip_ipaddr_t *ripaddr, uint16_t port, void *appstate)
   s->state = appstate;
 
   return c;
-}
+}*/
 /*---------------------------------------------------------------------------*/
-struct uip_udp_conn *
+struct uip_udp_conn * ICACHE_FLASH_ATTR
 udp_broadcast_new(uint16_t port, void *appstate)
 {
   uip_ipaddr_t addr;
@@ -338,7 +338,7 @@ udp_broadcast_new(uint16_t port, void *appstate)
 #endif /* UIP_UDP */
 /*---------------------------------------------------------------------------*/
 #if UIP_CONF_ICMP6
-uint8_t
+uint8_t ICACHE_FLASH_ATTR
 icmp6_new(void *appstate) {
   if(uip_icmp6_conns.appstate.p == PROCESS_NONE) {
     uip_icmp6_conns.appstate.p = PROCESS_CURRENT();
@@ -348,7 +348,7 @@ icmp6_new(void *appstate) {
   return 1;
 }
 
-void
+void ICACHE_FLASH_ATTR
 tcpip_icmp6_call(uint8_t type)
 {
   if(uip_icmp6_conns.appstate.p != PROCESS_NONE) {
@@ -360,7 +360,7 @@ tcpip_icmp6_call(uint8_t type)
 }
 #endif /* UIP_CONF_ICMP6 */
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 eventhandler(process_event_t ev, process_data_t data)
 {
 #if UIP_TCP
@@ -518,7 +518,7 @@ eventhandler(process_event_t ev, process_data_t data)
   };
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 tcpip_input(void)
 {
   process_post_synch(&tcpip_process, PACKET_INPUT, NULL);
@@ -526,7 +526,7 @@ tcpip_input(void)
 }
 /*---------------------------------------------------------------------------*/
 #if NETSTACK_CONF_WITH_IPV6
-void
+void ICACHE_FLASH_ATTR
 tcpip_ipv6_output(void)
 {
   uip_ds6_nbr_t *nbr = NULL;
@@ -749,7 +749,7 @@ tcpip_ipv6_output(void)
 #endif /* NETSTACK_CONF_WITH_IPV6 */
 /*---------------------------------------------------------------------------*/
 #if UIP_UDP
-void
+void ICACHE_FLASH_ATTR
 tcpip_poll_udp(struct uip_udp_conn *conn)
 {
   process_post(&tcpip_process, UDP_POLL, conn);
@@ -757,14 +757,14 @@ tcpip_poll_udp(struct uip_udp_conn *conn)
 #endif /* UIP_UDP */
 /*---------------------------------------------------------------------------*/
 #if UIP_TCP
-void
+void ICACHE_FLASH_ATTR
 tcpip_poll_tcp(struct uip_conn *conn)
 {
   process_post(&tcpip_process, TCP_POLL, conn);
 }
 #endif /* UIP_TCP */
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 tcpip_uipcall(void)
 {
   uip_udp_appstate_t *ts;

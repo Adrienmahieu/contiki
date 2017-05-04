@@ -31,7 +31,7 @@
  *
  *
  */
-
+#include "ets_sys.h"
 /*
 static unsigned char petscii2ascii[128] = {
   0x00,0x01,0x02,0x03,0x04,0x05,0x06,0x07,
@@ -73,7 +73,7 @@ static unsigned char ascii2petscii[128] = {
 };
 
 /*-----------------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 petsciiconv_toascii(char *buf, unsigned int len)
 {
   unsigned int i;
@@ -104,7 +104,7 @@ petsciiconv_toascii(char *buf, unsigned int len)
   }
 }
 /*-----------------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 petsciiconv_topetscii(char *buf, unsigned int len)
 {
   unsigned int i;

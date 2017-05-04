@@ -42,7 +42,7 @@
  * \author
  *  Nicolas Tsiftes <nvt@sics.se>
  */
-
+#include "ets_sys.h"
 #include <limits.h>
 #include <string.h>
 
@@ -207,14 +207,14 @@ static coffee_page_t next_free;
 static char gc_wait;
 
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 write_header(struct file_header *hdr, coffee_page_t page)
 {
   hdr->flags |= HDR_FLAG_VALID;
   COFFEE_WRITE(hdr, sizeof(*hdr), page * COFFEE_PAGE_SIZE);
 }
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 read_header(struct file_header *hdr, coffee_page_t page)
 {
   COFFEE_READ(hdr, sizeof(*hdr), page * COFFEE_PAGE_SIZE);
@@ -223,13 +223,13 @@ read_header(struct file_header *hdr, coffee_page_t page)
   }
 }
 /*---------------------------------------------------------------------------*/
-static cfs_offset_t
+static cfs_offset_t ICACHE_FLASH_ATTR
 absolute_offset(coffee_page_t page, cfs_offset_t offset)
 {
   return page * COFFEE_PAGE_SIZE + sizeof(struct file_header) + offset;
 }
 /*---------------------------------------------------------------------------*/
-static coffee_page_t
+static coffee_page_t ICACHE_FLASH_ATTR
 get_sector_status(coffee_page_t sector, struct sector_status *stats)
 {
   static coffee_page_t skip_pages;
@@ -329,7 +329,7 @@ get_sector_status(coffee_page_t sector, struct sector_status *stats)
          0 : skip_pages;
 }
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 isolate_pages(coffee_page_t start, coffee_page_t skip_pages)
 {
   struct file_header hdr;
@@ -348,7 +348,7 @@ isolate_pages(coffee_page_t start, coffee_page_t skip_pages)
          (unsigned)skip_pages, (int)start / COFFEE_PAGES_PER_SECTOR);
 }
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 collect_garbage(int mode)
 {
   coffee_page_t sector;
@@ -392,7 +392,7 @@ collect_garbage(int mode)
   }
 }
 /*---------------------------------------------------------------------------*/
-static coffee_page_t
+static coffee_page_t ICACHE_FLASH_ATTR
 next_file(coffee_page_t page, struct file_header *hdr)
 {
   /*
@@ -413,7 +413,7 @@ next_file(coffee_page_t page, struct file_header *hdr)
   return page + hdr->max_pages;
 }
 /*---------------------------------------------------------------------------*/
-static struct file *
+static struct file * ICACHE_FLASH_ATTR
 load_file(coffee_page_t start, struct file_header *hdr)
 {
   int i, unreferenced, free;
@@ -452,7 +452,7 @@ load_file(coffee_page_t start, struct file_header *hdr)
   return file;
 }
 /*---------------------------------------------------------------------------*/
-static struct file *
+static struct file * ICACHE_FLASH_ATTR
 find_file(const char *name)
 {
   int i;
@@ -482,7 +482,7 @@ find_file(const char *name)
   return NULL;
 }
 /*---------------------------------------------------------------------------*/
-static cfs_offset_t
+static cfs_offset_t ICACHE_FLASH_ATTR
 file_end(coffee_page_t start)
 {
   struct file_header hdr;
@@ -516,7 +516,7 @@ file_end(coffee_page_t start)
   return 0;
 }
 /*---------------------------------------------------------------------------*/
-static coffee_page_t
+static coffee_page_t ICACHE_FLASH_ATTR
 find_contiguous_pages(coffee_page_t amount)
 {
   coffee_page_t page, start;
@@ -552,7 +552,7 @@ find_contiguous_pages(coffee_page_t amount)
   return INVALID_PAGE;
 }
 /*---------------------------------------------------------------------------*/
-static int
+static int ICACHE_FLASH_ATTR
 remove_by_page(coffee_page_t page, int remove_log,
 	       int close_fds, int gc_allowed)
 {
@@ -599,14 +599,14 @@ remove_by_page(coffee_page_t page, int remove_log,
   return 0;
 }
 /*---------------------------------------------------------------------------*/
-static coffee_page_t
+static coffee_page_t ICACHE_FLASH_ATTR
 page_count(cfs_offset_t size)
 {
   return (size + sizeof(struct file_header) + COFFEE_PAGE_SIZE - 1) /
          COFFEE_PAGE_SIZE;
 }
 /*---------------------------------------------------------------------------*/
-static struct file *
+static struct file * ICACHE_FLASH_ATTR
 reserve(const char *name, coffee_page_t pages,
         int allow_duplicates, unsigned flags)
 {
@@ -649,7 +649,7 @@ reserve(const char *name, coffee_page_t pages,
 }
 /*---------------------------------------------------------------------------*/
 #if COFFEE_MICRO_LOGS
-static void
+static void ICACHE_FLASH_ATTR
 adjust_log_config(struct file_header *hdr,
                   uint16_t *log_record_size, uint16_t *log_records)
 {
@@ -661,7 +661,7 @@ adjust_log_config(struct file_header *hdr,
 #endif /* COFFEE_MICRO_LOGS */
 /*---------------------------------------------------------------------------*/
 #if COFFEE_MICRO_LOGS
-static uint16_t
+static uint16_t ICACHE_FLASH_ATTR
 modify_log_buffer(uint16_t log_record_size,
                   cfs_offset_t *offset, uint16_t *size)
 {
@@ -679,7 +679,7 @@ modify_log_buffer(uint16_t log_record_size,
 #endif /* COFFEE_MICRO_LOGS */
 /*---------------------------------------------------------------------------*/
 #if COFFEE_MICRO_LOGS
-static int
+static int ICACHE_FLASH_ATTR
 get_record_index(coffee_page_t log_page, uint16_t search_records,
                  uint16_t region)
 {
@@ -721,7 +721,7 @@ get_record_index(coffee_page_t log_page, uint16_t search_records,
 #endif /* COFFEE_MICRO_LOGS */
 /*---------------------------------------------------------------------------*/
 #if COFFEE_MICRO_LOGS
-static int
+static int ICACHE_FLASH_ATTR
 read_log_page(struct file_header *hdr, int16_t record_count,
               struct log_param *lp)
 {
@@ -751,7 +751,7 @@ read_log_page(struct file_header *hdr, int16_t record_count,
 #endif /* COFFEE_MICRO_LOGS */
 /*---------------------------------------------------------------------------*/
 #if COFFEE_MICRO_LOGS
-static coffee_page_t
+static coffee_page_t ICACHE_FLASH_ATTR
 create_log(struct file *file, struct file_header *hdr)
 {
   uint16_t log_record_size, log_records;
@@ -777,7 +777,7 @@ create_log(struct file *file, struct file_header *hdr)
 }
 #endif /* COFFEE_MICRO_LOGS */
 /*---------------------------------------------------------------------------*/
-static int
+static int ICACHE_FLASH_ATTR
 merge_log(coffee_page_t file_page, int extend)
 {
   struct file_header hdr, hdr2;
@@ -848,7 +848,7 @@ merge_log(coffee_page_t file_page, int extend)
 }
 /*---------------------------------------------------------------------------*/
 #if COFFEE_MICRO_LOGS
-static int
+static int ICACHE_FLASH_ATTR
 find_next_record(struct file *file, coffee_page_t log_page,
                  int log_records)
 {
@@ -887,7 +887,7 @@ find_next_record(struct file *file, coffee_page_t log_page,
 #endif /* COFFEE_MICRO_LOGS */
 /*---------------------------------------------------------------------------*/
 #if COFFEE_MICRO_LOGS
-static int
+static int ICACHE_FLASH_ATTR
 write_log_page(struct file *file, struct log_param *lp)
 {
   struct file_header hdr;
@@ -960,7 +960,7 @@ write_log_page(struct file *file, struct log_param *lp)
 }
 #endif /* COFFEE_MICRO_LOGS */
 /*---------------------------------------------------------------------------*/
-static int
+static int ICACHE_FLASH_ATTR
 get_available_fd(void)
 {
   int i;
@@ -973,7 +973,7 @@ get_available_fd(void)
   return -1;
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 cfs_open(const char *name, int flags)
 {
   int fd;
@@ -1010,7 +1010,7 @@ cfs_open(const char *name, int flags)
   return fd;
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 cfs_close(int fd)
 {
   if(FD_VALID(fd)) {
@@ -1020,7 +1020,7 @@ cfs_close(int fd)
   }
 }
 /*---------------------------------------------------------------------------*/
-cfs_offset_t
+cfs_offset_t ICACHE_FLASH_ATTR
 cfs_seek(int fd, cfs_offset_t offset, int whence)
 {
   struct file_desc *fdp;
@@ -1057,7 +1057,7 @@ cfs_seek(int fd, cfs_offset_t offset, int whence)
   return fdp->offset = new_offset;
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 cfs_remove(const char *name)
 {
   struct file *file;
@@ -1076,7 +1076,7 @@ cfs_remove(const char *name)
   return remove_by_page(file->page, REMOVE_LOG, CLOSE_FDS, ALLOW_GC);
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 cfs_read(int fd, void *buf, unsigned size)
 {
   struct file_desc *fdp;
@@ -1137,7 +1137,7 @@ cfs_read(int fd, void *buf, unsigned size)
   return size;
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 cfs_write(int fd, const void *buf, unsigned size)
 {
   struct file_desc *fdp;
@@ -1230,7 +1230,7 @@ cfs_write(int fd, const void *buf, unsigned size)
   return size;
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 cfs_opendir(struct cfs_dir *dir, const char *name)
 {
   /*
@@ -1241,7 +1241,7 @@ cfs_opendir(struct cfs_dir *dir, const char *name)
   return 0;
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 cfs_readdir(struct cfs_dir *dir, struct cfs_dirent *record)
 {
   struct file_header hdr;
@@ -1267,19 +1267,19 @@ cfs_readdir(struct cfs_dir *dir, struct cfs_dirent *record)
   return -1;
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 cfs_closedir(struct cfs_dir *dir)
 {
   return;
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 cfs_coffee_reserve(const char *name, cfs_offset_t size)
 {
   return reserve(name, page_count(size), 0, 0) == NULL ? -1 : 0;
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 cfs_coffee_configure_log(const char *filename, unsigned log_size,
                          unsigned log_record_size)
 {
@@ -1309,7 +1309,7 @@ cfs_coffee_configure_log(const char *filename, unsigned log_size,
   return 0;
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 cfs_coffee_set_io_semantics(int fd, unsigned flags)
 {
   if(!FD_VALID(fd)) {
@@ -1321,7 +1321,7 @@ cfs_coffee_set_io_semantics(int fd, unsigned flags)
   return 0;
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 cfs_coffee_format(void)
 {
   coffee_page_t i;

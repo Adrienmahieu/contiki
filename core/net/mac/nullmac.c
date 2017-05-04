@@ -36,7 +36,7 @@
  * \author
  *         Adam Dunkels <adam@sics.se>
  */
-
+#include "ets_sys.h"
 #include "net/mac/nullmac.h"
 #include "net/netstack.h"
 #include "net/ip/uip.h"
@@ -45,37 +45,37 @@
 #include "net/netstack.h"
 
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 send_packet(mac_callback_t sent, void *ptr)
 {
   NETSTACK_RDC.send(sent, ptr);
 }
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 packet_input(void)
 {
   NETSTACK_LLSEC.input();
 }
 /*---------------------------------------------------------------------------*/
-static int
+static int ICACHE_FLASH_ATTR
 on(void)
 {
   return NETSTACK_RDC.on();
 }
 /*---------------------------------------------------------------------------*/
-static int
+static int ICACHE_FLASH_ATTR
 off(int keep_radio_on)
 {
   return NETSTACK_RDC.off(keep_radio_on);
 }
 /*---------------------------------------------------------------------------*/
-static unsigned short
+static unsigned short ICACHE_FLASH_ATTR
 channel_check_interval(void)
 {
   return 0;
 }
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 init(void)
 {
 }

@@ -31,7 +31,7 @@
  * Author: Adam Dunkels <adam@sics.se>
  *
  */
-
+#include "ets_sys.h"
 #include <stdio.h>
 #include <dirent.h>
 #include <string.h>
@@ -44,7 +44,7 @@ struct cfs_posix_dir {
 };
 
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 cfs_opendir(struct cfs_dir *p, const char *n)
 {
   struct cfs_posix_dir *dir = (struct cfs_posix_dir *)p;
@@ -53,7 +53,7 @@ cfs_opendir(struct cfs_dir *p, const char *n)
   return dir->dirp == NULL;
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 cfs_readdir(struct cfs_dir *p, struct cfs_dirent *e)
 {
   struct cfs_posix_dir *dir = (struct cfs_posix_dir *)p;
@@ -75,7 +75,7 @@ cfs_readdir(struct cfs_dir *p, struct cfs_dirent *e)
   return 0;
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 cfs_closedir(struct cfs_dir *p)
 {
   struct cfs_posix_dir *dir = (struct cfs_posix_dir *)p;

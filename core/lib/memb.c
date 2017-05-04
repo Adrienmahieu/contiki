@@ -43,19 +43,19 @@
  * \author Adam Dunkels <adam@sics.se>
  */
 #include <string.h>
-
+#include "ets_sys.h"
 #include "contiki.h"
 #include "lib/memb.h"
 
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 memb_init(struct memb *m)
 {
   memset(m->count, 0, m->num);
   memset(m->mem, 0, m->size * m->num);
 }
 /*---------------------------------------------------------------------------*/
-void *
+void * ICACHE_FLASH_ATTR
 memb_alloc(struct memb *m)
 {
   int i;
@@ -75,7 +75,7 @@ memb_alloc(struct memb *m)
   return NULL;
 }
 /*---------------------------------------------------------------------------*/
-char
+char ICACHE_FLASH_ATTR
 memb_free(struct memb *m, void *ptr)
 {
   int i;
@@ -100,14 +100,14 @@ memb_free(struct memb *m, void *ptr)
   return -1;
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 memb_inmemb(struct memb *m, void *ptr)
 {
   return (char *)ptr >= (char *)m->mem &&
     (char *)ptr < (char *)m->mem + (m->num * m->size);
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 memb_numfree(struct memb *m)
 {
   int i;

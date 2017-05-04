@@ -29,7 +29,7 @@
  * This file is part of the Contiki operating system.
  *
  */
-
+#include "ets_sys.h"
 /** \addtogroup crc16
  * @{ */
 
@@ -43,7 +43,7 @@
 
 /* CITT CRC16 polynomial ^16 + ^12 + ^5 + 1 */
 /*---------------------------------------------------------------------------*/
-unsigned short
+unsigned short ICACHE_FLASH_ATTR
 crc16_add(unsigned char b, unsigned short acc)
 {
   /*
@@ -62,7 +62,7 @@ crc16_add(unsigned char b, unsigned short acc)
   return acc;
 }
 /*---------------------------------------------------------------------------*/
-unsigned short
+unsigned short ICACHE_FLASH_ATTR
 crc16_data(const unsigned char *data, int len, unsigned short acc)
 {
   int i;

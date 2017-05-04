@@ -42,7 +42,7 @@
  * \author
  *         Konrad Krentz <konrad.krentz@gmail.com>
  */
-
+#include "ets_sys.h"
 #include "lib/aes-128.h"
 #include <string.h>
 
@@ -68,14 +68,14 @@ static uint8_t round_keys[11][AES_128_KEY_LENGTH];
 
 /*---------------------------------------------------------------------------*/
 /* multiplies by 2 in GF(2) */
-static uint8_t
+static uint8_t ICACHE_FLASH_ATTR
 galois_mul2(uint8_t value)
 {
   uint8_t xor_val = (value >> 7) * 0x1b;
   return ((value << 1) ^ xor_val);
 }
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 set_key(const uint8_t *key)
 {
   uint8_t i;
@@ -96,7 +96,7 @@ set_key(const uint8_t *key)
   }
 }
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 encrypt(uint8_t *state)
 {
   uint8_t buf1, buf2, buf3, buf4, round, i;
@@ -166,7 +166,7 @@ encrypt(uint8_t *state)
   }
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 aes_128_set_padded_key(uint8_t *key, uint8_t key_len)
 {
   uint8_t block[AES_128_BLOCK_SIZE];

@@ -43,7 +43,7 @@
 
 #include "contiki.h"
 #include "contiki-net.h"
-
+#include "ets_sys.h"
 #include "lib/list.h"
 #include "lib/memb.h"
 
@@ -91,7 +91,7 @@ init(void)
 }
 #endif /* UIP_NAMESERVER_POOL_SIZE > 1 */
 /*----------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 uip_nameserver_update(const uip_ipaddr_t *nameserver, uint32_t lifetime)
 {
 #if UIP_NAMESERVER_POOL_SIZE > 1
@@ -145,7 +145,7 @@ uip_nameserver_update(const uip_ipaddr_t *nameserver, uint32_t lifetime)
 /**
  * Purge expired records
  */
-static void
+static void ICACHE_FLASH_ATTR
 purge(void)
 {
   register uip_nameserver_record *e = NULL;
@@ -160,7 +160,7 @@ purge(void)
 }
 #endif /* UIP_NAMESERVER_POOL_SIZE > 1 */
 /*----------------------------------------------------------------------------*/
-uip_ipaddr_t *
+uip_ipaddr_t * ICACHE_FLASH_ATTR
 uip_nameserver_get(uint8_t num)
 {
 #if UIP_NAMESERVER_POOL_SIZE > 1
@@ -187,7 +187,7 @@ uip_nameserver_get(uint8_t num)
 #endif /* UIP_NAMESERVER_POOL_SIZE > 1 */
 }
 /*----------------------------------------------------------------------------*/
-uint32_t
+uint32_t ICACHE_FLASH_ATTR
 uip_nameserver_next_expiration(void)
 {
 #if UIP_NAMESERVER_POOL_SIZE > 1
@@ -212,7 +212,7 @@ uip_nameserver_next_expiration(void)
 #endif /* UIP_NAMESERVER_POOL_SIZE > 1 */
 }
 /*----------------------------------------------------------------------------*/
-uint16_t
+uint16_t ICACHE_FLASH_ATTR
 uip_nameserver_count(void)
 {
 #if UIP_NAMESERVER_POOL_SIZE > 1

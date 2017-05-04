@@ -31,7 +31,7 @@
  * Author: Adam Dunkels <adam@sics.se>
  *
  */
-
+#include "ets_sys.h"
 #include <stdio.h>
 #include <fcntl.h>
 #ifdef _MSC_VER
@@ -44,7 +44,7 @@
 #include "cfs/cfs.h"
 
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 cfs_open(const char *n, int f)
 {
   int s = 0;
@@ -67,25 +67,25 @@ cfs_open(const char *n, int f)
   return -1;
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 cfs_close(int f)
 {
   close(f);
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 cfs_read(int f, void *b, unsigned int l)
 {
   return read(f, b, l);
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 cfs_write(int f, const void *b, unsigned int l)
 {
   return write(f, b, l);
 }
 /*---------------------------------------------------------------------------*/
-cfs_offset_t
+cfs_offset_t ICACHE_FLASH_ATTR
 cfs_seek(int f, cfs_offset_t o, int w)
 {
   if(w == CFS_SEEK_SET) {
@@ -100,7 +100,7 @@ cfs_seek(int f, cfs_offset_t o, int w)
   return lseek(f, o, w);
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 cfs_remove(const char *name)
 {
   return remove(name);

@@ -39,7 +39,7 @@
 #include "contiki.h"
 #include "settings.h"
 #include "dev/eeprom.h"
-
+#include "ets_sys.h"
 #if CONTIKI_CONF_SETTINGS_MANAGER
 
 #if !EEPROM_CONF_SIZE
@@ -79,14 +79,14 @@ typedef struct {
 /*****************************************************************************/
 
 /*---------------------------------------------------------------------------*/
-settings_iter_t
+settings_iter_t ICACHE_FLASH_ATTR
 settings_iter_begin()
 {
   return settings_iter_is_valid(SETTINGS_TOP_ADDR) ? SETTINGS_TOP_ADDR : 0;
 }
 
 /*---------------------------------------------------------------------------*/
-settings_iter_t
+settings_iter_t ICACHE_FLASH_ATTR
 settings_iter_next(settings_iter_t ret)
 {
   if(ret) {
@@ -102,7 +102,7 @@ settings_iter_next(settings_iter_t ret)
 }
 
 /*---------------------------------------------------------------------------*/
-uint8_t
+uint8_t ICACHE_FLASH_ATTR
 settings_iter_is_valid(settings_iter_t iter)
 {
   item_header_t header = { 0 };
@@ -129,7 +129,7 @@ settings_iter_is_valid(settings_iter_t iter)
 }
 
 /*---------------------------------------------------------------------------*/
-settings_key_t
+settings_key_t ICACHE_FLASH_ATTR
 settings_iter_get_key(settings_iter_t iter)
 {
   item_header_t header;
@@ -144,7 +144,7 @@ settings_iter_get_key(settings_iter_t iter)
 }
 
 /*---------------------------------------------------------------------------*/
-settings_length_t
+settings_length_t ICACHE_FLASH_ATTR
 settings_iter_get_value_length(settings_iter_t iter)
 {
   item_header_t header;
@@ -167,7 +167,7 @@ settings_iter_get_value_length(settings_iter_t iter)
 }
 
 /*---------------------------------------------------------------------------*/
-eeprom_addr_t
+eeprom_addr_t ICACHE_FLASH_ATTR
 settings_iter_get_value_addr(settings_iter_t iter)
 {
   settings_length_t len = settings_iter_get_value_length(iter);
@@ -178,7 +178,7 @@ settings_iter_get_value_addr(settings_iter_t iter)
 }
 
 /*---------------------------------------------------------------------------*/
-settings_length_t
+settings_length_t ICACHE_FLASH_ATTR
 settings_iter_get_value_bytes(settings_iter_t iter, void *bytes,
                               settings_length_t max_length)
 {
@@ -190,7 +190,7 @@ settings_iter_get_value_bytes(settings_iter_t iter, void *bytes,
 }
 
 /*---------------------------------------------------------------------------*/
-settings_status_t
+settings_status_t ICACHE_FLASH_ATTR
 settings_iter_delete(settings_iter_t iter)
 {
   settings_status_t ret = SETTINGS_STATUS_FAILURE;
@@ -223,7 +223,7 @@ settings_iter_delete(settings_iter_t iter)
 /*****************************************************************************/
 
 /*---------------------------------------------------------------------------*/
-uint8_t
+uint8_t ICACHE_FLASH_ATTR
 settings_check(settings_key_t key, uint8_t index)
 {
   uint8_t ret = 0;
@@ -245,7 +245,7 @@ settings_check(settings_key_t key, uint8_t index)
 }
 
 /*---------------------------------------------------------------------------*/
-settings_status_t
+settings_status_t ICACHE_FLASH_ATTR
 settings_get(settings_key_t key, uint8_t index, uint8_t *value,
              settings_length_t * value_size)
 {
@@ -273,7 +273,7 @@ settings_get(settings_key_t key, uint8_t index, uint8_t *value,
 }
 
 /*---------------------------------------------------------------------------*/
-settings_status_t
+settings_status_t ICACHE_FLASH_ATTR
 settings_add(settings_key_t key, const uint8_t *value,
              settings_length_t value_size)
 {
@@ -360,7 +360,7 @@ bail:
 }
 
 /*---------------------------------------------------------------------------*/
-settings_status_t
+settings_status_t ICACHE_FLASH_ATTR
 settings_set(settings_key_t key, const uint8_t *value,
              settings_length_t value_size)
 {
@@ -396,7 +396,7 @@ bail:
 }
 
 /*---------------------------------------------------------------------------*/
-settings_status_t
+settings_status_t ICACHE_FLASH_ATTR
 settings_delete(settings_key_t key, uint8_t index)
 {
   settings_status_t ret = SETTINGS_STATUS_NOT_FOUND;
@@ -420,7 +420,7 @@ settings_delete(settings_key_t key, uint8_t index)
 }
 
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 settings_wipe(void)
 {
   /* Simply making the first item invalid will effectively
@@ -438,7 +438,7 @@ settings_wipe(void)
 #if DEBUG
 #include <stdio.h>
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 settings_debug_dump(void)
 {
   settings_iter_t iter;

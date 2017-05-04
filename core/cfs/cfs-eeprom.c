@@ -31,7 +31,7 @@
  * Author: Adam Dunkels <adam@sics.se>
  *
  */
-
+#include "ets_sys.h"
 #include "cfs/cfs.h"
 #include "dev/eeprom.h"
 
@@ -52,7 +52,7 @@ static struct filestate file;
 #endif
 
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 cfs_open(const char *n, int f)
 {
   if(file.flag == FLAG_FILE_CLOSED) {
@@ -74,13 +74,13 @@ cfs_open(const char *n, int f)
   }
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 cfs_close(int f)
 {
   file.flag = FLAG_FILE_CLOSED;
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 cfs_read(int f, void *buf, unsigned int len)
 {
   if(f == 1) {
@@ -92,7 +92,7 @@ cfs_read(int f, void *buf, unsigned int len)
   }
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 cfs_write(int f, const void *buf, unsigned int len)
 {
   if(f == 1) {
@@ -104,7 +104,7 @@ cfs_write(int f, const void *buf, unsigned int len)
   }
 }
 /*---------------------------------------------------------------------------*/
-cfs_offset_t
+cfs_offset_t ICACHE_FLASH_ATTR
 cfs_seek(int f, cfs_offset_t o, int w)
 {
   if(w == CFS_SEEK_SET && f == 1) {
@@ -115,25 +115,25 @@ cfs_seek(int f, cfs_offset_t o, int w)
   }
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 cfs_remove(const char *name)
 {
   return -1;
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 cfs_opendir(struct cfs_dir *p, const char *n)
 {
   return -1;
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 cfs_readdir(struct cfs_dir *p, struct cfs_dirent *e)
 {
   return -1;
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 cfs_closedir(struct cfs_dir *p)
 {
 }

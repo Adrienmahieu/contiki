@@ -32,7 +32,7 @@
 #include <stdio.h>
 #include <stddef.h>
 #include <string.h>
-
+#include "ets_sys.h"
 #include "contiki-net.h"
 #include "lib/petsciiconv.h"
 
@@ -71,7 +71,7 @@ struct websocket_frame_mask {
 #include "net/ip/uip-debug.h"
 
 /*---------------------------------------------------------------------------*/
-static int
+static int ICACHE_FLASH_ATTR
 parse_url(const char *url, char *host, uint16_t *portptr, char *path)
 {
   const char *urlptr;
@@ -145,7 +145,7 @@ parse_url(const char *url, char *host, uint16_t *portptr, char *path)
   return 1;
 }
 /*---------------------------------------------------------------------------*/
-static int
+static int ICACHE_FLASH_ATTR
 start_get(struct websocket *s)
 {
   if(websocket_http_client_get(&(s->s)) == 0) {
@@ -160,7 +160,7 @@ start_get(struct websocket *s)
   return WEBSOCKET_ERR;
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 call(struct websocket *s, websocket_result_t r,
      const uint8_t *data, uint16_t datalen)
 {
@@ -214,7 +214,7 @@ PROCESS_THREAD(websocket_process, ev, data)
 /* Callback function. Called from the webclient when the HTTP
  * connection was abruptly aborted.
  */
-void
+void ICACHE_FLASH_ATTR
 websocket_http_client_aborted(struct websocket_http_client_state *client_state)
 {
   if(client_state != NULL) {
@@ -229,7 +229,7 @@ websocket_http_client_aborted(struct websocket_http_client_state *client_state)
 /* Callback function. Called from the webclient when the HTTP
  * connection timed out.
  */
-void
+void ICACHE_FLASH_ATTR
 websocket_http_client_timedout(struct websocket_http_client_state *client_state)
 {
   if(client_state != NULL) {
@@ -245,7 +245,7 @@ websocket_http_client_timedout(struct websocket_http_client_state *client_state)
  * connection was closed after a request from the "websocket_http_client_close()"
  * function. .
  */
-void
+void ICACHE_FLASH_ATTR
 websocket_http_client_closed(struct websocket_http_client_state *client_state)
 {
   if(client_state != NULL) {
@@ -260,7 +260,7 @@ websocket_http_client_closed(struct websocket_http_client_state *client_state)
 /* Callback function. Called from the webclient when the HTTP
  * connection is connected.
  */
-void
+void ICACHE_FLASH_ATTR
 websocket_http_client_connected(struct websocket_http_client_state *client_state)
 {
   struct websocket *s = (struct websocket *)
@@ -275,7 +275,7 @@ websocket_http_client_connected(struct websocket_http_client_state *client_state
    segments. This function eats one byte each, puts it into
    s->headercache, and checks whether or not the full header has been
    received. */
-static int
+static int ICACHE_FLASH_ATTR
 receive_header_byte(struct websocket *s, uint8_t byte)
 {
   int len;
@@ -333,7 +333,7 @@ receive_header_byte(struct websocket *s, uint8_t byte)
 /* Callback function. Called from the webclient module when HTTP data
  * has arrived.
  */
-void
+void ICACHE_FLASH_ATTR
 websocket_http_client_datahandler(struct websocket_http_client_state *client_state,
 				  const uint8_t *data, uint16_t datalen)
 {
@@ -516,7 +516,7 @@ websocket_http_client_datahandler(struct websocket_http_client_state *client_sta
   }
 }
 /*---------------------------------------------------------------------------*/
-static void
+static void ICACHE_FLASH_ATTR
 init(void)
 {
   static uint8_t inited = 0;
@@ -527,28 +527,28 @@ init(void)
   }
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 websocket_init(struct websocket *s)
 {
   init();
   websocket_http_client_init(&s->s);
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 websocket_set_proxy(struct websocket *s,
                     const uip_ipaddr_t *addr, uint16_t port)
 {
   websocket_http_client_set_proxy(&s->s, addr, port);
 }
 /*---------------------------------------------------------------------------*/
-websocket_result_t
+websocket_result_t ICACHE_FLASH_ATTR
 websocket_open(struct websocket *s, const char *url,
                const char *subprotocol, const char *hdr,
 	       websocket_callback c)
 {
   int ret;
-  char host[MAX_HOSTLEN + 1] = {0};
-  char path[MAX_PATHLEN + 1] = {0};
+  char host[MAX_HOSTLEN];
+  char path[MAX_PATHLEN];
   uint16_t port;
   uip_ipaddr_t addr;
 
@@ -591,14 +591,14 @@ websocket_open(struct websocket *s, const char *url,
   return -1;
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 websocket_close(struct websocket *s)
 {
   websocket_http_client_close(&s->s);
   s->state = WEBSOCKET_STATE_CLOSED;
 }
 /*---------------------------------------------------------------------------*/
-static int
+static int ICACHE_FLASH_ATTR
 send_data(struct websocket *s, const void *data,
           uint16_t datalen, uint8_t data_type_opcode)
 {
@@ -671,20 +671,20 @@ send_data(struct websocket *s, const void *data,
   return -1;
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 websocket_send_str(struct websocket *s, const char *str)
 {
   return send_data(s, str, strlen(str), WEBSOCKET_OPCODE_TEXT);
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 websocket_send(struct websocket *s, const uint8_t *data,
 	       uint16_t datalen)
 {
   return send_data(s, data, datalen, WEBSOCKET_OPCODE_BIN);
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 websocket_ping(struct websocket *s)
 {
   uint8_t buf[sizeof(struct websocket_frame_hdr) +
@@ -716,7 +716,7 @@ websocket_ping(struct websocket *s)
   return 1;
 }
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 websocket_queuelen(struct websocket *s)
 {
   return websocket_http_client_queuelen(&s->s);

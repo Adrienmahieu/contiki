@@ -43,7 +43,7 @@
  * \addtogroup stimer
  * @{
  */
-
+#include "ets_sys.h"
 #include "contiki-conf.h"
 #include "sys/clock.h"
 #include "sys/stimer.h"
@@ -63,7 +63,7 @@
  * \param interval The interval before the timer expires.
  *
  */
-void
+void ICACHE_FLASH_ATTR
 stimer_set(struct stimer *t, unsigned long interval)
 {
   t->interval = interval;
@@ -83,7 +83,7 @@ stimer_set(struct stimer *t, unsigned long interval)
  *
  * \sa stimer_restart()
  */
-void
+void ICACHE_FLASH_ATTR
 stimer_reset(struct stimer *t)
 {
   t->start += t->interval;
@@ -103,7 +103,7 @@ stimer_reset(struct stimer *t)
  *
  * \sa stimer_reset()
  */
-void
+void ICACHE_FLASH_ATTR
 stimer_restart(struct stimer *t)
 {
   t->start = clock_seconds();
@@ -120,7 +120,7 @@ stimer_restart(struct stimer *t)
  * \return Non-zero if the timer has expired, zero otherwise.
  *
  */
-int
+int ICACHE_FLASH_ATTR
 stimer_expired(struct stimer *t)
 {
   return SCLOCK_GEQ(clock_seconds(), t->start + t->interval);
@@ -136,7 +136,7 @@ stimer_expired(struct stimer *t)
  * \return The time until the timer expires
  *
  */
-unsigned long
+unsigned long ICACHE_FLASH_ATTR
 stimer_remaining(struct stimer *t)
 {
   return t->start + t->interval - clock_seconds();
@@ -152,7 +152,7 @@ stimer_remaining(struct stimer *t)
  * \return The time elapsed since the last start of the timer
  *
  */
-unsigned long
+unsigned long ICACHE_FLASH_ATTR
 stimer_elapsed(struct stimer *t)
 {
   return clock_seconds() - t->start;

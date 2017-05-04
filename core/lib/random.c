@@ -33,17 +33,17 @@
 
 #include "lib/random.h"
 #include "sys/clock.h"
-
+#include "ets_sys.h"
 #include <stdlib.h>
 
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 random_init(unsigned short seed)
 {
   srand(seed);
 }
 /*---------------------------------------------------------------------------*/
-unsigned short
+unsigned short ICACHE_FLASH_ATTR
 random_rand(void)
 {
 /* In gcc int rand() uses RAND_MAX and long random() uses RANDOM_MAX=0x7FFFFFFF */

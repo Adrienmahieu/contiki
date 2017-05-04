@@ -41,7 +41,7 @@
  *         Adam Dunkels <adam@sics.se>
  *         Benoît Thébaudeau <benoit.thebaudeau@advansee.com>
  */
-
+#include "ets_sys.h"
 #include <string.h>
 
 #include "contiki-net.h"
@@ -69,7 +69,7 @@ struct seqno {
 static struct seqno received_seqnos[MAX_SEQNOS];
 
 /*---------------------------------------------------------------------------*/
-int
+int ICACHE_FLASH_ATTR
 mac_sequence_is_duplicate(void)
 {
   int i;
@@ -98,7 +98,7 @@ mac_sequence_is_duplicate(void)
   return 0;
 }
 /*---------------------------------------------------------------------------*/
-void
+void ICACHE_FLASH_ATTR
 mac_sequence_register_seqno(void)
 {
   int i, j;
