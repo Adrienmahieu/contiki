@@ -48,6 +48,12 @@
 #include "os_type.h"
 #include "espmissingincludes.h"
 
+#include "dev/leds.h"
+#include "dev/watchdog.h"
+#include "sys/clock.h"
+#include "sys/timer.h"
+#include "sys/etimer.h"
+
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
@@ -82,45 +88,38 @@
 #define SELECT_MAX 8
 #endif
 
-//int main(int argc, char **argv);
-int start(int argc, char **argv);
+int main(int argc, char **argv);
 
-//char tab[1000];
+static struct timer t;
 
 static const struct select_callback *select_callback[SELECT_MAX];
 static int select_max = 0;
 
-SENSORS(&pir_sensor, &vib_sensor, &button_sensor);
 
-os_timer_t blink_timer;
-//os_timer_t start_timer;
-LOCAL uint8_t led_state = 0;
+PROCESS(example_process, "Exemple Process");
+//AUTOSTART_PROCESSES(&example_process);
+
+PROCESS_THREAD(example_process, ev, data)
+{
+    //static struct etimer et;
+    PROCESS_BEGIN();
+    
+    //etimer_set(&et, CLOCK_SECOND);
+    
+    while(1) {
+        PROCESS_WAIT_EVENT();
+        os_printf("EXAMPLE PROCESS\n");
+    }
+    
+    PROCESS_END();
+}
+
+SENSORS(&pir_sensor, &vib_sensor, &button_sensor);
 
 static uint8_t serial_id[] = {0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08};
 #if !NETSTACK_CONF_WITH_IPV6
 static uint16_t node_id = 0x0102;
 #endif /* !NETSTACK_CONF_WITH_IPV6 */
-
-void blink_cb(void *arg) {
-    // Update the LED's status.
-    led_state = !led_state;
-    GPIO_OUTPUT_SET(4, led_state);
-    // Write a binary message (the 0x00 would terminate any string to os_printf).
-    //uint8_t message[] = {0x03, 0x02, 0x01, 0x00, 0x01, 0x02, 0x03, '\r', '\n'};
-    //uart0_tx_buffer(message, 9);
-
-    // Write the LED status as a string.
-    os_printf("Contiki LED state - %d.\n", led_state);
-}
-
-LOCAL void ICACHE_FLASH_ATTR set_blink_timer(uint16_t interval) {
-    // Start a timer for the flashing of the LED on GPIO 4, running continuously.
-    os_timer_disarm(&blink_timer);
-    os_timer_setfn(&blink_timer, (os_timer_func_t *)blink_cb, (void *)0);
-    os_timer_arm(&blink_timer, interval, 1);
-}
-
-
 
 /******************************************************************************
  * FunctionName : user_rf_cal_sector_set
@@ -168,19 +167,7 @@ user_rf_cal_sector_set(void)
 }
 
 void initialisation() {
-    gpio_init();
-
-    // GPIO 4 is an output, start with it low (off).
-    //PIN_FUNC_SELECT(PERIPHS_IO_MUX_GPIO4_U, FUNC_GPIO4);
-    //gpio_output_set(0, BIT4, BIT4, 0);
-    //gpio_output_set((1 << pin), 0, 0, 0);
-    GPIO_OUTPUT_SET(4, led_state);
-    //tab[0] = 100;
-    //tab[200] = 100;
-
-    // Start the LED timer at 2s per change.
-    set_blink_timer(1000);
-    start(0, NULL);
+    main(0, NULL);
 }
 
 
@@ -217,13 +204,22 @@ set_rime_addr(void)
   os_printf("%d\n", addr.u8[i]);
 }*/
 
-
+ static void ICACHE_FLASH_ATTR print_processes(struct process * const processes[])
+ {
+ /* const struct process * const * p = processes; */
+    os_printf("Starting");
+    while(*processes != NULL) {
+        os_printf(" ’%s’", (*processes)->name);
+        processes++;
+    }
+    os_printf("\n");
+ }
 /*---------------------------------------------------------------------------*/
 int contiki_argc = 0;
 char **contiki_argv;
 
 int ICACHE_FLASH_ATTR
-start(int argc, char **argv)
+main(int argc, char **argv)
 {
 #if NETSTACK_CONF_WITH_IPV6
 #if UIP_CONF_IPV6_RPL
@@ -241,12 +237,96 @@ start(int argc, char **argv)
 
   process_init();
   process_start(&etimer_process, NULL);
+  process_start(&example_process, NULL);
+  
   ctimer_init();
-  //rtimer_init();
+  leds_init();
+  
+   
+  os_printf("----------[ Running %s on ESP8266 ]----------\n\n", CONTIKI_VERSION_STRING);
+  //Linking fails if use
+  //print_processes(autostart_processes);
+  
+  //initialisation timer 1 seconde
+  timer_set(&t, CLOCK_SECOND);
 
-#if WITH_GUI
-  process_start(&ctk_process, NULL);
-#endif
+
+  //LED + delay + watchdog Test (led.c to assign correct gpio to LEDS)
+  for(int i=0; i<1; i++) {
+      os_printf("LED Test\n");
+      os_printf("LED Test verte\n");
+      leds_arch_set(LEDS_GREEN);
+      clock_delay(1000);
+      watchdog_periodic();
+      os_printf("LED Test jaune\n");
+      leds_arch_set(LEDS_YELLOW);
+      clock_delay(1000);
+      watchdog_periodic();
+      os_printf("LED Test rouge\n");
+      leds_arch_set(LEDS_RED);
+      clock_delay(1000);
+      watchdog_periodic();
+      
+      os_printf("LED Test verte + jaune\n");
+      leds_arch_set(LEDS_GREEN|LEDS_YELLOW);
+      clock_delay(1000);
+      watchdog_periodic();
+      os_printf("LED Test jaune + rouge\n");
+      leds_arch_set(LEDS_YELLOW|LEDS_RED);
+      clock_delay(1000);
+      watchdog_periodic();
+      os_printf("LED Test verte + jaune + rouge\n");
+      leds_arch_set(LEDS_GREEN|LEDS_YELLOW|LEDS_RED);
+      clock_delay(1000);
+      watchdog_periodic();
+      os_printf("LED Test off\n");
+      leds_off(LEDS_ALL);
+  }
+  //rtimer_init();
+  
+  //Clock + watchdog test
+  os_printf("\nClock Test\n");
+  for(int i=0; i<5; i++) {
+      os_printf("Ticks : %ld\n", clock_time());
+      //os_printf("Ticks : %ld\n", clock_time());
+      os_printf("Seconds : %ld\n", clock_seconds());
+      clock_delay(500);
+      watchdog_periodic();
+  }
+  
+  
+  static char msg[] = "MESSAGE";
+  //process_post(&example_process, PROCESS_EVENT_CONTINUE, msg);
+  
+  //process_poll(&example_process);
+  
+  while(1) {
+      int r;
+      if(timer_expired(&t)) {
+          os_printf("Timer Expired\n");
+          process_post(&example_process, PROCESS_EVENT_CONTINUE, msg);
+          timer_restart(&t);
+      }
+      do {
+          watchdog_periodic();
+          r = process_run();
+          //os_printf("R: %d\n", r);
+      } while(r > 0);
+      
+      watchdog_periodic();
+  }
+  
+  
+ /* while(1) {
+      int r;
+      do {
+          watchdog_periodic();
+          r = process_run();
+          process_post(&example_process, PROCESS_EVENT_CONTINUE, msg);
+          //os_printf("R: %d\n", r);
+      } while(r > 0);
+      
+  }*/
 
   //set_rime_addr();
 

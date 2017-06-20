@@ -38,35 +38,35 @@
  */
 
 #include "ets_sys.h"
+#include "user_interface.h"
+#include "osapi.h"
+#include "espmissingincludes.h"
 
 #include "sys/clock.h"
-#include <time.h>
 #include <sys/time.h>
 
 /*---------------------------------------------------------------------------*/
 clock_time_t ICACHE_FLASH_ATTR 
 clock_time(void)
 {
-  /*struct timeval tv;
-
-  gettimeofday(&tv, NULL);
-
-  return tv.tv_sec * 1000 + tv.tv_usec / 1000;*/
+  //return system_get_time() * system_get_cpu_freq();
+  //Use only us from start as ticks.
+  return system_get_time();
 }
 /*---------------------------------------------------------------------------*/
 unsigned long ICACHE_FLASH_ATTR 
 clock_seconds(void)
 {
-  /*struct timeval tv;
-
-  gettimeofday(&tv, NULL);
-
-  return tv.tv_sec;*/
+  return system_get_time() / 1000000;
 }
 /*---------------------------------------------------------------------------*/
 void ICACHE_FLASH_ATTR 
 clock_delay(unsigned int d)
 {
-  /* Does not do anything. */
+  os_delay_us(d*1000);
 }
 /*---------------------------------------------------------------------------*/
+void ICACHE_FLASH_ATTR clock_delay_usec(uint16_t dt) {
+  os_delay_us(dt);
+}
+

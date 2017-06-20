@@ -51,7 +51,7 @@ CFLAGS_XTENSA = -fsingle-precision-constant -Wdouble-promotion \
 	-fno-inline-functions \
 	-Wl,-EL -mlongcalls -mtext-section-literals -mforce-l32
 
-CFLAGS = $(INC) -Wall -Wpointer-arith -fno-strict-aliasing -ansi -std=gnu99 -nostdlib -DNETSTACK_CONF_WITH_IPV6=1 \
+CFLAGS = $(INC) -Wall -Wpointer-arith -Wno-unused-variable -Wno-unused-function -fno-strict-aliasing -ansi -std=gnu99 -nostdlib -DNETSTACK_CONF_WITH_IPV6=1 \
 	$(CFLAGS_XTENSA) $(CFLAGS_MOD) $(COPT) $(CFLAGS_EXTRA)
 
 LDSCRIPT = $(ESP_SDK)/ld/eagle.app.v6.new.2048.ld
@@ -121,6 +121,10 @@ deploy: $(BUILD)/firmware-combined.bin
 erase:
 	$(ECHO) "Erase flash"
 	$(Q)esptool.py --port $(PORT) --baud $(BAUD) erase_flash
+	
+blank:
+	$(ECHO) "Write blank"
+	$(Q)esptool.py --port $(PORT) --baud $(BAUD) write_flash 0 $(CONTIKI)/tools/esp8266/blank.bin  0x4000 $(CONTIKI)/tools/esp8266/blank.bin --flash_size 16m-c1
 	
 flash: all
 	$(Q)esptool.py --port $(PORT) --baud $(BAUD) write_flash 0 $(ESP_SDK)/bin/upgrade/boot_v1.6.bin 0x01000 eagle.app.flash.bin 0x1FC000 $(ESP_SDK)/bin/upgrade/esp_init_data_default.bin  --flash_size 16m-c1

@@ -223,7 +223,7 @@ typedef unsigned short uip_stats_t;
 
 typedef unsigned long clock_time_t;
 
-#define CLOCK_CONF_SECOND 1000
+#define CLOCK_CONF_SECOND 1000000
 
 #define LOG_CONF_ENABLED 1
 

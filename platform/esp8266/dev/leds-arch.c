@@ -37,13 +37,24 @@
  *         Adam Dunkels <adam@sics.se>
  */
 #include "ets_sys.h"
+#include "gpio.h"
+
 #include "dev/leds.h"
+
+#define GPIO_LED_GREEN 4
+#define GPIO_LED_YELLOW 2
+#define GPIO_LED_RED 0
+
 static unsigned char leds;
 /*---------------------------------------------------------------------------*/
 void ICACHE_FLASH_ATTR
 leds_arch_init(void)
 {
   leds = 0;
+  gpio_init();
+  GPIO_OUTPUT_SET(GPIO_LED_GREEN, 0);
+  GPIO_OUTPUT_SET(GPIO_LED_YELLOW, 0);
+  GPIO_OUTPUT_SET(GPIO_LED_RED, 0);
 }
 /*---------------------------------------------------------------------------*/
 unsigned char ICACHE_FLASH_ATTR
@@ -56,5 +67,8 @@ void ICACHE_FLASH_ATTR
 leds_arch_set(unsigned char l)
 {
   leds = l;
+  GPIO_OUTPUT_SET(GPIO_LED_GREEN, (l & LEDS_GREEN) ? 1 : 0);
+  GPIO_OUTPUT_SET(GPIO_LED_YELLOW, (l & LEDS_YELLOW) ? 1 : 0);
+  GPIO_OUTPUT_SET(GPIO_LED_RED, (l & LEDS_RED) ? 1 : 0);
 }
 /*---------------------------------------------------------------------------*/

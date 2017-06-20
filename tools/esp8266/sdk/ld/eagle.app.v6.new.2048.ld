@@ -216,5 +216,5 @@ SECTIONS
 }
 
 /* get ROM code address */
-INCLUDE "/home/adrien/memoire/ESP8266_NONOS_SDK/ld/eagle.rom.addr.v6.ld"
+INCLUDE "../../tools/esp8266/sdk/ld/eagle.rom.addr.v6.ld"
 

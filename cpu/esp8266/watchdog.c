@@ -29,6 +29,8 @@
  * This file is part of the Contiki operating system.
  *
  */
+#include "osapi.h"
+#include "user_interface.h"
 
 #include "dev/watchdog.h"
 #include <stdlib.h>
@@ -42,22 +44,26 @@ watchdog_init(void)
 void
 watchdog_start(void)
 {
+    system_soft_wdt_restart();
 }
 /*---------------------------------------------------------------------------*/
 void
 watchdog_periodic(void)
 {
+    system_soft_wdt_restart();
 }
 /*---------------------------------------------------------------------------*/
 void
 watchdog_stop(void)
 {
+    system_soft_wdt_stop();
 }
 /*---------------------------------------------------------------------------*/
 void
 watchdog_reboot(void)
 {
-	// Death by watchdog.
-	exit(-1);
+    // Death by watchdog.
+    system_soft_wdt_restart();
+    //exit(-1);
 }
 /*---------------------------------------------------------------------------*/
